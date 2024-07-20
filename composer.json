@@ -1,0 +1,77 @@
+{
+  "name": "wundii/data-mapper",
+  "description": "mapping xml, json and arrays to objects",
+  "keywords": ["afterbuy","sdk"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andreas Wunderwald",
+      "email": "wundii@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "ext-json": "*",
+    "symfony/monolog-bundle": "^3.10",
+    "webmozart/assert": "^1.11"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.10",
+    "phpstan/phpstan-strict-rules": "^1.5",
+    "phpunit/phpunit": "^10.0",
+    "rector/rector": "^1.0",
+    "symfony/var-dumper": "^6.4",
+    "symplify/easy-coding-standard": "^12.0",
+    "wundii/phplint": "^0.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "DataMapper\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DataMapper\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "auto-scripts": {
+    },
+    "post-install-cmd": [
+      "@auto-scripts"
+    ],
+    "post-update-cmd": [
+      "@auto-scripts"
+    ],
+    "complete-check": [
+      "@cache-clear",
+      "@rector-dry",
+      "@phpstan",
+      "@ecs-dry",
+      "@unittest"
+    ],
+    "rector-dry": [
+      "php vendor/bin/rector process --dry-run --ansi"
+    ],
+    "rector-apply": [
+      "php vendor/bin/rector process --ansi"
+    ],
+    "ecs-dry": [
+      "php vendor/bin/ecs check"
+    ],
+    "ecs-apply": [
+      "php vendor/bin/ecs check --fix"
+    ],
+    "phpstan": [
+      "php vendor/bin/phpstan analyse"
+    ],
+    "unittest": [
+      "php vendor/bin/phpunit --configuration phpunit.xml"
+    ],
+    "cache-clear": [
+      "rm -R ./cache/* -f"
+    ]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

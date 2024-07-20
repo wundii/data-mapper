@@ -1,0 +1,77 @@
+name: 'Code Quality'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+permissions:
+  contents: read
+
+jobs:
+  code-quality:
+    name: 'PHP Code Quality'
+    runs-on: ubuntu-latest
+    steps:
+      - name: PHP-Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Composer cache packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Composer install
+        run: |
+          composer install --prefer-dist --no-progress
+
+      - name: Run RectorPHP
+        run: composer rector-dry
+
+      - name: Run PHPStan
+        run: composer phpstan
+
+      - name: Run ECS
+        run: composer ecs-dry
+
+  unittest:
+    needs: [ code-quality ]
+    name: 'PHP Unit and E2E Tests'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [ 8.2, 8.3 ]
+    steps:
+      - name: PHP-Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.version }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Composer cache packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Composer install
+        run: |
+          composer install --prefer-dist --no-progress
+
+      - name: Run PHPUnitTests
+        run: composer unittest
