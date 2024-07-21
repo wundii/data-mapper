@@ -8,7 +8,6 @@ use DataMapper\DataConfig;
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataObject;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Interface\ArrayElementInterface;
 use DataMapper\Interface\ObjectElementInterface;
 use Exception;
 use InvalidArgumentException;
@@ -92,8 +91,8 @@ final readonly class ObjectElementResolver
             }
 
             $value = match (get_class($dataElement)) {
-                ArrayElementInterface::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
-                ObjectElementInterface::class => (new self($this->dataConfig, $dataElement))->resolve(),
+                DataArray::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
                 default => $dataElement->getValue(),
             };
 
@@ -123,8 +122,8 @@ final readonly class ObjectElementResolver
             }
 
             $value = match (get_class($dataElement)) {
-                ArrayElementInterface::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
-                ObjectElementInterface::class => (new self($this->dataConfig, $dataElement))->resolve(),
+                DataArray::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
                 default => $dataElement->getValue(),
             };
 
