@@ -30,7 +30,9 @@ class DataConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The class map must contain only strings');
 
-        new DataConfig(classMap: [1 => MapperClassConstructor::class]);
+        new DataConfig(classMap: [
+            1 => MapperClassConstructor::class,
+        ]);
     }
 
     public function testDataConfigClassExceptionNoStringValue(): void
@@ -38,7 +40,9 @@ class DataConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The class map must contain only strings');
 
-        new DataConfig(classMap: [MapperClassConstructor::class => 1]);
+        new DataConfig(classMap: [
+            MapperClassConstructor::class => 1,
+        ]);
     }
 
     public function testDataConfigClassExceptionKey(): void
@@ -46,7 +50,9 @@ class DataConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The key class does not exist');
 
-        new DataConfig(classMap: ['failKey' => MapperClassConstructor::class]);
+        new DataConfig(classMap: [
+            'failKey' => MapperClassConstructor::class,
+        ]);
     }
 
     public function testDataConfigClassExceptionValue(): void
@@ -54,7 +60,9 @@ class DataConfigTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The value class does not exist');
 
-        new DataConfig(classMap: [MapperClassInterface::class => 'failValue']);
+        new DataConfig(classMap: [
+            MapperClassInterface::class => 'failValue',
+        ]);
     }
 
     public function testDataConfigCustom(): void
@@ -62,7 +70,9 @@ class DataConfigTest extends TestCase
         $config = new DataConfig(
             ApproachEnum::PROPERTY,
             AccessibleEnum::PRIVATE,
-            [MapperClassInterface::class => MapperClassConstructor::class]
+            [
+                MapperClassInterface::class => MapperClassConstructor::class,
+            ]
         );
 
         $this->assertInstanceOf(DataConfig::class, $config);
@@ -73,11 +83,12 @@ class DataConfigTest extends TestCase
         $this->assertArrayHasKey(MapperClassInterface::class, $config->getClassMap());
         $this->assertEquals(MapperClassConstructor::class, $config->getClassMap()[MapperClassInterface::class]);
 
-
         $config = new DataConfig(
             ApproachEnum::PROPERTY,
             AccessibleEnum::PRIVATE,
-            [MapperClassConstructor::class => MapperClassConstructor::class]
+            [
+                MapperClassConstructor::class => MapperClassConstructor::class,
+            ]
         );
         $this->assertInstanceOf(DataConfig::class, $config);
         $this->assertArrayHasKey(MapperClassConstructor::class, $config->getClassMap());

@@ -15,9 +15,20 @@ final class XmlSourceData extends AbstractSourceData
     ) {
     }
 
+    /**
+     * @return array<mixed>
+     */
+    public function coreLogic(): array
+    {
+        return [
+            'constructor',
+            1,
+        ];
+    }
+
     public function executeConstructor(): object
     {
-        return $this->createInstanceFromString($this->objectName, 'constructor', 1);
+        return $this->createInstanceFromString($this->objectName, $this->coreLogic());
     }
 
     public function executeSetter(): object

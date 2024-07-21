@@ -19,15 +19,15 @@ final readonly class DataConfig
         private array $classMap = [],
     ) {
         foreach ($classMap as $key => $value) {
-            if (!is_string($key) || !is_string($value)) {
+            if (! is_string($key) || ! is_string($value)) {
                 throw new InvalidArgumentException('The class map must contain only strings');
             }
 
-            if (!interface_exists($key) && !class_exists($key)) {
+            if (! interface_exists($key) && ! class_exists($key)) {
                 throw new InvalidArgumentException('The key class does not exist');
             }
 
-            if (!class_exists($value)) {
+            if (! class_exists($value)) {
                 throw new InvalidArgumentException('The value class does not exist');
             }
         }

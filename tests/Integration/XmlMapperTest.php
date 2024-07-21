@@ -19,6 +19,12 @@ class XmlMapperTest extends TestCase
         $dataMapper = new DataMapper($dataConfig);
         $return = $dataMapper->xml(file_get_contents($file), MapperClassConstructor::class);
 
+        $expected = new MapperClassConstructor(
+            'constructor',
+            1,
+        );
+
         $this->assertInstanceOf(MapperClassConstructor::class, $return);
+        $this->assertEquals($expected, $return);
     }
 }

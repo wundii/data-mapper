@@ -9,7 +9,10 @@ use InvalidArgumentException;
 
 abstract class AbstractSourceData implements SourceDataInterface
 {
-    public function createInstanceFromString(string $objectName, mixed ...$parameters): object
+    /**
+     * @param array<mixed> $parameters
+     */
+    public function createInstanceFromString(string $objectName, array $parameters = []): object
     {
         if (! class_exists($objectName)) {
             throw new InvalidArgumentException(sprintf('Class %s not found', $objectName));
