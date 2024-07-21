@@ -23,12 +23,12 @@ class ElementsTest extends TestCase
 {
     public function testElementNull(): void
     {
-        $element = new DataNull(null);
+        $element = new DataNull();
         $this->assertInstanceOf(DataElementInterface::class, $element);
         $this->assertNull($element->getValue());
         $this->assertNull($element->getDestination());
 
-        $element = new DataNull(null, 'destination');
+        $element = new DataNull('destination');
         $this->assertInstanceOf(DataElementInterface::class, $element);
         $this->assertNull($element->getValue());
         $this->assertSame('destination', $element->getDestination());

@@ -9,7 +9,6 @@ use DataMapper\Interface\DataElementInterface;
 final readonly class DataNull implements DataElementInterface
 {
     public function __construct(
-        private null $value,
         private ?string $destination = null,
     ) {
     }
@@ -21,6 +20,6 @@ final readonly class DataNull implements DataElementInterface
 
     public function getValue(): null
     {
-        return $this->value;
+        return null;
     }
 }
