@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace DataMapper\Resolver;
 
 use DataMapper\DataConfig;
+use DataMapper\Elements\DataArray;
+use DataMapper\Elements\DataObject;
 use DataMapper\Enum\ApproachEnum;
 use DataMapper\Interface\ArrayElementInterface;
-use DataMapper\Interface\DataElementInterface;
 use DataMapper\Interface\ObjectElementInterface;
 use Exception;
 use InvalidArgumentException;
@@ -51,12 +52,22 @@ final readonly class ObjectElementResolver
         };
     }
 
+    /**
+     * @throws Exception
+     */
     private function constructor(): object
     {
-        $parameter = array_map(
-            static fn (DataElementInterface $dataElement): mixed => $dataElement->getValue(),
-            $this->dataObjectElement->getValue(),
-        );
+        $parameter = [];
+
+        foreach ($this->dataObjectElement->getValue() as $dataElement) {
+            $value = match (get_class($dataElement)) {
+                DataArray::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
+                default => $dataElement->getValue(),
+            };
+
+            $parameter[] = $value;
+        }
 
         return $this->createInstanceFromString($this->objectName(), $parameter);
     }
@@ -76,7 +87,8 @@ final readonly class ObjectElementResolver
             }
 
             if (! property_exists($instance, $destination)) {
-                throw new Exception(sprintf('Property %s not found', $destination));
+                // throw new Exception(sprintf('Property %s not found', $destination));
+                continue;
             }
 
             $value = match (get_class($dataElement)) {
@@ -100,15 +112,21 @@ final readonly class ObjectElementResolver
 
         foreach ($this->dataObjectElement->getValue() as $dataElement) {
             $destination = $dataElement->getDestination();
-            $value = $dataElement->getValue();
 
             if ($destination === null) {
                 throw new Exception('Destination is not declared');
             }
 
             if (! method_exists($instance, $destination)) {
-                throw new Exception(sprintf('Method %s not found', $destination));
+                // throw new Exception(sprintf('Method %s not found', $destination));
+                continue;
             }
+
+            $value = match (get_class($dataElement)) {
+                ArrayElementInterface::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                ObjectElementInterface::class => (new self($this->dataConfig, $dataElement))->resolve(),
+                default => $dataElement->getValue(),
+            };
 
             $instance->{$destination}($value);
         }

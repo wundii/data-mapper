@@ -7,8 +7,8 @@ namespace DataMapper\Tests\Unit;
 use DataMapper\DataConfig;
 use DataMapper\Enum\AccessibleEnum;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Tests\MockClasses\MapperClassConstructor;
-use DataMapper\Tests\MockClasses\MapperClassInterface;
+use DataMapper\Tests\MockClasses\RootClassConstructor;
+use DataMapper\Tests\MockClasses\RootClassInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ class DataConfigTest extends TestCase
         $this->expectExceptionMessage('The class map must contain only strings');
 
         new DataConfig(classMap: [
-            1 => MapperClassConstructor::class,
+            1 => RootClassConstructor::class,
         ]);
     }
 
@@ -41,7 +41,7 @@ class DataConfigTest extends TestCase
         $this->expectExceptionMessage('The class map must contain only strings');
 
         new DataConfig(classMap: [
-            MapperClassConstructor::class => 1,
+            RootClassConstructor::class => 1,
         ]);
     }
 
@@ -51,7 +51,7 @@ class DataConfigTest extends TestCase
         $this->expectExceptionMessage('The key class does not exist');
 
         new DataConfig(classMap: [
-            'failKey' => MapperClassConstructor::class,
+            'failKey' => RootClassConstructor::class,
         ]);
     }
 
@@ -61,7 +61,7 @@ class DataConfigTest extends TestCase
         $this->expectExceptionMessage('The value class does not exist');
 
         new DataConfig(classMap: [
-            MapperClassInterface::class => 'failValue',
+            RootClassInterface::class => 'failValue',
         ]);
     }
 
@@ -71,7 +71,7 @@ class DataConfigTest extends TestCase
             ApproachEnum::PROPERTY,
             AccessibleEnum::PRIVATE,
             [
-                MapperClassInterface::class => MapperClassConstructor::class,
+                RootClassInterface::class => RootClassConstructor::class,
             ]
         );
 
@@ -80,20 +80,20 @@ class DataConfigTest extends TestCase
         $this->assertEquals(AccessibleEnum::PRIVATE, $config->getAccessible());
         $this->assertIsArray($config->getClassMap());
         $this->assertCount(1, $config->getClassMap());
-        $this->assertArrayHasKey(MapperClassInterface::class, $config->getClassMap());
-        $this->assertEquals(MapperClassConstructor::class, $config->getClassMap()[MapperClassInterface::class]);
-        $this->assertEquals(MapperClassConstructor::class, $config->mapClassName(MapperClassInterface::class));
+        $this->assertArrayHasKey(RootClassInterface::class, $config->getClassMap());
+        $this->assertEquals(RootClassConstructor::class, $config->getClassMap()[RootClassInterface::class]);
+        $this->assertEquals(RootClassConstructor::class, $config->mapClassName(RootClassInterface::class));
 
         $config = new DataConfig(
             ApproachEnum::PROPERTY,
             AccessibleEnum::PRIVATE,
             [
-                MapperClassConstructor::class => MapperClassConstructor::class,
+                RootClassConstructor::class => RootClassConstructor::class,
             ]
         );
         $this->assertInstanceOf(DataConfig::class, $config);
-        $this->assertArrayHasKey(MapperClassConstructor::class, $config->getClassMap());
-        $this->assertEquals(MapperClassConstructor::class, $config->mapClassName(MapperClassConstructor::class));
-        $this->assertEquals(MapperClassInterface::class, $config->mapClassName(MapperClassInterface::class));
+        $this->assertArrayHasKey(RootClassConstructor::class, $config->getClassMap());
+        $this->assertEquals(RootClassConstructor::class, $config->mapClassName(RootClassConstructor::class));
+        $this->assertEquals(RootClassInterface::class, $config->mapClassName(RootClassInterface::class));
     }
 }

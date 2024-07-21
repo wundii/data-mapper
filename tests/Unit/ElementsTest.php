@@ -14,8 +14,8 @@ use DataMapper\Elements\DataString;
 use DataMapper\Interface\ArrayElementInterface;
 use DataMapper\Interface\DataElementInterface;
 use DataMapper\Interface\ObjectElementInterface;
-use DataMapper\Tests\MockClasses\MapperClassConstructor;
-use DataMapper\Tests\MockClasses\MapperClassInterface;
+use DataMapper\Tests\MockClasses\RootClassConstructor;
+use DataMapper\Tests\MockClasses\RootClassInterface;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -122,14 +122,14 @@ class ElementsTest extends TestCase
             new DataString('unittest'),
             new DataInt(1),
         ];
-        $element = new DataObject(MapperClassConstructor::class, $array);
+        $element = new DataObject(RootClassConstructor::class, $array);
         $this->assertInstanceOf(DataElementInterface::class, $element);
         $this->assertInstanceOf(ObjectElementInterface::class, $element);
         $this->assertSame($array, $element->getValue());
         $this->assertNull($element->getDestination());
-        $this->assertSame(MapperClassConstructor::class, $element->getObjectName());
+        $this->assertSame(RootClassConstructor::class, $element->getObjectName());
 
-        $element = new DataObject(MapperClassInterface::class, $array, 'destination');
+        $element = new DataObject(RootClassInterface::class, $array, 'destination');
         $this->assertInstanceOf(DataElementInterface::class, $element);
         $this->assertSame('destination', $element->getDestination());
     }

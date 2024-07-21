@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\MockClasses;
 
-final readonly class MapperClassConstructor implements MapperClassInterface
+final readonly class RootClassConstructor implements RootClassInterface
 {
     public function __construct(
         private string $name,
+        private ItemClassConstructor $item,
         private ?int $id = null,
+        private array $data = [],
     ) {
     }
 
@@ -20,5 +22,15 @@ final readonly class MapperClassConstructor implements MapperClassInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function getItem(): ItemClassConstructor
+    {
+        return $this->item;
     }
 }

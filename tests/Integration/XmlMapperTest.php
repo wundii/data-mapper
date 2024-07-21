@@ -7,8 +7,9 @@ namespace DataMapper\Tests\Integration;
 use DataMapper\DataConfig;
 use DataMapper\DataMapper;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Tests\MockClasses\MapperClassConstructor;
-use DataMapper\Tests\MockClasses\MapperClassProperties;
+use DataMapper\Tests\MockClasses\ItemClassConstructor;
+use DataMapper\Tests\MockClasses\RootClassConstructor;
+use DataMapper\Tests\MockClasses\RootClassProperties;
 use PHPUnit\Framework\TestCase;
 
 class XmlMapperTest extends TestCase
@@ -19,14 +20,22 @@ class XmlMapperTest extends TestCase
 
         $dataConfig = new DataConfig();
         $dataMapper = new DataMapper($dataConfig);
-        $return = $dataMapper->xml(file_get_contents($file), MapperClassConstructor::class);
+        $return = $dataMapper->xml(file_get_contents($file), RootClassConstructor::class);
 
-        $expected = new MapperClassConstructor(
+        $expected = new RootClassConstructor(
             'constructor',
+            new ItemClassConstructor(
+                12.34,
+                true,
+            ),
             1,
+            [
+                'hello',
+                'world',
+            ],
         );
 
-        $this->assertInstanceOf(MapperClassConstructor::class, $return);
+        $this->assertInstanceOf(RootClassConstructor::class, $return);
         $this->assertEquals($expected, $return);
     }
 
@@ -38,13 +47,13 @@ class XmlMapperTest extends TestCase
             ApproachEnum::PROPERTY,
         );
         $dataMapper = new DataMapper($dataConfig);
-        $return = $dataMapper->xml(file_get_contents($file), MapperClassProperties::class);
+        $return = $dataMapper->xml(file_get_contents($file), RootClassProperties::class);
 
-        $expected = new MapperClassProperties();
+        $expected = new RootClassProperties();
         $expected->name = 'constructor';
         $expected->id = 1;
 
-        $this->assertInstanceOf(MapperClassProperties::class, $return);
+        $this->assertInstanceOf(RootClassProperties::class, $return);
         $this->assertEquals($expected, $return);
     }
 }
