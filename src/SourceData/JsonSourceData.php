@@ -4,29 +4,27 @@ declare(strict_types=1);
 
 namespace DataMapper\SourceData;
 
-use DataMapper\DataConfig;
+use DataMapper\Elements\DataInt;
+use DataMapper\Elements\DataObject;
+use DataMapper\Elements\DataString;
+use DataMapper\Interface\ObjectElementInterface;
 
 final class JsonSourceData extends AbstractSourceData
 {
-    public function __construct(
-        private DataConfig $dataConfig, // @phpstan-ignore-line
-        private string $source, // @phpstan-ignore-line
-        private string $objectName,
-    ) {
+    public function coreLogic(): ObjectElementInterface
+    {
+        return new DataObject(
+            $this->objectName,
+            [
+                new DataString('constructor'),
+                new DataInt(1),
+            ],
+        )
+        ;
     }
 
-    public function executeConstructor(): object
+    public function resolve(): object
     {
-        return $this->createInstanceFromString($this->objectName);
-    }
-
-    public function executeSetter(): object
-    {
-        return $this->createInstanceFromString($this->objectName);
-    }
-
-    public function executeProperty(): object
-    {
-        return $this->createInstanceFromString($this->objectName);
+        return new \stdClass();
     }
 }

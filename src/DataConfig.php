@@ -50,4 +50,9 @@ final readonly class DataConfig
     {
         return $this->classMap;
     }
+
+    public function mapClassName(string $objectName): string
+    {
+        return $this->classMap[$objectName] ?? $objectName;
+    }
 }

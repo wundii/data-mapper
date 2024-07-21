@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DataMapper;
 
-use DataMapper\Enum\ApproachEnum;
 use DataMapper\Enum\SourceTypeEnum;
 use InvalidArgumentException;
 
@@ -57,10 +56,6 @@ final readonly class DataMapper
             $objectName,
         );
 
-        return match ($this->dataConfig->getApproach()) {
-            ApproachEnum::CONSTRUCTOR => $sourceData->executeConstructor(),
-            ApproachEnum::PROPERTY => $sourceData->executeProperty(),
-            ApproachEnum::SETTER => $sourceData->executeSetter(),
-        };
+        return $sourceData->resolve();
     }
 }

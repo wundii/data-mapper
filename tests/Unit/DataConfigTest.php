@@ -82,6 +82,7 @@ class DataConfigTest extends TestCase
         $this->assertCount(1, $config->getClassMap());
         $this->assertArrayHasKey(MapperClassInterface::class, $config->getClassMap());
         $this->assertEquals(MapperClassConstructor::class, $config->getClassMap()[MapperClassInterface::class]);
+        $this->assertEquals(MapperClassConstructor::class, $config->mapClassName(MapperClassInterface::class));
 
         $config = new DataConfig(
             ApproachEnum::PROPERTY,
@@ -92,5 +93,7 @@ class DataConfigTest extends TestCase
         );
         $this->assertInstanceOf(DataConfig::class, $config);
         $this->assertArrayHasKey(MapperClassConstructor::class, $config->getClassMap());
+        $this->assertEquals(MapperClassConstructor::class, $config->mapClassName(MapperClassConstructor::class));
+        $this->assertEquals(MapperClassInterface::class, $config->mapClassName(MapperClassInterface::class));
     }
 }

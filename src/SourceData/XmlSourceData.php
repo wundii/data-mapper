@@ -4,40 +4,32 @@ declare(strict_types=1);
 
 namespace DataMapper\SourceData;
 
-use DataMapper\DataConfig;
+use DataMapper\Elements\DataInt;
+use DataMapper\Elements\DataObject;
+use DataMapper\Elements\DataString;
+use DataMapper\Interface\ObjectElementInterface;
+use DataMapper\Resolver\ObjectElementResolver;
+use Exception;
 
 final class XmlSourceData extends AbstractSourceData
 {
-    public function __construct(
-        private DataConfig $dataConfig, // @phpstan-ignore-line
-        private string $source, // @phpstan-ignore-line
-        private string $objectName,
-    ) {
+    public function coreLogic(): ObjectElementInterface
+    {
+        return new DataObject(
+            $this->objectName,
+            [
+                new DataString('constructor', 'name'),
+                new DataInt(1, 'id'),
+            ],
+        );
     }
 
     /**
-     * @return array<mixed>
+     * @throws Exception
      */
-    public function coreLogic(): array
+    public function resolve(): object
     {
-        return [
-            'constructor',
-            1,
-        ];
-    }
-
-    public function executeConstructor(): object
-    {
-        return $this->createInstanceFromString($this->objectName, $this->coreLogic());
-    }
-
-    public function executeSetter(): object
-    {
-        return $this->createInstanceFromString($this->objectName);
-    }
-
-    public function executeProperty(): object
-    {
-        return $this->createInstanceFromString($this->objectName);
+        $objectElementResolver = new ObjectElementResolver($this->dataConfig, $this->coreLogic());
+        return $objectElementResolver->resolve();
     }
 }

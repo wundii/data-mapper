@@ -10,9 +10,7 @@ interface SourceDataInterface
 {
     public function __construct(DataConfig $dataConfig, string $source, string $objectName);
 
-    public function executeConstructor(): object;
+    public function coreLogic(): ObjectElementInterface;
 
-    public function executeProperty(): object;
-
-    public function executeSetter(): object;
+    public function resolve(): object;
 }
