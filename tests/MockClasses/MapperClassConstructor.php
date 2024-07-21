@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Integration\Classes;
+namespace DataMapper\Tests\MockClasses;
 
-final readonly class MapperClassConstructor
+final readonly class MapperClassConstructor implements MapperClassInterface
 {
     public function __construct(
         private string $name,

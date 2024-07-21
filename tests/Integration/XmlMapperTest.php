@@ -6,7 +6,7 @@ namespace DataMapper\Tests\Integration;
 
 use DataMapper\DataConfig;
 use DataMapper\DataMapper;
-use DataMapper\Tests\Integration\Classes\MapperClassConstructor;
+use DataMapper\Tests\MockClasses\MapperClassConstructor;
 use PHPUnit\Framework\TestCase;
 
 class XmlMapperTest extends TestCase
