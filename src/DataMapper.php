@@ -15,7 +15,7 @@ final readonly class DataMapper
     }
 
     /**
-     * @param array<mixed> $source
+     * @param mixed[] $source
      */
     public function array(
         array $source,
