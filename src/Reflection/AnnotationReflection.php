@@ -6,13 +6,19 @@ namespace DataMapper\Reflection;
 
 final readonly class AnnotationReflection
 {
+    /**
+     * @param ParameterReflection[] $parameterReflections
+     */
     public function __construct(
-        private ParameterReflection $parameterReflection,
+        private array $parameterReflections,
     ) {
     }
 
-    public function getParameterReflection(): ParameterReflection
+    /**
+     * @return ParameterReflection[]
+     */
+    public function getParameterReflections(): array
     {
-        return $this->parameterReflection;
+        return $this->parameterReflections;
     }
 }

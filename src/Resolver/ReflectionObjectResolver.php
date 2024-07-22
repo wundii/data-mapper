@@ -20,12 +20,10 @@ use ReflectionUnionType;
 
 final readonly class ReflectionObjectResolver
 {
-    /**
-     * @return AnnotationReflection[]
-     */
-    public function parseAnnotation(string $docComment): array
+    public function parseAnnotation(string $docComment): AnnotationReflection
     {
-        $annotations = [];
+        $parameterReflections = [];
+
         $docComment = substr($docComment, 3, -2);
 
         $re = '/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m';
@@ -33,10 +31,11 @@ final readonly class ReflectionObjectResolver
         if (preg_match_all($re, $docComment, $matches)) {
             $parameters = [];
 
+            /**
+             * pre-process for annotation types
+             */
             foreach ($matches['name'] ?? [] as $key => $name) {
-                $name = strtolower($name);
-
-                if ($name === 'param') {
+                if (strtolower($name) === 'param') {
                     $parameters[] = $matches['value'][$key];
                 }
             }
@@ -53,16 +52,16 @@ final readonly class ReflectionObjectResolver
                     }
                 }
 
-                $annotations[] = new AnnotationReflection(
-                    new ParameterReflection(
-                        $parameter,
-                        $parameterTypes,
-                    ),
+                $parameterReflections[] = new ParameterReflection(
+                    $parameter,
+                    $parameterTypes,
                 );
             }
         }
 
-        return $annotations;
+        return new AnnotationReflection(
+            $parameterReflections,
+        );
     }
 
     public function classString(ReflectionProperty|ReflectionFunctionAbstract $property): ?string
@@ -73,18 +72,17 @@ final readonly class ReflectionObjectResolver
             return null;
         }
 
-        // $annotations = $this->parseAnnotation($docComment);
-
-        // dump($annotations);
+        // $annotation = $this->parseAnnotation($docComment);
         $classString = null;
-        // foreach ($annotations as $annotation) {
+        // // dump($annotations);
+        // foreach ($annotation->getParameterReflections() as $parameterReflection) {
         //
-        //     $find = array_filter($annotation->getParameter()->getTypes, function ($type) use ($property) {
+        //     $find = array_filter($parameterReflection->getTypes(), function ($type) use ($property) {
         //         return str_contains($type, '$' . $property->getName());
         //     });
         //
-        //     if (str_contains($param, '$' . $property->getName())) {
-        //         list($type) = explode(' ', $param);
+        //     if (str_contains($parameterReflection->getParameter(), '$' . $property->getName())) {
+        //         list($type) = explode(' ', $parameterReflection->getParameter());
         //         $classString = $type;
         //         break;
         //     }
