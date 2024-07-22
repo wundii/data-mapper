@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace DataMapper\Elements;
 
-use DataMapper\Interface\DataElementInterface;
-use DataMapper\Interface\ObjectElementInterface;
+use DataMapper\Interface\ElementDataInterface;
+use DataMapper\Interface\ElementObjectInterface;
 use InvalidArgumentException;
 
-final readonly class DataObject implements ObjectElementInterface
+final readonly class DataObject implements ElementObjectInterface
 {
     /**
-     * @param DataElementInterface[] $value
+     * @param ElementDataInterface[] $value
      */
     public function __construct(
         private string $objectName,
@@ -29,7 +29,7 @@ final readonly class DataObject implements ObjectElementInterface
     }
 
     /**
-     * @return DataElementInterface[]
+     * @return ElementDataInterface[]
      */
     public function getValue(): array
     {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DataMapper\Interface;
 
-interface ObjectElementInterface extends DataElementInterface
+interface ElementObjectInterface extends ElementDataInterface
 {
     public function getObjectName(): string;
 
     /**
-     * @return DataElementInterface[]
+     * @return ElementDataInterface[]
      */
     public function getValue(): array;
 }

@@ -7,11 +7,11 @@ namespace DataMapper\SourceData;
 use DataMapper\Elements\DataInt;
 use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
-use DataMapper\Interface\ObjectElementInterface;
+use DataMapper\Interface\ElementObjectInterface;
 
 final class JsonSourceData extends AbstractSourceData
 {
-    public function coreLogic(): ObjectElementInterface
+    public function coreLogic(): ElementObjectInterface
     {
         return new DataObject(
             $this->objectName,

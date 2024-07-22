@@ -10,14 +10,14 @@ use DataMapper\Elements\DataFloat;
 use DataMapper\Elements\DataInt;
 use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
-use DataMapper\Interface\ObjectElementInterface;
-use DataMapper\Resolver\ObjectElementResolver;
+use DataMapper\Interface\ElementObjectInterface;
+use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Tests\MockClasses\ItemClassConstructor;
 use Exception;
 
 final class XmlSourceData extends AbstractSourceData
 {
-    public function coreLogic(): ObjectElementInterface
+    public function coreLogic(): ElementObjectInterface
     {
         return new DataObject(
             $this->objectName,
@@ -48,7 +48,7 @@ final class XmlSourceData extends AbstractSourceData
      */
     public function resolve(): object
     {
-        $objectElementResolver = new ObjectElementResolver($this->dataConfig, $this->coreLogic());
+        $objectElementResolver = new ElementObjectResolver($this->dataConfig, $this->coreLogic());
         return $objectElementResolver->resolve();
     }
 }

@@ -10,7 +10,7 @@ interface SourceDataInterface
 {
     public function __construct(DataConfig $dataConfig, string $source, string $objectName);
 
-    public function coreLogic(): ObjectElementInterface;
+    public function coreLogic(): ElementObjectInterface;
 
     public function resolve(): object;
 }

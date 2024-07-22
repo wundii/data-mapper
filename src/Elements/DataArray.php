@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace DataMapper\Elements;
 
-use DataMapper\Interface\ArrayElementInterface;
-use DataMapper\Interface\DataElementInterface;
+use DataMapper\Interface\ElementArrayInterface;
+use DataMapper\Interface\ElementDataInterface;
 
-final readonly class DataArray implements ArrayElementInterface
+final readonly class DataArray implements ElementArrayInterface
 {
     /**
-     * @param DataElementInterface[] $value
+     * @param ElementDataInterface[] $value
      */
     public function __construct(
         private array $value,
@@ -24,7 +24,7 @@ final readonly class DataArray implements ArrayElementInterface
     }
 
     /**
-     * @return DataElementInterface[]
+     * @return ElementDataInterface[]
      */
     public function getValue(): array
     {

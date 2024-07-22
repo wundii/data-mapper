@@ -8,15 +8,15 @@ use DataMapper\DataConfig;
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataObject;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Interface\ObjectElementInterface;
+use DataMapper\Interface\ElementObjectInterface;
 use Exception;
 use InvalidArgumentException;
 
-final readonly class ObjectElementResolver
+final readonly class ElementObjectResolver
 {
     public function __construct(
-        private DataConfig $dataConfig,
-        private ObjectElementInterface $dataObjectElement,
+        private DataConfig             $dataConfig,
+        private ElementObjectInterface $dataObjectElement,
     ) {
     }
 
@@ -60,7 +60,7 @@ final readonly class ObjectElementResolver
 
         foreach ($this->dataObjectElement->getValue() as $dataElement) {
             $value = match (get_class($dataElement)) {
-                DataArray::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                DataArray::class => (new ElementArrayResolver($this->dataConfig, $dataElement))->resolve(),
                 DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
                 default => $dataElement->getValue(),
             };
@@ -91,7 +91,7 @@ final readonly class ObjectElementResolver
             }
 
             $value = match (get_class($dataElement)) {
-                DataArray::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                DataArray::class => (new ElementArrayResolver($this->dataConfig, $dataElement))->resolve(),
                 DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
                 default => $dataElement->getValue(),
             };
@@ -122,7 +122,7 @@ final readonly class ObjectElementResolver
             }
 
             $value = match (get_class($dataElement)) {
-                DataArray::class => (new ArrayElementResolver($this->dataConfig, $dataElement))->resolve(),
+                DataArray::class => (new ElementArrayResolver($this->dataConfig, $dataElement))->resolve(),
                 DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
                 default => $dataElement->getValue(),
             };

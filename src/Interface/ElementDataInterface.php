@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Interface;
 
-interface DataElementInterface
+interface ElementDataInterface
 {
     public function getDestination(): ?string;
 

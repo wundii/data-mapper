@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DataMapper\Interface;
 
-interface ArrayElementInterface extends DataElementInterface
+interface ElementArrayInterface extends ElementDataInterface
 {
     /**
-     * @return DataElementInterface[]
+     * @return ElementDataInterface[]
      */
     public function getValue(): array;
 }

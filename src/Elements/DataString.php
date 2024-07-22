@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DataMapper\Elements;
 
-use DataMapper\Interface\DataElementInterface;
+use DataMapper\Interface\ElementDataInterface;
 
-final readonly class DataString implements DataElementInterface
+final readonly class DataString implements ElementDataInterface
 {
     public function __construct(
         private string $value,
