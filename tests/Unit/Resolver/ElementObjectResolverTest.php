@@ -6,7 +6,7 @@ namespace DataMapper\Tests\Unit\Resolver;
 
 use PHPUnit\Framework\TestCase;
 
-class ArrayElementResolverTest extends TestCase
+class ElementObjectResolverTest extends TestCase
 {
     public function testSuccess(): void
     {

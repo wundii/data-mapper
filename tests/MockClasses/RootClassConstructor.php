@@ -6,6 +6,11 @@ namespace DataMapper\Tests\MockClasses;
 
 final readonly class RootClassConstructor implements RootClassInterface
 {
+    /**
+     * @PARAM ?int $id
+     * @param string[] $data
+     * @return ?int
+     */
     public function __construct(
         private string $name,
         private ItemClassConstructor $item,
