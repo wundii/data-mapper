@@ -6,7 +6,7 @@ namespace DataMapper\Interface;
 
 interface ElementObjectInterface extends ElementDataInterface
 {
-    public function getObjectName(): string;
+    public function getObject(): string|object;
 
     /**
      * @return ElementDataInterface[]

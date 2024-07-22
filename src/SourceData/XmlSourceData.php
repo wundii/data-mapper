@@ -13,14 +13,33 @@ use DataMapper\Elements\DataString;
 use DataMapper\Interface\ElementObjectInterface;
 use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Tests\MockClasses\ItemClassConstructor;
+use DOMDocument;
 use Exception;
 
 final class XmlSourceData extends AbstractSourceData
 {
+    /**
+     * @throws Exception
+     */
     public function coreLogic(): ElementObjectInterface
     {
+        libxml_use_internal_errors(true);
+
+        $domDocument = new DOMDocument();
+        $domDocument->loadXML($this->source);
+
+        $domErrors = libxml_get_errors();
+        if ($domErrors !== []) {
+            $exceptionMessage = implode("\n", array_map(static function ($error): string {
+                return $error->message;
+            }, $domErrors));
+            throw new Exception('Invalid XML: ' . $exceptionMessage);
+        }
+
+        // dump($dom);
+
         return new DataObject(
-            $this->objectName,
+            $this->object,
             [
                 new DataString('constructor', 'name'),
                 new DataObject(
@@ -48,7 +67,7 @@ final class XmlSourceData extends AbstractSourceData
      */
     public function resolve(): object
     {
-        $objectElementResolver = new ElementObjectResolver($this->dataConfig, $this->coreLogic());
-        return $objectElementResolver->resolve();
+        $elementObjectResolver = new ElementObjectResolver($this->dataConfig, $this->coreLogic());
+        return $elementObjectResolver->resolve();
     }
 }

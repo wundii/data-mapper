@@ -13,13 +13,13 @@ use InvalidArgumentException;
 final readonly class ElementValueResolver
 {
     public function __construct(
-        private ElementDataInterface $dataElement,
+        private ElementDataInterface $elementData,
     ) {
-        if ($dataElement instanceof ElementObjectInterface) {
+        if ($elementData instanceof ElementObjectInterface) {
             throw new InvalidArgumentException('ObjectElementInterface not supported');
         }
 
-        if ($dataElement instanceof ElementArrayInterface) {
+        if ($elementData instanceof ElementArrayInterface) {
             throw new InvalidArgumentException('DataObject not supported');
         }
     }
@@ -29,7 +29,6 @@ final readonly class ElementValueResolver
      */
     public function resolve(): mixed
     {
-        return $this->dataElement->getValue();
+        return $this->elementData->getValue();
     }
 }
-

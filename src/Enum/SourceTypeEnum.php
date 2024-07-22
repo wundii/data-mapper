@@ -18,11 +18,11 @@ enum SourceTypeEnum
         SourceTypeEnum $sourceTypeEnum,
         DataConfig $dataConfig,
         string $source,
-        string $objectName,
+        string|object $object,
     ): SourceDataInterface {
         return match ($sourceTypeEnum) {
-            SourceTypeEnum::JSON => new JsonSourceData($dataConfig, $source, $objectName),
-            SourceTypeEnum::XML => new XmlSourceData($dataConfig, $source, $objectName),
+            SourceTypeEnum::JSON => new JsonSourceData($dataConfig, $source, $object),
+            SourceTypeEnum::XML => new XmlSourceData($dataConfig, $source, $object),
         };
     }
 }

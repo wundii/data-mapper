@@ -14,18 +14,18 @@ final readonly class DataObject implements ElementObjectInterface
      * @param ElementDataInterface[] $value
      */
     public function __construct(
-        private string $objectName,
+        private string|object $object,
         private array $value,
         private ?string $destination = null,
     ) {
-        if (! class_exists($objectName) && ! interface_exists($objectName)) {
-            throw new InvalidArgumentException(sprintf('object %s does not exist', $objectName));
+        if (! is_object($object) && ! class_exists($object) && ! interface_exists($object)) {
+            throw new InvalidArgumentException(sprintf('object %s does not exist', $object));
         }
     }
 
-    public function getObjectName(): string
+    public function getObject(): string|object
     {
-        return $this->objectName;
+        return $this->object;
     }
 
     /**

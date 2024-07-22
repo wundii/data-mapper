@@ -13,8 +13,8 @@ use Exception;
 final readonly class ElementArrayResolver
 {
     public function __construct(
-        private DataConfig            $dataConfig,
-        private ElementArrayInterface $arrayElement,
+        private DataConfig $dataConfig,
+        private ElementArrayInterface $elementArray,
     ) {
     }
 
@@ -26,11 +26,11 @@ final readonly class ElementArrayResolver
     {
         $return = [];
 
-        foreach ($this->arrayElement->getValue() as $dataKey => $dataElement) {
-            $return[$dataKey] = match (get_class($dataElement)) {
-                DataObject::class => (new ElementObjectResolver($this->dataConfig, $dataElement))->resolve(),
-                DataArray::class => (new self($this->dataConfig, $dataElement))->resolve(),
-                default => (new ElementValueResolver($dataElement))->resolve(),
+        foreach ($this->elementArray->getValue() as $dataKey => $elementData) {
+            $return[$dataKey] = match (get_class($elementData)) {
+                DataObject::class => (new ElementObjectResolver($this->dataConfig, $elementData))->resolve(),
+                DataArray::class => (new self($this->dataConfig, $elementData))->resolve(),
+                default => (new ElementValueResolver($elementData))->resolve(),
             };
         }
 

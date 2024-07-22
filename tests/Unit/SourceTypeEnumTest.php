@@ -18,7 +18,15 @@ class SourceTypeEnumTest extends TestCase
             SourceTypeEnum::JSON,
             new DataConfig(),
             'source',
-            'objectName'
+            'objectName',
+        );
+        $this->assertInstanceOf(JsonSourceData::class, $sourceDataInstance);
+
+        $sourceDataInstance = SourceTypeEnum::SourceDataInstance(
+            SourceTypeEnum::JSON,
+            new DataConfig(),
+            'source',
+            new \stdClass(),
         );
         $this->assertInstanceOf(JsonSourceData::class, $sourceDataInstance);
     }
@@ -29,7 +37,15 @@ class SourceTypeEnumTest extends TestCase
             SourceTypeEnum::XML,
             new DataConfig(),
             'source',
-            'objectName'
+            'objectName',
+        );
+        $this->assertInstanceOf(XmlSourceData::class, $sourceDataInstance);
+
+        $sourceDataInstance = SourceTypeEnum::SourceDataInstance(
+            SourceTypeEnum::XML,
+            new DataConfig(),
+            'source',
+            new \stdClass(),
         );
         $this->assertInstanceOf(XmlSourceData::class, $sourceDataInstance);
     }

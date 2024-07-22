@@ -127,7 +127,7 @@ class ElementsTest extends TestCase
         $this->assertInstanceOf(ElementObjectInterface::class, $element);
         $this->assertSame($array, $element->getValue());
         $this->assertNull($element->getDestination());
-        $this->assertSame(RootClassConstructor::class, $element->getObjectName());
+        $this->assertSame(RootClassConstructor::class, $element->getObject());
 
         $element = new DataObject(RootClassInterface::class, $array, 'destination');
         $this->assertInstanceOf(ElementDataInterface::class, $element);

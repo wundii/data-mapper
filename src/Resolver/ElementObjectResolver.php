@@ -10,33 +10,36 @@ use DataMapper\Elements\DataObject;
 use DataMapper\Enum\ApproachEnum;
 use DataMapper\Interface\ElementObjectInterface;
 use Exception;
-use InvalidArgumentException;
 
 final readonly class ElementObjectResolver
 {
     public function __construct(
-        private DataConfig             $dataConfig,
-        private ElementObjectInterface $dataObjectElement,
+        private DataConfig $dataConfig,
+        private ElementObjectInterface $elementObject,
     ) {
     }
 
-    public function objectName(): string
+    public function object(): string|object
     {
-        $objectName = $this->dataObjectElement->getObjectName();
+        $object = $this->elementObject->getObject();
 
-        if (! class_exists($objectName) && ! interface_exists($objectName)) {
-            throw new InvalidArgumentException(sprintf('Class %s not found', $objectName));
+        if (is_object($object)) {
+            return $object;
         }
 
-        return $this->dataConfig->mapClassName($objectName);
+        return $this->dataConfig->mapClassName($object);
     }
 
     /**
      * @param mixed[] $parameter
      */
-    public function createInstanceFromString(string $objectName, array $parameter = []): object
+    public function createInstance(string|object $object, array $parameter = []): object
     {
-        return new $objectName(...$parameter);
+        if (is_object($object)) {
+            return $object;
+        }
+
+        return new $object(...$parameter);
     }
 
     /**
@@ -56,19 +59,23 @@ final readonly class ElementObjectResolver
      */
     private function constructor(): object
     {
+        if (is_object($this->object())) {
+            throw new Exception('You can not use constructor approach with an object');
+        }
+
         $parameter = [];
 
-        foreach ($this->dataObjectElement->getValue() as $dataElement) {
-            $value = match (get_class($dataElement)) {
-                DataArray::class => (new ElementArrayResolver($this->dataConfig, $dataElement))->resolve(),
-                DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
-                default => $dataElement->getValue(),
+        foreach ($this->elementObject->getValue() as $elementData) {
+            $value = match (get_class($elementData)) {
+                DataArray::class => (new ElementArrayResolver($this->dataConfig, $elementData))->resolve(),
+                DataObject::class => (new self($this->dataConfig, $elementData))->resolve(),
+                default => $elementData->getValue(),
             };
 
             $parameter[] = $value;
         }
 
-        return $this->createInstanceFromString($this->objectName(), $parameter);
+        return $this->createInstance($this->object(), $parameter);
     }
 
     /**
@@ -76,24 +83,23 @@ final readonly class ElementObjectResolver
      */
     private function properties(): object
     {
-        $instance = $this->createInstanceFromString($this->objectName());
+        $instance = $this->createInstance($this->object());
 
-        foreach ($this->dataObjectElement->getValue() as $dataElement) {
-            $destination = $dataElement->getDestination();
+        foreach ($this->elementObject->getValue() as $elementData) {
+            $destination = $elementData->getDestination();
 
             if ($destination === null) {
                 throw new Exception('Destination is not declared');
             }
 
             if (! property_exists($instance, $destination)) {
-                // throw new Exception(sprintf('Property %s not found', $destination));
                 continue;
             }
 
-            $value = match (get_class($dataElement)) {
-                DataArray::class => (new ElementArrayResolver($this->dataConfig, $dataElement))->resolve(),
-                DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
-                default => $dataElement->getValue(),
+            $value = match (get_class($elementData)) {
+                DataArray::class => (new ElementArrayResolver($this->dataConfig, $elementData))->resolve(),
+                DataObject::class => (new self($this->dataConfig, $elementData))->resolve(),
+                default => $elementData->getValue(),
             };
 
             $instance->{$destination} = $value;
@@ -107,24 +113,23 @@ final readonly class ElementObjectResolver
      */
     private function setters(): object
     {
-        $instance = $this->createInstanceFromString($this->objectName());
+        $instance = $this->createInstance($this->object());
 
-        foreach ($this->dataObjectElement->getValue() as $dataElement) {
-            $destination = $dataElement->getDestination();
+        foreach ($this->elementObject->getValue() as $elementData) {
+            $destination = $elementData->getDestination();
 
             if ($destination === null) {
                 throw new Exception('Destination is not declared');
             }
 
             if (! method_exists($instance, $destination)) {
-                // throw new Exception(sprintf('Method %s not found', $destination));
                 continue;
             }
 
-            $value = match (get_class($dataElement)) {
-                DataArray::class => (new ElementArrayResolver($this->dataConfig, $dataElement))->resolve(),
-                DataObject::class => (new self($this->dataConfig, $dataElement))->resolve(),
-                default => $dataElement->getValue(),
+            $value = match (get_class($elementData)) {
+                DataArray::class => (new ElementArrayResolver($this->dataConfig, $elementData))->resolve(),
+                DataObject::class => (new self($this->dataConfig, $elementData))->resolve(),
+                default => $elementData->getValue(),
             };
 
             $instance->{$destination}($value);

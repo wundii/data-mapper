@@ -12,7 +12,7 @@ abstract class AbstractSourceData implements SourceDataInterface
     public function __construct(
         protected DataConfig $dataConfig,
         protected string $source,
-        protected string $objectName,
+        protected string|object $object,
     ) {
     }
 }

@@ -14,7 +14,7 @@ final class JsonSourceData extends AbstractSourceData
     public function coreLogic(): ElementObjectInterface
     {
         return new DataObject(
-            $this->objectName,
+            $this->object,
             [
                 new DataString('constructor'),
                 new DataInt(1),
