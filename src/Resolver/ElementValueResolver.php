@@ -12,9 +12,11 @@ use InvalidArgumentException;
 
 final readonly class ElementValueResolver
 {
-    public function __construct(
-        private ElementDataInterface $elementData,
-    ) {
+    /**
+     * @throws Exception
+     */
+    public function resolve(ElementDataInterface $elementData): mixed
+    {
         if ($elementData instanceof ElementObjectInterface) {
             throw new InvalidArgumentException('ObjectElementInterface not supported');
         }
@@ -22,13 +24,7 @@ final readonly class ElementValueResolver
         if ($elementData instanceof ElementArrayInterface) {
             throw new InvalidArgumentException('DataObject not supported');
         }
-    }
 
-    /**
-     * @throws Exception
-     */
-    public function resolve(): mixed
-    {
-        return $this->elementData->getValue();
+        return $elementData->getValue();
     }
 }

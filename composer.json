@@ -11,9 +11,8 @@
   ],
   "require": {
     "php": ">=8.2",
-    "ext-dom": "*",
     "ext-json": "*",
-    "ext-libxml": "*",
+    "ext-simplexml": "*",
     "ext-xml": "*",
     "symfony/monolog-bundle": "^3.10",
     "webmozart/assert": "^1.11"

@@ -8,36 +8,27 @@ use DataMapper\DataConfig;
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataObject;
 use DataMapper\Enum\ApproachEnum;
+use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
 use Exception;
 
 final readonly class ElementObjectResolver
 {
-    public function __construct(
-        private DataConfig $dataConfig,
-        private ElementObjectInterface $elementObject,
-    ) {
-    }
-
-    public function object(): string|object
-    {
-        $object = $this->elementObject->getObject();
-
-        if (is_object($object)) {
-            return $object;
-        }
-
-        return $this->dataConfig->mapClassName($object);
-    }
-
     /**
      * @param mixed[] $parameter
      */
-    public function createInstance(string|object $object, array $parameter = []): object
-    {
+    public function createInstance(
+        DataConfig $dataConfig,
+        ElementObjectInterface $elementObject,
+        array $parameter = [],
+    ): object {
+        $object = $elementObject->getObject();
+
         if (is_object($object)) {
             return $object;
         }
+
+        $object = $dataConfig->mapClassName($object);
 
         return new $object(...$parameter);
     }
@@ -45,47 +36,64 @@ final readonly class ElementObjectResolver
     /**
      * @throws Exception
      */
-    public function resolve(): object
-    {
-        return match ($this->dataConfig->getApproach()) {
-            ApproachEnum::CONSTRUCTOR => $this->constructor(),
-            ApproachEnum::PROPERTY => $this->properties(),
-            ApproachEnum::SETTER => $this->setters(),
+    public function matchValue(
+        DataConfig $dataConfig,
+        ElementDataInterface $elementData,
+    ): mixed {
+        $elementArrayResolver = new ElementArrayResolver();
+        $elementValueResolver = new ElementValueResolver();
+
+        return match (get_class($elementData)) {
+            DataArray::class => $elementArrayResolver->resolve($dataConfig, $elementData),
+            DataObject::class => $this->resolve($dataConfig, $elementData),
+            default => $elementValueResolver->resolve($elementData),
         };
     }
 
     /**
      * @throws Exception
      */
-    private function constructor(): object
-    {
-        if (is_object($this->object())) {
-            throw new Exception('You can not use constructor approach with an object');
-        }
-
-        $parameter = [];
-
-        foreach ($this->elementObject->getValue() as $elementData) {
-            $value = match (get_class($elementData)) {
-                DataArray::class => (new ElementArrayResolver($this->dataConfig, $elementData))->resolve(),
-                DataObject::class => (new self($this->dataConfig, $elementData))->resolve(),
-                default => $elementData->getValue(),
-            };
-
-            $parameter[] = $value;
-        }
-
-        return $this->createInstance($this->object(), $parameter);
+    public function resolve(
+        DataConfig $dataConfig,
+        ElementObjectInterface $elementObject,
+    ): object {
+        return match ($dataConfig->getApproach()) {
+            ApproachEnum::CONSTRUCTOR => $this->constructor($dataConfig, $elementObject),
+            ApproachEnum::PROPERTY => $this->properties($dataConfig, $elementObject),
+            ApproachEnum::SETTER => $this->setters($dataConfig, $elementObject),
+        };
     }
 
     /**
      * @throws Exception
      */
-    private function properties(): object
-    {
-        $instance = $this->createInstance($this->object());
+    private function constructor(
+        DataConfig $dataConfig,
+        ElementObjectInterface $elementObject,
+    ): object {
+        if (is_object($elementObject->getObject())) {
+            throw new Exception('You can not use constructor approach with an object');
+        }
 
-        foreach ($this->elementObject->getValue() as $elementData) {
+        $parameter = [];
+
+        foreach ($elementObject->getValue() as $elementData) {
+            $parameter[] = $this->matchValue($dataConfig, $elementData);
+        }
+
+        return $this->createInstance($dataConfig, $elementObject, $parameter);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function properties(
+        DataConfig $dataConfig,
+        ElementObjectInterface $elementObject,
+    ): object {
+        $instance = $this->createInstance($dataConfig, $elementObject);
+
+        foreach ($elementObject->getValue() as $elementData) {
             $destination = $elementData->getDestination();
 
             if ($destination === null) {
@@ -96,11 +104,7 @@ final readonly class ElementObjectResolver
                 continue;
             }
 
-            $value = match (get_class($elementData)) {
-                DataArray::class => (new ElementArrayResolver($this->dataConfig, $elementData))->resolve(),
-                DataObject::class => (new self($this->dataConfig, $elementData))->resolve(),
-                default => $elementData->getValue(),
-            };
+            $value = $this->matchValue($dataConfig, $elementData);
 
             $instance->{$destination} = $value;
         }
@@ -111,11 +115,13 @@ final readonly class ElementObjectResolver
     /**
      * @throws Exception
      */
-    private function setters(): object
-    {
-        $instance = $this->createInstance($this->object());
+    private function setters(
+        DataConfig $dataConfig,
+        ElementObjectInterface $elementObject,
+    ): object {
+        $instance = $this->createInstance($dataConfig, $elementObject);
 
-        foreach ($this->elementObject->getValue() as $elementData) {
+        foreach ($elementObject->getValue() as $elementData) {
             $destination = $elementData->getDestination();
 
             if ($destination === null) {
@@ -126,11 +132,7 @@ final readonly class ElementObjectResolver
                 continue;
             }
 
-            $value = match (get_class($elementData)) {
-                DataArray::class => (new ElementArrayResolver($this->dataConfig, $elementData))->resolve(),
-                DataObject::class => (new self($this->dataConfig, $elementData))->resolve(),
-                default => $elementData->getValue(),
-            };
+            $value = $this->matchValue($dataConfig, $elementData);
 
             $instance->{$destination}($value);
         }

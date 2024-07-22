@@ -11,10 +11,11 @@ use DataMapper\Elements\DataInt;
 use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
 use DataMapper\Interface\ElementObjectInterface;
+use DataMapper\Resolver\DataObjectPropertyResolver;
 use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Tests\MockClasses\ItemClassConstructor;
-use DOMDocument;
 use Exception;
+use SimpleXMLElement;
 
 final class XmlSourceData extends AbstractSourceData
 {
@@ -23,20 +24,21 @@ final class XmlSourceData extends AbstractSourceData
      */
     public function coreLogic(): ElementObjectInterface
     {
-        libxml_use_internal_errors(true);
-
-        $domDocument = new DOMDocument();
-        $domDocument->loadXML($this->source);
-
-        $domErrors = libxml_get_errors();
-        if ($domErrors !== []) {
-            $exceptionMessage = implode("\n", array_map(static function ($error): string {
-                return $error->message;
-            }, $domErrors));
-            throw new Exception('Invalid XML: ' . $exceptionMessage);
+        try {
+            $xml = new SimpleXmlElement($this->source);
+        } catch (Exception $exception) {
+            throw new Exception('Invalid XML: ' . $exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
-        // dump($dom);
+        (new DataObjectPropertyResolver())->resolve($this->object);
+
+        foreach ($xml->children() as $child) {
+            $name = $child->getName();
+            // dump($name, $child->count(), (string) $child);
+            // if (in_array($name, $dataObjectProperty->getProperties(), true)) {
+            //
+            // }
+        }
 
         return new DataObject(
             $this->object,
@@ -67,7 +69,6 @@ final class XmlSourceData extends AbstractSourceData
      */
     public function resolve(): object
     {
-        $elementObjectResolver = new ElementObjectResolver($this->dataConfig, $this->coreLogic());
-        return $elementObjectResolver->resolve();
+        return (new ElementObjectResolver())->resolve($this->dataConfig, $this->coreLogic());
     }
 }
