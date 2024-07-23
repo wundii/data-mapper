@@ -27,16 +27,22 @@ class ReflectionObjectResolverTest extends TestCase
                 'DataMapper\Tests\MockClasses\ItemConstructor',
                 'ItemConstructor',
             ),
+            new UseStatementReflection(
+                'DataMapper\Tests\MockClasses\RootConstructor',
+                'RootConstructor',
+            ),
         ]);
 
         $types = [
             'float',
+            'RootConstructor',
             'ItemConstructor[]',
             'string[]',
             'bool',
         ];
         $expected = [
             'float',
+            'DataMapper\Tests\MockClasses\RootConstructor',
             'DataMapper\Tests\MockClasses\ItemConstructor[]',
             'string[]',
             'bool',

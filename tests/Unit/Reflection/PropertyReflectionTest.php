@@ -115,6 +115,14 @@ class PropertyReflectionTest extends TestCase
     {
         $property = new PropertyReflection(
             'name',
+            ['DataMapper\Tests\MockClasses\ItemConstructor'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getClassString());
+
+        $property = new PropertyReflection(
+            'name',
             ['DataMapper\Tests\MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
         );

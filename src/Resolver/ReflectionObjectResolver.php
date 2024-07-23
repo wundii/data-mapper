@@ -109,6 +109,16 @@ final readonly class ReflectionObjectResolver
     public function completeClassStrings(UseStatementsReflection $useStatementsReflection, array $types): array
     {
         foreach ($types as $key => $type) {
+            if (class_exists($type)) {
+                continue;
+            }
+
+            $classString = $useStatementsReflection->find($type);
+
+            if ($classString !== null) {
+                $types[$key] = $classString;
+            }
+
             if (! str_ends_with($type, '[]')) {
                 continue;
             }

@@ -19,6 +19,10 @@ final readonly class PropertyReflection
     public function getClassString(): ?string
     {
         foreach ($this->getTypes() as $type) {
+            if (class_exists($type)) {
+                return $type;
+            }
+
             if (! str_ends_with($type, '[]')) {
                 continue;
             }
