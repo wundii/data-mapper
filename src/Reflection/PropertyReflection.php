@@ -10,7 +10,7 @@ final readonly class PropertyReflection
      * @param string[] $types
      */
     public function __construct(
-        private string $target,
+        private string $name,
         private array $types,
         private ?string $classString,
     ) {
@@ -21,9 +21,9 @@ final readonly class PropertyReflection
         return $this->classString;
     }
 
-    public function getTarget(): string
+    public function getName(): string
     {
-        return $this->target;
+        return $this->name;
     }
 
     /**

@@ -13,13 +13,20 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
 
 final readonly class ReflectionObjectResolver
 {
+    public function name(ReflectionProperty|ReflectionParameter|ReflectionMethod $reflection): string
+    {
+        return $reflection->getName();
+    }
+
     public function parseAnnotation(string $docComment): AnnotationReflection
     {
         $parameterReflections = [];
@@ -157,18 +164,17 @@ final readonly class ReflectionObjectResolver
         $reflectionClass = new ReflectionClass($object);
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $properties[] = new PropertyReflection(
-                $reflectionProperty->getName(),
+                $this->name($reflectionProperty),
                 $this->types($reflectionProperty->getType()),
                 $this->classString($reflectionProperty),
             );
         }
 
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-
             if (str_starts_with($reflectionMethod->getName(), '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
                     $constructor[] = new PropertyReflection(
-                        $reflectionParameter->getName(),
+                        $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
                         $this->classString($reflectionMethod),
                     );
@@ -190,7 +196,7 @@ final readonly class ReflectionObjectResolver
                 }
 
                 $setters[] = new PropertyReflection(
-                    $reflectionMethod->getName(),
+                    $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $this->classString($reflectionMethod),
                 );
