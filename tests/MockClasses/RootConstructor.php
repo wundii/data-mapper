@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\MockClasses;
 
-final readonly class RootClassConstructor implements RootClassInterface
+final readonly class RootConstructor implements RootInterface
 {
-    /**
-     * @PARAM ?int $id
-     * @param string[] $data
-     * @return ?int
-     */
     public function __construct(
         private string $name,
-        private ItemClassConstructor $item,
+        private ItemConstructor $item,
         private ?int $id = null,
         private array $data = [],
     ) {
@@ -34,7 +29,7 @@ final readonly class RootClassConstructor implements RootClassInterface
         return $this->data;
     }
 
-    public function getItem(): ItemClassConstructor
+    public function getItem(): ItemConstructor
     {
         return $this->item;
     }

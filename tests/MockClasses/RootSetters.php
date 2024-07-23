@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\MockClasses;
 
-final class RootClassSetters implements RootClassInterface
+final class RootSetters implements RootInterface
 {
     private string $name;
 

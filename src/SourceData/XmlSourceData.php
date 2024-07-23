@@ -16,7 +16,7 @@ use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
 use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Resolver\ReflectionObjectResolver;
-use DataMapper\Tests\MockClasses\ItemClassConstructor;
+use DataMapper\Tests\MockClasses\ItemConstructor;
 use Exception;
 use SimpleXMLElement;
 
@@ -47,21 +47,21 @@ final class XmlSourceData extends AbstractSourceData
 
         // $constructor = [
         //     'name' => 'string',
-        //     'item' => ItemClassConstructor::class,
+        //     'item' => ItemConstructor::class,
         //     'id' => 'null|int',
         //     'data' => 'array',
         // ];
         //
         // $properties = [
         //     'name' => 'string',
-        //     'item' => ItemClassConstructor::class,
+        //     'item' => ItemConstructor::class,
         //     'id' => 'null|int',
         //     'data' => 'array',
         // ];
         //
         // $setters = [
         //     'setName' => 'string',
-        //     'setItem' => ItemClassConstructor::class,
+        //     'setItem' => ItemConstructor::class,
         //     'setId' => 'null|int',
         //     'setData' => 'array',
         // ];
@@ -106,7 +106,7 @@ final class XmlSourceData extends AbstractSourceData
         $value = [
             new DataString('constructor', 'name'),
             new DataObject(
-                ItemClassConstructor::class,
+                ItemConstructor::class,
                 [
                     new DataFloat(12.34, 'price'),
                     new DataBool(true, 'isAvailable'),

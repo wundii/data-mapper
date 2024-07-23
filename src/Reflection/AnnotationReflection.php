@@ -8,9 +8,11 @@ final readonly class AnnotationReflection
 {
     /**
      * @param ParameterReflection[] $parameterReflections
+     * @param string[] $variables
      */
     public function __construct(
         private array $parameterReflections,
+        private array $variables,
     ) {
     }
 
@@ -20,5 +22,13 @@ final readonly class AnnotationReflection
     public function getParameterReflections(): array
     {
         return $this->parameterReflections;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getVariables(): array
+    {
+        return $this->variables;
     }
 }

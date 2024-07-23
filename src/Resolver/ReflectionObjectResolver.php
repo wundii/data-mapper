@@ -23,12 +23,18 @@ final readonly class ReflectionObjectResolver
     public function parseAnnotation(string $docComment): AnnotationReflection
     {
         $parameterReflections = [];
+        $variables = [];
+        $docComment = trim($docComment);
+
+        if (! str_starts_with($docComment, '/**')) {
+            return new AnnotationReflection([], []);
+        }
 
         $docComment = substr($docComment, 3, -2);
 
-        $re = '/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m';
+        $pattern = '/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m';
 
-        if (preg_match_all($re, $docComment, $matches)) {
+        if (preg_match_all($pattern, $docComment, $matches)) {
             $parameters = [];
 
             /**
@@ -37,6 +43,10 @@ final readonly class ReflectionObjectResolver
             foreach ($matches['name'] ?? [] as $key => $name) {
                 if (strtolower($name) === 'param') {
                     $parameters[] = $matches['value'][$key];
+                }
+
+                if (strtolower($name) === 'var') {
+                    $variables[] = $matches['value'][$key];
                 }
             }
 
@@ -57,10 +67,21 @@ final readonly class ReflectionObjectResolver
                     $parameterTypes,
                 );
             }
+
+            if ($variables !== []) {
+                $variables = explode('|', array_pop($variables));
+                foreach ($variables as $key => $variable) {
+                    if (str_starts_with($variable, '?')) {
+                        $variables[$key] = 'null';
+                        $variables[] = substr($variable, 1);
+                    }
+                }
+            }
         }
 
         return new AnnotationReflection(
             $parameterReflections,
+            $variables,
         );
     }
 
@@ -73,6 +94,8 @@ final readonly class ReflectionObjectResolver
         }
 
         // $annotation = $this->parseAnnotation($docComment);
+        // dump($annotation);
+
         $classString = null;
         // // dump($annotations);
         // foreach ($annotation->getParameterReflections() as $parameterReflection) {

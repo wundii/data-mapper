@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\MockClasses;
 
-final readonly class ItemClassConstructor implements RootClassInterface
+final readonly class ItemConstructor implements RootInterface
 {
     public function __construct(
         private float $price,
