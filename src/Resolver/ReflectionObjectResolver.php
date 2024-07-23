@@ -8,6 +8,8 @@ use DataMapper\Reflection\AnnotationReflection;
 use DataMapper\Reflection\ObjectReflection;
 use DataMapper\Reflection\ParameterReflection;
 use DataMapper\Reflection\PropertyReflection;
+use DataMapper\Reflection\UseStatementReflection;
+use DataMapper\Reflection\UseStatementsReflection;
 use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -27,7 +29,7 @@ final readonly class ReflectionObjectResolver
         return $reflection->getName();
     }
 
-    public function parseAnnotation(string $docComment): AnnotationReflection
+    public function parseAnnotation(UseStatementsReflection $useStatements, string $docComment): AnnotationReflection
     {
         $parameterReflections = [];
         $variables = [];
@@ -60,6 +62,10 @@ final readonly class ReflectionObjectResolver
             foreach ($parameters as $param) {
                 list($parameterType, $parameter) = explode(' ', $param);
 
+                if (str_starts_with($parameter, '$')) {
+                    $parameter = substr($parameter, 1);
+                }
+
                 $parameterTypes = explode('|', $parameterType);
 
                 foreach ($parameterTypes as $key => $parameterType) {
@@ -68,6 +74,8 @@ final readonly class ReflectionObjectResolver
                         $parameterTypes[] = substr($parameterType, 1);
                     }
                 }
+
+                $parameterTypes = $this->completeClassStrings($useStatements, $parameterTypes);
 
                 $parameterReflections[] = new ParameterReflection(
                     $parameter,
@@ -83,6 +91,8 @@ final readonly class ReflectionObjectResolver
                         $variables[] = substr($variable, 1);
                     }
                 }
+
+                $variables = $this->completeClassStrings($useStatements, $variables);
             }
         }
 
@@ -92,33 +102,41 @@ final readonly class ReflectionObjectResolver
         );
     }
 
-    public function classString(ReflectionProperty|ReflectionFunctionAbstract $property): ?string
+    /**
+     * @param string[] $types
+     * @return string[]
+     */
+    public function completeClassStrings(UseStatementsReflection $useStatements, array $types): array
+    {
+        foreach ($types as $key => $type) {
+            if (! str_ends_with($type, '[]')) {
+                continue;
+            }
+
+            $classString = substr($type, 0, -2);
+            if (class_exists($classString)) {
+                continue;
+            }
+
+            $classString = $useStatements->find($classString);
+
+            if ($classString !== null) {
+                $types[$key] = $classString.'[]';
+            }
+        }
+
+        return $types;
+    }
+
+    public function annotation(UseStatementsReflection $useStatements, ReflectionProperty|ReflectionFunctionAbstract $property): AnnotationReflection
     {
         $docComment = $property->getDocComment();
 
         if ($docComment === false) {
-            return null;
+            return new AnnotationReflection([], []);
         }
 
-        // $annotation = $this->parseAnnotation($docComment);
-        // dump($annotation);
-
-        $classString = null;
-        // // dump($annotations);
-        // foreach ($annotation->getParameterReflections() as $parameterReflection) {
-        //
-        //     $find = array_filter($parameterReflection->getTypes(), function ($type) use ($property) {
-        //         return str_contains($type, '$' . $property->getName());
-        //     });
-        //
-        //     if (str_contains($parameterReflection->getParameter(), '$' . $property->getName())) {
-        //         list($type) = explode(' ', $parameterReflection->getParameter());
-        //         $classString = $type;
-        //         break;
-        //     }
-        // }
-
-        return $classString;
+        return $this->parseAnnotation($useStatements, $docComment);
     }
 
     /**
@@ -162,11 +180,21 @@ final readonly class ReflectionObjectResolver
         $setters = [];
 
         $reflectionClass = new ReflectionClass($object);
+
+        /**
+         * @todo implement UseStatementsResolver.php
+         */
+        $useStatements = new UseStatementsReflection([
+            new UseStatementReflection(
+                'DataMapper\Tests\MockClasses\Sub\SubItemConstructor',
+                'SubItemConstructor',
+            ),
+        ]);
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $properties[] = new PropertyReflection(
                 $this->name($reflectionProperty),
                 $this->types($reflectionProperty->getType()),
-                $this->classString($reflectionProperty),
+                $this->annotation($useStatements, $reflectionProperty),
             );
         }
 
@@ -176,7 +204,7 @@ final readonly class ReflectionObjectResolver
                     $constructor[] = new PropertyReflection(
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
-                        $this->classString($reflectionMethod),
+                        $this->annotation($useStatements, $reflectionMethod),
                     );
                 }
             }
@@ -198,7 +226,7 @@ final readonly class ReflectionObjectResolver
                 $setters[] = new PropertyReflection(
                     $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
-                    $this->classString($reflectionMethod),
+                    $this->annotation($useStatements, $reflectionMethod),
                 );
             }
         }

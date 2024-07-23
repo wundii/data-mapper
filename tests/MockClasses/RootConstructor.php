@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\MockClasses;
 
+use DataMapper\Tests\MockClasses\Sub\SubItemConstructor;
+
 final readonly class RootConstructor implements RootInterface
 {
+    /**
+     * @param SubItemConstructor[] $data
+     */
     public function __construct(
         private string $name,
         private ItemConstructor $item,

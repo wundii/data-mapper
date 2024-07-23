@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DataMapper\Enum;
 
-enum DataTypeEnum
+enum DataTypeEnum: string
 {
-    case STRING;
-    case INTEGER;
-    case FLOAT;
-    case BOOLEAN;
-    case ARRAY;
-    case OBJECT;
+    const STRING = 'string';
+    const INTEGER = 'int';
+    const FLOAT = 'float';
+    const BOOLEAN = 'bool';
+    const ARRAY = 'array';
+    const OBJECT = 'object';
 }

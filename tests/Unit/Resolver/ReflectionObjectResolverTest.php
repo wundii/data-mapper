@@ -6,12 +6,73 @@ namespace DataMapper\Tests\Unit\Resolver;
 
 use DataMapper\Reflection\AnnotationReflection;
 use DataMapper\Reflection\ParameterReflection;
+use DataMapper\Reflection\UseStatementReflection;
+use DataMapper\Reflection\UseStatementsReflection;
 use DataMapper\Resolver\ReflectionObjectResolver;
+use DataMapper\Tests\MockClasses\ItemConstructor;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use ReflectionIntersectionType;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionProperty;
+use ReflectionUnionType;
 
 class ReflectionObjectResolverTest extends TestCase
 {
+    public function testCompleteClassStrings(): void
+    {
+        $useStatementsReflection = new UseStatementsReflection([
+            new UseStatementReflection(
+                ItemConstructor::class,
+                'ItemConstructor',
+            )
+        ]);
+
+        $types = [
+            'float',
+            'ItemConstructor[]',
+            'string[]',
+            'bool',
+        ];
+        $expected = [
+            'float',
+            ItemConstructor::class . '[]',
+            'string[]',
+            'bool',
+        ];
+
+
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+
+        $this->assertSame($expected, $reflectionObjectResolver->completeClassStrings($useStatementsReflection, $types));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
+    public function testName(): void
+    {
+        $expected = 'helloWorld';
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+
+        $reflector = $this->createMock(ReflectionProperty::class);
+        $reflector->method('getName')->willReturn($expected);
+
+        $this->assertSame($expected, $reflectionObjectResolver->name($reflector));
+
+        $reflector = $this->createMock(ReflectionParameter::class);
+        $reflector->method('getName')->willReturn($expected);
+
+        $this->assertSame($expected, $reflectionObjectResolver->name($reflector));
+
+        $reflector = $this->createMock(ReflectionMethod::class);
+        $reflector->method('getName')->willReturn($expected);
+
+        $this->assertSame($expected, $reflectionObjectResolver->name($reflector));
+    }
+
     /**
      * @throws Exception
      */
@@ -19,7 +80,8 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection([], []);
 
@@ -34,7 +96,8 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '@param string $name';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection([], []);
 
@@ -49,11 +112,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param bool $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['bool']),
+                new ParameterReflection('name', ['bool']),
             ],
             [],
         );
@@ -69,11 +133,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param int $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['int']),
+                new ParameterReflection('name', ['int']),
             ],
             [],
         );
@@ -89,11 +154,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param float $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['float']),
+                new ParameterReflection('name', ['float']),
             ],
             [],
         );
@@ -109,11 +175,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['string']),
+                new ParameterReflection('name', ['string']),
             ],
             [],
         );
@@ -129,11 +196,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param array $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['array']),
+                new ParameterReflection('name', ['array']),
             ],
             [],
         );
@@ -149,11 +217,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param ItemConstructor $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['ItemConstructor']),
+                new ParameterReflection('name', ['ItemConstructor']),
             ],
             [],
         );
@@ -163,11 +232,31 @@ class ReflectionObjectResolverTest extends TestCase
 
         $annotation = '/** @param ItemConstructor[] $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['ItemConstructor[]']),
+                new ParameterReflection('name', [ 'ItemConstructor[]']),
+            ],
+            [],
+        );
+
+        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertEquals($expected, $annotationReflection);
+
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+        $useStatementsReflection = new UseStatementsReflection([
+            new UseStatementReflection(
+                ItemConstructor::class,
+                'ItemConstructor',
+            )
+        ]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
+
+        $expected = new AnnotationReflection(
+            [
+                new ParameterReflection('name', [ ItemConstructor::class . '[]']),
             ],
             [],
         );
@@ -183,11 +272,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param ?string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['null', 'string']),
+                new ParameterReflection('name', ['null', 'string']),
             ],
             [],
         );
@@ -197,11 +287,12 @@ class ReflectionObjectResolverTest extends TestCase
 
         $annotation = '/** @param null|string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['null', 'string']),
+                new ParameterReflection('name', ['null', 'string']),
             ],
             [],
         );
@@ -217,11 +308,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param null|int|string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['null', 'int', 'string']),
+                new ParameterReflection('name', ['null', 'int', 'string']),
             ],
             [],
         );
@@ -244,13 +336,14 @@ class ReflectionObjectResolverTest extends TestCase
 TEXT;
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('$name', ['null', 'int', 'string']),
-                new ParameterReflection('$price', ['float']),
-                new ParameterReflection('$options', ['string[]']),
+                new ParameterReflection('name', ['null', 'int', 'string']),
+                new ParameterReflection('price', ['float']),
+                new ParameterReflection('options', ['string[]']),
             ],
             [],
         );
@@ -266,7 +359,8 @@ TEXT;
     {
         $annotation = '/** @var bool */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -284,7 +378,8 @@ TEXT;
     {
         $annotation = '/** @var int */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -302,7 +397,8 @@ TEXT;
     {
         $annotation = '/** @var float */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -320,7 +416,8 @@ TEXT;
     {
         $annotation = '/** @var string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -338,7 +435,8 @@ TEXT;
     {
         $annotation = '/** @var array */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -354,13 +452,14 @@ TEXT;
      */
     public function testParseAnnotationVarObject(): void
     {
-        $annotation = '/** @var ItemConstructor */';
+        $annotation = '/** @var ' . ItemConstructor::class . ' */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
-            ['ItemConstructor'],
+            [ItemConstructor::class],
         );
 
         $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
@@ -368,11 +467,29 @@ TEXT;
 
         $annotation = '/** @var ItemConstructor[] */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
             ['ItemConstructor[]'],
+        );
+
+        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertEquals($expected, $annotationReflection);
+
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+        $useStatementsReflection = new UseStatementsReflection([
+            new UseStatementReflection(
+                ItemConstructor::class,
+                'ItemConstructor',
+            )
+        ]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
+
+        $expected = new AnnotationReflection(
+            [],
+            [ItemConstructor::class . '[]'],
         );
 
         $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
@@ -386,7 +503,8 @@ TEXT;
     {
         $annotation = '/** @var ?string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -398,7 +516,8 @@ TEXT;
 
         $annotation = '/** @var null|string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -421,7 +540,8 @@ TEXT;
  */
 TEXT;
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $annotationReflection = $reflectionObjectResolver->parseAnnotation($annotation);
+        $useStatementsReflection = new UseStatementsReflection([]);
+        $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
@@ -430,5 +550,72 @@ TEXT;
 
         $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
+    public function testTypesEmpty(): void
+    {
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+
+        $reflector = $this->createMock(ReflectionIntersectionType::class);
+
+        $this->assertSame([], $reflectionObjectResolver->types(null));
+        $this->assertSame([], $reflectionObjectResolver->types($reflector));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
+    public function testTypesReflectionNamedType(): void
+    {
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+
+        $reflector = $this->createMock(ReflectionNamedType::class);
+        $reflector->method('getName')->willReturn('string');
+        $reflector->method('allowsNull')->willReturn(false);
+
+        $this->assertSame(['string'], $reflectionObjectResolver->types($reflector));
+
+        $reflector = $this->createMock(ReflectionNamedType::class);
+        $reflector->method('getName')->willReturn('string');
+        $reflector->method('allowsNull')->willReturn(true);
+
+        $this->assertSame(['string','null'], $reflectionObjectResolver->types($reflector));
+
+        $reflector = $this->createMock(ReflectionNamedType::class);
+        $reflector->method('getName')->willReturn('null');
+        $reflector->method('allowsNull')->willReturn(true);
+
+        $this->assertSame(['null'], $reflectionObjectResolver->types($reflector));
+    }
+
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
+    public function testTypesReflectionUnionType(): void
+    {
+        $reflector01 = $this->createMock(ReflectionNamedType::class);
+        $reflector01->method('getName')->willReturn('float');
+
+        $reflector02 = $this->createMock(ReflectionNamedType::class);
+        $reflector02->method('getName')->willReturn('string');
+
+        $reflector03 = $this->createMock(ReflectionNamedType::class);
+        $reflector03->method('getName')->willReturn('null');
+
+        $types = [
+            $reflector01,
+            $reflector02,
+            $reflector03,
+        ];
+
+        $reflectionObjectResolver = new ReflectionObjectResolver();
+
+        $reflector = $this->createMock(ReflectionUnionType::class);
+        $reflector->method('getTypes')->willReturn($types);
+
+        $this->assertSame(['float','string','null'], $reflectionObjectResolver->types($reflector));
     }
 }
