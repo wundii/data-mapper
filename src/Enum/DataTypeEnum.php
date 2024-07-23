@@ -6,10 +6,15 @@ namespace DataMapper\Enum;
 
 enum DataTypeEnum: string
 {
-    const STRING = 'string';
-    const INTEGER = 'int';
-    const FLOAT = 'float';
-    const BOOLEAN = 'bool';
-    const ARRAY = 'array';
-    const OBJECT = 'object';
+    public const STRING = 'string';
+
+    public const INTEGER = 'int';
+
+    public const FLOAT = 'float';
+
+    public const BOOLEAN = 'bool';
+
+    public const ARRAY = 'array';
+
+    public const OBJECT = 'object';
 }

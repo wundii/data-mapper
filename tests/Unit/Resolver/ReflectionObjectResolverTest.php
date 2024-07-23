@@ -9,7 +9,6 @@ use DataMapper\Reflection\ParameterReflection;
 use DataMapper\Reflection\UseStatementReflection;
 use DataMapper\Reflection\UseStatementsReflection;
 use DataMapper\Resolver\ReflectionObjectResolver;
-use DataMapper\Tests\MockClasses\ItemConstructor;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionIntersectionType;
@@ -25,9 +24,9 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $useStatementsReflection = new UseStatementsReflection([
             new UseStatementReflection(
-                ItemConstructor::class,
+                'DataMapper\Tests\MockClasses\ItemConstructor',
                 'ItemConstructor',
-            )
+            ),
         ]);
 
         $types = [
@@ -38,11 +37,10 @@ class ReflectionObjectResolverTest extends TestCase
         ];
         $expected = [
             'float',
-            ItemConstructor::class . '[]',
+            'DataMapper\Tests\MockClasses\ItemConstructor[]',
             'string[]',
             'bool',
         ];
-
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
 
@@ -237,7 +235,7 @@ class ReflectionObjectResolverTest extends TestCase
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('name', [ 'ItemConstructor[]']),
+                new ParameterReflection('name', ['ItemConstructor[]']),
             ],
             [],
         );
@@ -248,15 +246,15 @@ class ReflectionObjectResolverTest extends TestCase
         $reflectionObjectResolver = new ReflectionObjectResolver();
         $useStatementsReflection = new UseStatementsReflection([
             new UseStatementReflection(
-                ItemConstructor::class,
+                'DataMapper\Tests\MockClasses\ItemConstructor',
                 'ItemConstructor',
-            )
+            ),
         ]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [
-                new ParameterReflection('name', [ ItemConstructor::class . '[]']),
+                new ParameterReflection('name', ['DataMapper\Tests\MockClasses\ItemConstructor[]']),
             ],
             [],
         );
@@ -452,14 +450,14 @@ TEXT;
      */
     public function testParseAnnotationVarObject(): void
     {
-        $annotation = '/** @var ' . ItemConstructor::class . ' */';
+        $annotation = '/** @var DataMapper\Tests\MockClasses\ItemConstructor */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
         $useStatementsReflection = new UseStatementsReflection([]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
-            [ItemConstructor::class],
+            ['DataMapper\Tests\MockClasses\ItemConstructor'],
         );
 
         $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
@@ -481,15 +479,15 @@ TEXT;
         $reflectionObjectResolver = new ReflectionObjectResolver();
         $useStatementsReflection = new UseStatementsReflection([
             new UseStatementReflection(
-                ItemConstructor::class,
+                'DataMapper\Tests\MockClasses\ItemConstructor',
                 'ItemConstructor',
-            )
+            ),
         ]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
             [],
-            [ItemConstructor::class . '[]'],
+            ['DataMapper\Tests\MockClasses\ItemConstructor[]'],
         );
 
         $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
@@ -582,7 +580,7 @@ TEXT;
         $reflector->method('getName')->willReturn('string');
         $reflector->method('allowsNull')->willReturn(true);
 
-        $this->assertSame(['string','null'], $reflectionObjectResolver->types($reflector));
+        $this->assertSame(['string', 'null'], $reflectionObjectResolver->types($reflector));
 
         $reflector = $this->createMock(ReflectionNamedType::class);
         $reflector->method('getName')->willReturn('null');
@@ -616,6 +614,6 @@ TEXT;
         $reflector = $this->createMock(ReflectionUnionType::class);
         $reflector->method('getTypes')->willReturn($types);
 
-        $this->assertSame(['float','string','null'], $reflectionObjectResolver->types($reflector));
+        $this->assertSame(['float', 'string', 'null'], $reflectionObjectResolver->types($reflector));
     }
 }

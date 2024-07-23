@@ -12,14 +12,14 @@ final readonly class PropertyReflection
     public function __construct(
         private string $name,
         private array $types,
-        private AnnotationReflection $annotation,
+        private AnnotationReflection $annotationReflection,
     ) {
     }
 
     public function getClassString(): ?string
     {
         foreach ($this->getTypes() as $type) {
-            if (!str_ends_with($type, '[]')) {
+            if (! str_ends_with($type, '[]')) {
                 continue;
             }
 
@@ -62,20 +62,20 @@ final readonly class PropertyReflection
     {
         $types = $this->types;
 
-        $types = array_merge($types, $this->annotation->getVariables());
+        $types = array_merge($types, $this->annotationReflection->getVariables());
 
-        foreach ($this->annotation->getParameterReflections() as $parameterReflection) {
-            if ($parameterReflection->getParameter() === $this->name) {
+        foreach ($this->annotationReflection->getParameterReflections() as $parameterReflection) {
+            if (strtolower($parameterReflection->getParameter()) === strtolower($this->name)) {
                 $types = array_merge($types, $parameterReflection->getTypes());
                 break;
             }
         }
 
-        return array_unique($types);
+        return array_values(array_unique($types));
     }
 
     public function getAnnotation(): AnnotationReflection
     {
-        return $this->annotation;
+        return $this->annotationReflection;
     }
 }

@@ -10,7 +10,7 @@ use DataMapper\Interface\ElementObjectInterface;
 use Exception;
 use InvalidArgumentException;
 
-final readonly class UseStatementsResolver
+final readonly class ReflectionTokenResolver
 {
     /**
      * @throws Exception

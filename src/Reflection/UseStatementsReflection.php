@@ -14,6 +14,9 @@ final readonly class UseStatementsReflection
     ) {
     }
 
+    /**
+     * @return UseStatementReflection[]
+     */
     public function getUseStatements(): array
     {
         return $this->useStatements;
@@ -22,7 +25,7 @@ final readonly class UseStatementsReflection
     public function find(string $search): ?string
     {
         foreach ($this->useStatements as $useStatement) {
-            if ($useStatement->getAs() === $search) {
+            if (strtolower($useStatement->getAs()) === strtolower($search)) {
                 return $useStatement->getClass();
             }
         }
