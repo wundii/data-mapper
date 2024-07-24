@@ -8,7 +8,6 @@ use DataMapper\Reflection\AnnotationReflection;
 use DataMapper\Reflection\ObjectReflection;
 use DataMapper\Reflection\ParameterReflection;
 use DataMapper\Reflection\PropertyReflection;
-use DataMapper\Reflection\UseStatementReflection;
 use DataMapper\Reflection\UseStatementsReflection;
 use Exception;
 use InvalidArgumentException;

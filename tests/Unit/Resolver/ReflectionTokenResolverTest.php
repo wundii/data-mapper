@@ -104,8 +104,8 @@ class ReflectionTokenResolverTest extends TestCase
             'DataMapper\Tests\MockClasses',
             [
                 new UseStatementReflection('DataMapper\Tests\MockClasses\TokenResolver', 'TokenResolver'),
-                new UseStatementReflection('DataMapper\Tests\MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
                 new UseStatementReflection('DataMapper\Tests\MockClasses\ItemConstructor', 'CustomItemConstructor'),
+                new UseStatementReflection('DataMapper\Tests\MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
             ],
         );
 

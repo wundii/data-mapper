@@ -18,6 +18,8 @@ final readonly class ReflectionTokenResolver
     }
 
     /**
+     * @template T of object
+     * @param ReflectionClass<T> $reflectionClass
      * @throws Exception
      */
     public function parseToken(ReflectionClass $reflectionClass): UseStatementsReflection
@@ -30,7 +32,7 @@ final readonly class ReflectionTokenResolver
             );
         }
 
-        $fileContent = file_get_contents($reflectionClass->getFileName());
+        $fileContent = file_get_contents($reflectionClass->getFileName() ?: '');
         if ($fileContent === false) {
             throw new Exception('Could not read file content from ' . $reflectionClass->getFileName());
         }
@@ -56,17 +58,20 @@ final readonly class ReflectionTokenResolver
                     if ($useStatement !== null) {
                         $useStatement .= $token[1];
                     }
+
                     break;
                 case 301: // T_AS
                 case T_AS:
                     if ($useStatement !== null) {
                         $useStatement .= ' as ';
                     }
+
                     break;
                 case T_NS_SEPARATOR:
                     if ($useStatement !== null) {
                         $useStatement .= '\\';
                     }
+
                     break;
                 case ';':
                     if ($useStatement !== null) {
@@ -80,6 +85,7 @@ final readonly class ReflectionTokenResolver
                         $useStatements[] = new UseStatementReflection($classString, $alias ?? $this->basename($classString));
                         $useStatement = null;
                     }
+
                     break;
             }
         }

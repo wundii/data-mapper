@@ -36,8 +36,8 @@ final readonly class UseStatementsReflection
             }
         }
 
-        if ($this->getNamespaceName() !== null) {
-            $search = $this->getNamespaceName() . '\\' . $search;
+        if ($this->namespaceName !== null) {
+            $search = $this->namespaceName . '\\' . $search;
 
             foreach ($this->useStatements as $useStatement) {
                 if (strcasecmp($useStatement->getClass(), $search) === 0) {
