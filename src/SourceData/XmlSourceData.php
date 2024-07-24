@@ -100,8 +100,8 @@ final class XmlSourceData extends AbstractSourceData
                 'int' => new DataInt($value, $name),
                 'float' => new DataFloat($value, $name),
                 'bool' => new DataBool($value, $name),
-                'array' => $this->elementArray($dataConfig, $child, $childReflection->getClassString()),
-                'object' => $this->elementObject($dataConfig, $child, $childReflection->getClassString()),
+                'array' => $this->elementArray($dataConfig, $child, $childReflection->getTargetType()),
+                'object' => $this->elementObject($dataConfig, $child, $childReflection->getTargetType(true)),
                 default => new DataString($value, $name),
             };
         }

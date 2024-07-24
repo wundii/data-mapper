@@ -92,7 +92,7 @@ class PropertyReflectionTest extends TestCase
         $this->assertSame($expected, $property->getTypes());
     }
 
-    public function testClassStringNull(): void
+    public function testTargetTypeNull(): void
     {
         $property = new PropertyReflection(
             'name',
@@ -100,7 +100,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationSimple(),
         );
 
-        $this->assertNull($property->getClassString());
+        $this->assertNull($property->getTargetType(true));
 
         $property = new PropertyReflection(
             'findMeIfYouCan',
@@ -108,10 +108,10 @@ class PropertyReflectionTest extends TestCase
             $this->annotationParameter(),
         );
 
-        $this->assertNull($property->getClassString());
+        $this->assertNull($property->getTargetType(true));
     }
 
-    public function testClassStringExists(): void
+    public function testTargetTypeExists(): void
     {
         $property = new PropertyReflection(
             'name',
@@ -119,7 +119,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getClassString());
+        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
 
         $property = new PropertyReflection(
             'name',
@@ -127,7 +127,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getClassString());
+        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
 
         $property = new PropertyReflection(
             'name',
@@ -135,7 +135,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationComplex(),
         );
 
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getClassString());
+        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
     }
 
     public function testIsOneTypeFalse(): void

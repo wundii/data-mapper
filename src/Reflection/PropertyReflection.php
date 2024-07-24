@@ -47,24 +47,36 @@ final readonly class PropertyReflection
         return null;
     }
 
-    public function getClassString(): ?string
+    public function getTargetType(bool $classOnly = false): ?string
     {
+        $lowestType = null;
+
         foreach ($this->getTypes() as $type) {
             if (class_exists($type)) {
-                return $type;
+                if ($classOnly) {
+                    return $type;
+                }
+
+                $lowestType = $type;
             }
 
-            if (! str_ends_with($type, '[]')) {
-                continue;
+            if (str_ends_with($type, '[]')) {
+                $classType = substr($type, 0, -2);
+                if (class_exists($classType)) {
+                    if ($classOnly) {
+                        return $classType;
+                    }
+
+                    $lowestType = 'array';
+                }
             }
 
-            $type = substr($type, 0, -2);
-            if (class_exists($type)) {
-                return $type;
+            if ($lowestType === null && ! $classOnly) {
+                $lowestType = $type;
             }
         }
 
-        return null;
+        return $lowestType;
     }
 
     public function isOneType(): bool
