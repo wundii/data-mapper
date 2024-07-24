@@ -9,6 +9,11 @@
     <aa>2</aa>
     <id>1</id>
     <data>
-        <test>todo</test>
+        <subproduct>
+            <product>json</product>
+        </subproduct>
+        <subproduct>
+            <product>xml</product>
+        </subproduct>
     </data>
 </root>

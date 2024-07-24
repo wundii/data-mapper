@@ -10,6 +10,7 @@ use DataMapper\Enum\ApproachEnum;
 use DataMapper\Tests\MockClasses\ItemConstructor;
 use DataMapper\Tests\MockClasses\RootConstructor;
 use DataMapper\Tests\MockClasses\RootProperties;
+use DataMapper\Tests\MockClasses\Sub\SubItemConstructor;
 use PHPUnit\Framework\TestCase;
 
 class XmlMapperTest extends TestCase
@@ -31,8 +32,8 @@ class XmlMapperTest extends TestCase
             ),
             1,
             [
-                'hello',
-                'world',
+                new SubItemConstructor('json'),
+                new SubItemConstructor('xml'),
             ],
         );
 

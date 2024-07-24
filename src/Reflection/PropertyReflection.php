@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DataMapper\Reflection;
 
+use DataMapper\Enum\DataTypeEnum;
+
 final readonly class PropertyReflection
 {
     /**
@@ -16,35 +18,38 @@ final readonly class PropertyReflection
     ) {
     }
 
-    public function getType(): ?string
+    public function getDataType(): string|DataTypeEnum
     {
         if (! $this->isOneType()) {
-            return null;
+            return DataTypeEnum::NULL;
         }
 
         $types = $this->getTypes();
 
         if (count($types) === 1) {
-            return array_shift($types);
+            $type = array_shift($types);
+            return DataTypeEnum::fromString($type);
         }
 
         foreach ($this->getTypes() as $type) {
-            if (strtolower($type) === 'null') {
+            $type = DataTypeEnum::fromString($type);
+
+            if ($type === DataTypeEnum::NULL) {
                 continue;
             }
 
-            if (str_ends_with($type, '[]')) {
+            if (is_string($type) && str_ends_with($type, '[]')) {
                 continue;
             }
 
-            if (class_exists($type)) {
-                return 'object';
+            if (is_string($type) && class_exists($type)) {
+                return DataTypeEnum::OBJECT;
             }
 
             return $type;
         }
 
-        return null;
+        return DataTypeEnum::NULL;
     }
 
     public function getTargetType(bool $classOnly = false): ?string

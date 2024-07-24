@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit;
+namespace Unit\Enum;
 
 use DataMapper\DataConfig;
 use DataMapper\Enum\SourceTypeEnum;
@@ -14,7 +14,7 @@ class SourceTypeEnumTest extends TestCase
 {
     public function testSourceDataInstanceJson(): void
     {
-        $sourceDataInstance = SourceTypeEnum::SourceDataInstance(
+        $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::JSON,
             new DataConfig(),
             'source',
@@ -22,7 +22,7 @@ class SourceTypeEnumTest extends TestCase
         );
         $this->assertInstanceOf(JsonSourceData::class, $sourceDataInstance);
 
-        $sourceDataInstance = SourceTypeEnum::SourceDataInstance(
+        $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::JSON,
             new DataConfig(),
             'source',
@@ -33,7 +33,7 @@ class SourceTypeEnumTest extends TestCase
 
     public function testSourceDataInstanceXml(): void
     {
-        $sourceDataInstance = SourceTypeEnum::SourceDataInstance(
+        $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::XML,
             new DataConfig(),
             'source',
@@ -41,7 +41,7 @@ class SourceTypeEnumTest extends TestCase
         );
         $this->assertInstanceOf(XmlSourceData::class, $sourceDataInstance);
 
-        $sourceDataInstance = SourceTypeEnum::SourceDataInstance(
+        $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::XML,
             new DataConfig(),
             'source',

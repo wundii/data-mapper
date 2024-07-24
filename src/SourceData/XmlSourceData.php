@@ -11,6 +11,7 @@ use DataMapper\Elements\DataFloat;
 use DataMapper\Elements\DataInt;
 use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
+use DataMapper\Enum\DataTypeEnum;
 use DataMapper\Interface\ElementArrayInterface;
 use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
@@ -22,58 +23,39 @@ use SimpleXMLElement;
 
 final class XmlSourceData extends AbstractSourceData
 {
-    // public static function elementValue(
-    //     SimpleXMLElement $xmlElement,
-    // ): ElementDataInterface {
-    //     return new DataString('');
-    // }
-
     /**
      * @throws Exception
      */
     public function elementArray(
         DataConfig $dataConfig,
         SimpleXMLElement $xmlElement,
-        null|string $object,
+        null|string $type,
+        null|string $destination = null,
     ): ElementArrayInterface {
-        /**
-         * @todo Implement array element
-         */
-        // $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
-        // $dataList = [];
-        //
-        // foreach ($xmlElement->children() as $child) {
-        //     $name = $child->getName();
-        //
-        //     dump($child->getName(), (string) $child);
-        //     if ($object !== null) {
-        //         $childReflection = $objectReflection->find($dataConfig->getApproach(), $name);
-        //         if (! $childReflection instanceof PropertyReflection) {
-        //             continue;
-        //         }
-        //
-        //         dump($childReflection->getType());
-        //     }
-        //
-        //     dump($object);
-        //     dump($child->getName(), (string) $child);
-        //
-        //     $dataList[] = match ($child->getName()) {
-        //         'int' => new DataInt((string) $child),
-        //         'float' => new DataFloat((string) $child),
-        //         'object' => $this->elementObject($dataConfig, $child, $object),
-        //         'string' => new DataString((string) $child),
-        //         default => throw new Exception('Invalid element'),
-        //     };
-        //
-        // }
+        $dataList = [];
+        $dataType = DataTypeEnum::fromString($type);
+        if (class_exists((string) $type)) {
+            $dataType = DataTypeEnum::OBJECT;
+        }
 
-        return new DataArray(
-            [
-                new DataString('hello'),
-                new DataString('world'),
-            ],
-        );
+        if (! $dataType instanceof DataTypeEnum) {
+            throw new Exception('Element array invalid type');
+        }
+
+        foreach ($xmlElement->children() as $child) {
+            $name = $child->getName();
+            $value = (string) $child;
+
+            $dataList[] = match ($dataType) {
+                DataTypeEnum::INTEGER => new DataInt($value, $name),
+                DataTypeEnum::FLOAT => new DataFloat($value, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $type, $name),
+                DataTypeEnum::STRING => new DataString($value, $name),
+                default => throw new Exception('Element array invalid element data type'),
+            };
+        }
+
+        return new DataArray($dataList, $destination);
     }
 
     /**
@@ -83,6 +65,7 @@ final class XmlSourceData extends AbstractSourceData
         DataConfig $dataConfig,
         SimpleXMLElement $xmlElement,
         null|string|object $object,
+        null|string $destination = null,
     ): ElementDataInterface {
         $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
         $dataList = [];
@@ -96,17 +79,17 @@ final class XmlSourceData extends AbstractSourceData
                 continue;
             }
 
-            $dataList[] = match ($childReflection->getType()) {
-                'int' => new DataInt($value, $name),
-                'float' => new DataFloat($value, $name),
-                'bool' => new DataBool($value, $name),
-                'array' => $this->elementArray($dataConfig, $child, $childReflection->getTargetType()),
-                'object' => $this->elementObject($dataConfig, $child, $childReflection->getTargetType(true)),
+            $dataList[] = match ($childReflection->getDataType()) {
+                DataTypeEnum::INTEGER => new DataInt($value, $name),
+                DataTypeEnum::FLOAT => new DataFloat($value, $name),
+                DataTypeEnum::BOOLEAN => new DataBool($value, $name),
+                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $child, $childReflection->getTargetType(true), $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $childReflection->getTargetType(true), $name),
                 default => new DataString($value, $name),
             };
         }
 
-        return new DataObject($object ?: '', $dataList);
+        return new DataObject($object ?: '', $dataList, $destination);
     }
 
     /**

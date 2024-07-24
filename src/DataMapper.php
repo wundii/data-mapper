@@ -49,7 +49,7 @@ final readonly class DataMapper
         string $source,
         string|object $object,
     ): object {
-        $sourceData = SourceTypeEnum::SourceDataInstance(
+        $sourceData = SourceTypeEnum::sourceDataInstance(
             $sourceTypeEnum,
             $this->dataConfig,
             $source,

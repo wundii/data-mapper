@@ -9,18 +9,12 @@ use DataMapper\Tests\MockClasses\RootInterface;
 final readonly class SubItemConstructor implements RootInterface
 {
     public function __construct(
-        private float $price,
-        private bool $isAvailable,
+        private string $product,
     ) {
     }
 
-    public function isAvailable(): bool
+    public function getProduct(): string
     {
-        return $this->isAvailable;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
+        return $this->product;
     }
 }

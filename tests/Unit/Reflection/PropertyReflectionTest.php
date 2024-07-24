@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\Unit\Reflection;
 
+use DataMapper\Enum\DataTypeEnum;
 use DataMapper\Reflection\AnnotationReflection;
 use DataMapper\Reflection\ParameterReflection;
 use DataMapper\Reflection\PropertyReflection;
@@ -216,7 +217,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertNull($property->getType());
+        $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
 
         $property = new PropertyReflection(
             'name',
@@ -224,7 +225,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertNull($property->getType());
+        $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
 
         $property = new PropertyReflection(
             'name',
@@ -232,7 +233,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertNull($property->getType());
+        $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
     }
 
     public function testGetType(): void
@@ -243,7 +244,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('string', $property->getType());
+        $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
         $property = new PropertyReflection(
             'name',
@@ -251,7 +252,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('array', $property->getType());
+        $this->assertSame(DataTypeEnum::ARRAY, $property->getDataType());
 
         $property = new PropertyReflection(
             'name',
@@ -259,7 +260,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationSimple(),
         );
 
-        $this->assertSame('string', $property->getType());
+        $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
         $property = new PropertyReflection(
             'name',
@@ -267,7 +268,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationSimple(),
         );
 
-        $this->assertSame('string', $property->getType());
+        $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
         $property = new PropertyReflection(
             'name',
@@ -275,6 +276,6 @@ class PropertyReflectionTest extends TestCase
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('object', $property->getType());
+        $this->assertSame(DataTypeEnum::OBJECT, $property->getDataType());
     }
 }

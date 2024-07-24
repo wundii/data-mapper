@@ -14,7 +14,7 @@ enum SourceTypeEnum
     case JSON;
     case XML;
 
-    public static function SourceDataInstance(
+    public static function sourceDataInstance(
         SourceTypeEnum $sourceTypeEnum,
         DataConfig $dataConfig,
         string $source,
