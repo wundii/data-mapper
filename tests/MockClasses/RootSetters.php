@@ -6,11 +6,11 @@ namespace DataMapper\Tests\MockClasses;
 
 final class RootSetters implements RootInterface
 {
+    public float $amount;
+
     private string $name;
 
     private ?int $id = null;
-
-    public float $amount;
 
     public function getAmount(): float
     {
