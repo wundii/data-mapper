@@ -163,6 +163,14 @@ class PropertyReflectionTest extends TestCase
         );
 
         $this->assertFalse($property->isOneType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertFalse($property->isOneType());
     }
 
     public function testIsOneTypeTrue(): void
@@ -170,6 +178,14 @@ class PropertyReflectionTest extends TestCase
         $property = new PropertyReflection(
             'name',
             ['string'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertTrue($property->isOneType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
         );
 
@@ -190,5 +206,75 @@ class PropertyReflectionTest extends TestCase
         );
 
         $this->assertTrue($property->isOneType());
+    }
+
+    public function testGetTypeNull(): void
+    {
+        $property = new PropertyReflection(
+            'name',
+            [],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertNull($property->getType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['string', 'bool'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertNull($property->getType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertNull($property->getType());
+    }
+
+    public function testGetType(): void
+    {
+        $property = new PropertyReflection(
+            'name',
+            ['string'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('string', $property->getType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor[]'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('array', $property->getType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['string'],
+            $this->annotationSimple(),
+        );
+
+        $this->assertSame('string', $property->getType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['null', 'string'],
+            $this->annotationSimple(),
+        );
+
+        $this->assertSame('string', $property->getType());
+
+        $property = new PropertyReflection(
+            'name',
+            ['null', 'DataMapper\Tests\MockClasses\ItemConstructor'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('object', $property->getType());
     }
 }

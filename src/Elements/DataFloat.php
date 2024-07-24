@@ -9,7 +9,7 @@ use DataMapper\Interface\ElementDataInterface;
 final readonly class DataFloat implements ElementDataInterface
 {
     public function __construct(
-        private float $value,
+        private float|string $value,
         private ?string $destination = null,
     ) {
     }
@@ -21,6 +21,6 @@ final readonly class DataFloat implements ElementDataInterface
 
     public function getValue(): float
     {
-        return $this->value;
+        return filter_var($this->value, FILTER_VALIDATE_FLOAT) ?: (float) $this->value;
     }
 }

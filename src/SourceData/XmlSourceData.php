@@ -14,9 +14,9 @@ use DataMapper\Elements\DataString;
 use DataMapper\Interface\ElementArrayInterface;
 use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
+use DataMapper\Reflection\PropertyReflection;
 use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Resolver\ReflectionObjectResolver;
-use DataMapper\Tests\MockClasses\ItemConstructor;
 use Exception;
 use SimpleXMLElement;
 
@@ -28,102 +28,85 @@ final class XmlSourceData extends AbstractSourceData
     //     return new DataString('');
     // }
 
-    public static function elementArray(
+    /**
+     * @throws Exception
+     */
+    public function elementArray(
         DataConfig $dataConfig,
         SimpleXMLElement $xmlElement,
+        null|string $object,
     ): ElementArrayInterface {
-        return new DataArray([]);
+        /**
+         * @todo Implement array element
+         */
+        // $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
+        // $dataList = [];
+        //
+        // foreach ($xmlElement->children() as $child) {
+        //     $name = $child->getName();
+        //
+        //     dump($child->getName(), (string) $child);
+        //     if ($object !== null) {
+        //         $childReflection = $objectReflection->find($dataConfig->getApproach(), $name);
+        //         if (! $childReflection instanceof PropertyReflection) {
+        //             continue;
+        //         }
+        //
+        //         dump($childReflection->getType());
+        //     }
+        //
+        //     dump($object);
+        //     dump($child->getName(), (string) $child);
+        //
+        //     $dataList[] = match ($child->getName()) {
+        //         'int' => new DataInt((string) $child),
+        //         'float' => new DataFloat((string) $child),
+        //         'object' => $this->elementObject($dataConfig, $child, $object),
+        //         'string' => new DataString((string) $child),
+        //         default => throw new Exception('Invalid element'),
+        //     };
+        //
+        // }
+
+        return new DataArray(
+            [
+                new DataString('hello'),
+                new DataString('world'),
+            ],
+        );
     }
 
     /**
      * @throws Exception
      */
-    public static function elementObject(
+    public function elementObject(
         DataConfig $dataConfig,
         SimpleXMLElement $xmlElement,
-        string|object $object,
+        null|string|object $object,
     ): ElementDataInterface {
-        (new ReflectionObjectResolver())->resolve($object);
+        $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
+        $dataList = [];
 
-        // $constructor = [
-        //     'name' => 'string',
-        //     'item' => ItemConstructor::class,
-        //     'id' => 'null|int',
-        //     'data' => 'array',
-        // ];
-        //
-        // $properties = [
-        //     'name' => 'string',
-        //     'item' => ItemConstructor::class,
-        //     'id' => 'null|int',
-        //     'data' => 'array',
-        // ];
-        //
-        // $setters = [
-        //     'setName' => 'string',
-        //     'setItem' => ItemConstructor::class,
-        //     'setId' => 'null|int',
-        //     'setData' => 'array',
-        // ];
+        foreach ($xmlElement->children() as $child) {
+            $name = $child->getName();
+            $value = (string) $child;
 
-        // $value = [];
-        //
-        // foreach ($xmlElement->children() as $child) {
-        //     $name = $child->getName();
-        //     dump($name, $child->count());
-        //     $type = null;
-        //
-        //     if (
-        //         $dataObjectProperty instanceof DataObjectProperty
-        //         && !in_array($name, $dataObjectProperty->getProperties(), true)
-        //     ) {
-        //         continue;
-        //     }
-        //
-        //     if ($child->count() > 0) {
-        //         $value[] = self::convertToElementData($child, $object);
-        //     } else {
-        //         $childValue = (string) $child;
-        //
-        //         $value[] = match ($type) {
-        //             'int' => new DataInt((int) $childValue, $name),
-        //             'float' => new DataFloat((float) $childValue, $name),
-        //             'bool' => new DataBool((bool) $childValue, $name),
-        //             default => new DataString($childValue, $name),
-        //         };
-        //     }
-        // }
-        //
-        //
-        // if ($object === null) {
-        //     // return new DataArray($value, 'items');
-        //     // return new DataBool(true, 'isAvailable');
-        //     // return new DataFloat(12.34, 'price');
-        //     // return new DataInt(1, 'id');
-        //     return new DataString('constructor', 'name');
-        // }
+            $childReflection = $objectReflection->find($dataConfig->getApproach(), $name);
+            if (! $childReflection instanceof PropertyReflection) {
+                continue;
+            }
 
-        $value = [
-            new DataString('constructor', 'name'),
-            new DataObject(
-                ItemConstructor::class,
-                [
-                    new DataFloat(12.34, 'price'),
-                    new DataBool(true, 'isAvailable'),
-                ],
-                'item',
-            ),
-            new DataInt(1, 'id'),
-            new DataArray(
-                [
-                    new DataString('hello'),
-                    new DataString('world'),
-                ],
-                'data'
-            ),
-        ];
+            $dataList[] = match ($childReflection->getType()) {
+                'int' => new DataInt($value, $name),
+                'float' => new DataFloat($value, $name),
+                'bool' => new DataBool($value, $name),
+                'array' => $this->elementArray($dataConfig, $child, $childReflection->getClassString()),
+                'object' => $this->elementObject($dataConfig, $child, $childReflection->getClassString()),
+                default => new DataString($value, $name),
+            };
+        }
 
-        return new DataObject($object, $value);
+        return new DataObject($object ?: '', $dataList);
     }
 
     /**
@@ -137,7 +120,7 @@ final class XmlSourceData extends AbstractSourceData
             throw new Exception('Invalid XML: ' . $exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
-        $elementData = self::elementObject($this->dataConfig, $xmlElement, $this->object);
+        $elementData = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
         if (! $elementData instanceof ElementObjectInterface) {
             throw new Exception('Invalid ElementDataInterface');
         }

@@ -233,8 +233,8 @@ final readonly class ReflectionObjectResolver
         }
 
         return new ObjectReflection(
-            $constructor,
             $properties,
+            $constructor,
             $setters,
         );
     }

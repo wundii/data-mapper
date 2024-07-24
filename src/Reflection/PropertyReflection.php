@@ -16,6 +16,37 @@ final readonly class PropertyReflection
     ) {
     }
 
+    public function getType(): ?string
+    {
+        if (! $this->isOneType()) {
+            return null;
+        }
+
+        $types = $this->getTypes();
+
+        if (count($types) === 1) {
+            return array_shift($types);
+        }
+
+        foreach ($this->getTypes() as $type) {
+            if (strtolower($type) === 'null') {
+                continue;
+            }
+
+            if (str_ends_with($type, '[]')) {
+                continue;
+            }
+
+            if (class_exists($type)) {
+                return 'object';
+            }
+
+            return $type;
+        }
+
+        return null;
+    }
+
     public function getClassString(): ?string
     {
         foreach ($this->getTypes() as $type) {
@@ -43,12 +74,21 @@ final readonly class PropertyReflection
         }
 
         $types = [];
+        $isArray = false;
         foreach ($this->getTypes() as $type) {
             if (strtolower($type) === 'null') {
                 continue;
             }
 
+            if (str_ends_with($type, '[]')) {
+                $isArray = true;
+            }
+
             $types[] = $type;
+        }
+
+        if ($isArray) {
+            $types = array_filter($types, fn (string $type): bool => strtolower($type) === 'array');
         }
 
         return count($types) === 1;

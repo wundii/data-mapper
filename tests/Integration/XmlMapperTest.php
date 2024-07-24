@@ -24,9 +24,10 @@ class XmlMapperTest extends TestCase
 
         $expected = new RootConstructor(
             'constructor',
+            'soest',
             new ItemConstructor(
                 12.34,
-                true,
+                false,
             ),
             1,
             [

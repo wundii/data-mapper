@@ -9,7 +9,7 @@ use DataMapper\Interface\ElementDataInterface;
 final readonly class DataBool implements ElementDataInterface
 {
     public function __construct(
-        private bool $value,
+        private bool|int|string $value,
         private ?string $destination = null,
     ) {
     }
@@ -21,6 +21,6 @@ final readonly class DataBool implements ElementDataInterface
 
     public function getValue(): bool
     {
-        return $this->value;
+        return filter_var($this->value, FILTER_VALIDATE_BOOL);
     }
 }

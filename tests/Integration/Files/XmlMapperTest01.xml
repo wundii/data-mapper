@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <root>
-    <test>test1</test>
-    <array>
-        <item>item1</item>
-        <item>item2</item>
-        <ssss>item2</ssss>
-    </array>
+    <name>constructor</name>
+    <ort>soest</ort>
+    <item>
+        <price>12.34</price>
+        <isAvailable>false</isAvailable>
+    </item>
+    <aa>2</aa>
+    <id>1</id>
+    <data>
+        <test>todo</test>
+    </data>
 </root>

@@ -13,7 +13,8 @@ final readonly class RootConstructor implements RootInterface
      */
     public function __construct(
         private string $name,
-        private ItemConstructor $item,
+        private string $ort,
+        private ?ItemConstructor $item = null,
         private ?int $id = null,
         private array $data = [],
     ) {

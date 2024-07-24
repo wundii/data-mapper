@@ -8,7 +8,6 @@
          failOnWarning="true"
          testdox="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
-
 >
   <php>
     <ini name="display_errors" value="1"/>
