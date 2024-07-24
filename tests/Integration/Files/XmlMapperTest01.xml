@@ -20,4 +20,5 @@
         <string>hello</string>
         <string>world</string>
     </mystring>
+    <amount>222.22</amount>
 </root>

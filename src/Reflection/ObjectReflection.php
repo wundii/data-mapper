@@ -53,7 +53,15 @@ final readonly class ObjectReflection
         };
 
         foreach ($properties as $property) {
-            if (strcasecmp($property->getName(), $name) === 0) {
+            $propertyName = $property->getName();
+            if (
+                $approachEnum === ApproachEnum::SETTER
+                && str_starts_with($propertyName, 'set')
+            ) {
+                $propertyName = substr($propertyName, 3);
+            }
+
+            if (strcasecmp($propertyName, $name) === 0) {
                 return $property;
             }
         }

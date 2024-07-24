@@ -71,13 +71,13 @@ final class XmlSourceData extends AbstractSourceData
         $dataList = [];
 
         foreach ($xmlElement->children() as $child) {
-            $name = $child->getName();
-            $value = (string) $child;
-
-            $childReflection = $objectReflection->find($dataConfig->getApproach(), $name);
+            $childReflection = $objectReflection->find($dataConfig->getApproach(), $child->getName());
             if (! $childReflection instanceof PropertyReflection) {
                 continue;
             }
+
+            $value = (string) $child;
+            $name = $childReflection->getName();
 
             $dataList[] = match ($childReflection->getDataType()) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
@@ -107,6 +107,8 @@ final class XmlSourceData extends AbstractSourceData
         if (! $elementData instanceof ElementObjectInterface) {
             throw new Exception('Invalid ElementDataInterface');
         }
+
+        // dump($elementData);
 
         return (new ElementObjectResolver())->resolve($this->dataConfig, $elementData);
     }

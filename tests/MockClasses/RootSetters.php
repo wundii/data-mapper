@@ -10,6 +10,18 @@ final class RootSetters implements RootInterface
 
     private ?int $id = null;
 
+    public float $amount;
+
+    public function getAmount(): float
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(float $amount): void
+    {
+        $this->amount = $amount;
+    }
+
     public function getName(): string
     {
         return $this->name;
