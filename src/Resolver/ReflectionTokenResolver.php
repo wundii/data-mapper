@@ -54,6 +54,7 @@ final readonly class ReflectionTokenResolver
                     $useStatement = '';
                     break;
                 case 265: // T_STRING
+                case T_NAME_QUALIFIED:
                 case T_STRING:
                     if ($useStatement !== null) {
                         $useStatement .= $token[1];
