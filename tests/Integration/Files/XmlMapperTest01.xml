@@ -16,4 +16,8 @@
             <product>xml</product>
         </subproduct>
     </data>
+    <mystring>
+        <string>hello</string>
+        <string>world</string>
+    </mystring>
 </root>

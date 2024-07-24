@@ -137,6 +137,14 @@ class PropertyReflectionTest extends TestCase
         );
 
         $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
+
+        $property = new PropertyReflection(
+            'name',
+            ['array', 'string[]'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('string', $property->getTargetType(true));
     }
 
     public function testIsOneTypeFalse(): void

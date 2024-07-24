@@ -35,6 +35,10 @@ class XmlMapperTest extends TestCase
                 new SubItemConstructor('json'),
                 new SubItemConstructor('xml'),
             ],
+            [
+                'hello',
+                'world',
+            ],
         );
 
         $this->assertInstanceOf(RootConstructor::class, $return);

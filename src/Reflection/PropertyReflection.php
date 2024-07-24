@@ -74,6 +74,11 @@ final readonly class PropertyReflection
 
                     $lowestType = 'array';
                 }
+
+                $classType = DataTypeEnum::fromString($classType);
+                if ($classType instanceof DataTypeEnum) {
+                    $lowestType = $classType->value;
+                }
             }
 
             if ($lowestType === null && ! $classOnly) {

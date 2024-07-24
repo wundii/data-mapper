@@ -10,6 +10,7 @@ final readonly class RootConstructor implements RootInterface
 {
     /**
      * @param SubItemConstructor[] $data
+     * @param string[] $mystring
      */
     public function __construct(
         private string $name,
@@ -17,6 +18,7 @@ final readonly class RootConstructor implements RootInterface
         private ?ItemConstructor $item = null,
         private ?int $id = null,
         private array $data = [],
+        private array $mystring = [],
     ) {
     }
 
