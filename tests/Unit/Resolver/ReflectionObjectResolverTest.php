@@ -22,16 +22,19 @@ class ReflectionObjectResolverTest extends TestCase
 {
     public function testCompleteClassStrings(): void
     {
-        $useStatementsReflection = new UseStatementsReflection([
-            new UseStatementReflection(
-                'DataMapper\Tests\MockClasses\ItemConstructor',
-                'ItemConstructor',
-            ),
-            new UseStatementReflection(
-                'DataMapper\Tests\MockClasses\RootConstructor',
-                'RootConstructor',
-            ),
-        ]);
+        $useStatementsReflection = new UseStatementsReflection(
+            null,
+            [
+                new UseStatementReflection(
+                    'DataMapper\Tests\MockClasses\ItemConstructor',
+                    'ItemConstructor',
+                ),
+                new UseStatementReflection(
+                    'DataMapper\Tests\MockClasses\RootConstructor',
+                    'RootConstructor',
+                ),
+            ],
+        );
 
         $types = [
             'float',
@@ -84,7 +87,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection([], []);
@@ -100,7 +103,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '@param string $name';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection([], []);
@@ -116,7 +119,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param bool $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -137,7 +140,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param int $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -158,7 +161,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param float $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -179,7 +182,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -200,7 +203,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param array $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -221,7 +224,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param ItemConstructor $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -236,7 +239,7 @@ class ReflectionObjectResolverTest extends TestCase
 
         $annotation = '/** @param ItemConstructor[] $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -250,12 +253,15 @@ class ReflectionObjectResolverTest extends TestCase
         $this->assertEquals($expected, $annotationReflection);
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([
-            new UseStatementReflection(
-                'DataMapper\Tests\MockClasses\ItemConstructor',
-                'ItemConstructor',
-            ),
-        ]);
+        $useStatementsReflection = new UseStatementsReflection(
+            null,
+            [
+                new UseStatementReflection(
+                    'DataMapper\Tests\MockClasses\ItemConstructor',
+                    'ItemConstructor',
+                ),
+            ])
+        ;
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -276,7 +282,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param ?string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -291,7 +297,7 @@ class ReflectionObjectResolverTest extends TestCase
 
         $annotation = '/** @param null|string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -312,7 +318,7 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param null|int|string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -340,7 +346,7 @@ class ReflectionObjectResolverTest extends TestCase
 TEXT;
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -363,7 +369,7 @@ TEXT;
     {
         $annotation = '/** @var bool */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -382,7 +388,7 @@ TEXT;
     {
         $annotation = '/** @var int */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -401,7 +407,7 @@ TEXT;
     {
         $annotation = '/** @var float */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -420,7 +426,7 @@ TEXT;
     {
         $annotation = '/** @var string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -439,7 +445,7 @@ TEXT;
     {
         $annotation = '/** @var array */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -458,7 +464,7 @@ TEXT;
     {
         $annotation = '/** @var DataMapper\Tests\MockClasses\ItemConstructor */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -471,7 +477,7 @@ TEXT;
 
         $annotation = '/** @var ItemConstructor[] */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -483,12 +489,15 @@ TEXT;
         $this->assertEquals($expected, $annotationReflection);
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([
-            new UseStatementReflection(
-                'DataMapper\Tests\MockClasses\ItemConstructor',
-                'ItemConstructor',
-            ),
-        ]);
+        $useStatementsReflection = new UseStatementsReflection(
+            null,
+            [
+                new UseStatementReflection(
+                    'DataMapper\Tests\MockClasses\ItemConstructor',
+                    'ItemConstructor',
+                ),
+            ]
+        );
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -507,7 +516,7 @@ TEXT;
     {
         $annotation = '/** @var ?string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -520,7 +529,7 @@ TEXT;
 
         $annotation = '/** @var null|string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(
@@ -544,7 +553,7 @@ TEXT;
  */
 TEXT;
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection([]);
+        $useStatementsReflection = new UseStatementsReflection(null,[]);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
         $expected = new AnnotationReflection(

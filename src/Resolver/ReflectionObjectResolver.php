@@ -190,16 +190,8 @@ final readonly class ReflectionObjectResolver
         $setters = [];
 
         $reflectionClass = new ReflectionClass($object);
+        $useStatementsReflection = (new ReflectionTokenResolver())->resolve($object);
 
-        /**
-         * @todo implement UseStatementsResolver.php
-         */
-        $useStatementsReflection = new UseStatementsReflection([
-            new UseStatementReflection(
-                \DataMapper\Tests\MockClasses\Sub\SubItemConstructor::class,
-                'SubItemConstructor',
-            ),
-        ]);
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $properties[] = new PropertyReflection(
                 $this->name($reflectionProperty),

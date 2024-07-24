@@ -10,8 +10,14 @@ final readonly class UseStatementsReflection
      * @param UseStatementReflection[] $useStatements
      */
     public function __construct(
+        private ?string $namespaceName,
         private array $useStatements,
     ) {
+    }
+
+    public function getNamespaceName(): ?string
+    {
+        return $this->namespaceName;
     }
 
     /**
@@ -25,8 +31,22 @@ final readonly class UseStatementsReflection
     public function find(string $search): ?string
     {
         foreach ($this->useStatements as $useStatement) {
-            if (strtolower($useStatement->getAs()) === strtolower($search)) {
+            if (strcasecmp($useStatement->getAs(), $search) === 0) {
                 return $useStatement->getClass();
+            }
+        }
+
+        if ($this->getNamespaceName() !== null) {
+            $search = $this->getNamespaceName() . '\\' . $search;
+
+            foreach ($this->useStatements as $useStatement) {
+                if (strcasecmp($useStatement->getClass(), $search) === 0) {
+                    return $useStatement->getClass();
+                }
+            }
+
+            if (class_exists($search)) {
+                return $search;
             }
         }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\MockClasses;
 
-use DataMapper\Tests\MockClasses\Sub\SubItemConstructor;
+use DataMapper\Tests\MockClasses\Sub\SubItemConstructor as SubItemConstructor;
 
 final readonly class RootConstructor implements RootInterface
 {
