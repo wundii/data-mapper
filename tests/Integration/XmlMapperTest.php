@@ -21,7 +21,7 @@ class XmlMapperTest extends TestCase
 {
     public function testXmlMapperConstruct(): void
     {
-        $file = __DIR__ . '/Files/XmlMapperTest01.xml';
+        $file = __DIR__ . '/XmlFiles/XmlMapperTest01.xml';
 
         $dataConfig = new DataConfig();
         $dataMapper = new DataMapper($dataConfig);
@@ -51,7 +51,7 @@ class XmlMapperTest extends TestCase
 
     public function testXmlMapperProperties(): void
     {
-        $file = __DIR__ . '/Files/XmlMapperTest01.xml';
+        $file = __DIR__ . '/XmlFiles/XmlMapperTest01.xml';
 
         $dataConfig = new DataConfig(
             ApproachEnum::PROPERTY,
@@ -73,7 +73,7 @@ class XmlMapperTest extends TestCase
 
     public function testXmlMapperSetters(): void
     {
-        $file = __DIR__ . '/Files/XmlMapperTest01.xml';
+        $file = __DIR__ . '/XmlFiles/XmlMapperTest01.xml';
 
         $dataConfig = new DataConfig(
             ApproachEnum::SETTER,
@@ -92,7 +92,7 @@ class XmlMapperTest extends TestCase
 
     public function testXmlMapperClassMap(): void
     {
-        $file = __DIR__ . '/Files/XmlMapperTest02.xml';
+        $file = __DIR__ . '/XmlFiles/XmlMapperTest02.xml';
 
         $dataConfig = new DataConfig(
             ApproachEnum::PROPERTY,
