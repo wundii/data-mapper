@@ -36,7 +36,7 @@ final readonly class ElementObjectResolver
             $approach = ApproachEnum::CONSTRUCTOR;
         }
 
-        $parameter = match($approach) {
+        $parameter = match ($approach) {
             ApproachEnum::CONSTRUCTOR => $parameter,
             default => [],
         };

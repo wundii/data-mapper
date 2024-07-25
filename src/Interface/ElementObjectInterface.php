@@ -12,4 +12,6 @@ interface ElementObjectInterface extends ElementDataInterface
      * @return ElementDataInterface[]
      */
     public function getValue(): array;
+
+    public function directValue(): bool;
 }
