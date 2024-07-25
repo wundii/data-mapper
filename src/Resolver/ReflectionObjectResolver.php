@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Resolver;
 
+use DataMapper\DataConfig;
 use DataMapper\Reflection\AnnotationReflection;
 use DataMapper\Reflection\ObjectReflection;
 use DataMapper\Reflection\ParameterReflection;
@@ -178,9 +179,20 @@ final readonly class ReflectionObjectResolver
     /**
      * @throws Exception
      */
-    public function resolve(string|object $object, ?LoggerInterface $logger = null): ObjectReflection
+    public function resolve(DataConfig $dataConfig, string|object $object, ?LoggerInterface $logger = null): ObjectReflection
     {
-        if (! is_object($object) && ! class_exists($object) && ! interface_exists($object)) {
+        /**
+         * @todo unittest
+         */
+        if (! is_object($object)) {
+            $object = $dataConfig->mapClassName($object);
+        }
+
+        if (! is_object($object) && interface_exists($object)) {
+            throw new InvalidArgumentException(sprintf('%s: interfaces are not allowed', $object));
+        }
+
+        if (! is_object($object) && ! class_exists($object)) {
             throw new InvalidArgumentException(sprintf('object %s does not exist', $object));
         }
 

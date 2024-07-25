@@ -67,7 +67,7 @@ final class XmlSourceData extends AbstractSourceData
         null|string|object $object,
         null|string $destination = null,
     ): ElementDataInterface {
-        $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
+        $objectReflection = (new ReflectionObjectResolver())->resolve($dataConfig, $object ?: '');
         $dataList = [];
 
         foreach ($xmlElement->children() as $child) {
@@ -107,8 +107,6 @@ final class XmlSourceData extends AbstractSourceData
         if (! $elementData instanceof ElementObjectInterface) {
             throw new Exception('Invalid ElementDataInterface');
         }
-
-        // dump($elementData);
 
         return (new ElementObjectResolver())->resolve($this->dataConfig, $elementData);
     }

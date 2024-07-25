@@ -108,6 +108,13 @@ final readonly class ReflectionTokenResolver
 
         $reflectionClass = new ReflectionClass($object);
 
+        /**
+         * @todo unittest
+         */
+        if ($reflectionClass->isInternal()) {
+            return new UseStatementsReflection(null, []);
+        }
+
         if ($reflectionClass->getFileName() === false) {
             $classString = is_object($object) ? $object::class : $object;
             throw new Exception('Could not get file name from ' . $classString);

@@ -16,6 +16,8 @@ use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Tests\MockClasses\ItemConstructor;
 use DataMapper\Tests\MockClasses\RootProperties;
 use DataMapper\Tests\MockClasses\RootSetters;
+use DateTime;
+use DateTimeInterface;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -65,6 +67,25 @@ class ElementObjectResolverTest extends TestCase
         $elementObjectResolver = new ElementObjectResolver();
         $return = $elementObjectResolver->createInstance($dataConfig, $elementData);
         $this->assertInstanceOf(RootSetters::class, $return);
+    }
+
+    public function testCreateInstanceClassMap(): void
+    {
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::PROPERTY,
+            classMap: [
+                DateTimeInterface::class => DateTime::class,
+            ],
+        );
+        $elementData = new DataObject(
+            'DateTimeInterface',
+            [],
+            'destination',
+        );
+
+        $elementObjectResolver = new ElementObjectResolver();
+        $return = $elementObjectResolver->createInstance($dataConfig, $elementData);
+        $this->assertInstanceOf(DateTime::class, $return);
     }
 
     /**

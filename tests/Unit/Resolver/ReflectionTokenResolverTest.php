@@ -7,7 +7,6 @@ namespace DataMapper\Tests\Unit\Resolver;
 use DataMapper\Reflection\UseStatementReflection;
 use DataMapper\Reflection\UseStatementsReflection;
 use DataMapper\Resolver\ReflectionTokenResolver;
-use DataMapper\Tests\MockClasses\TokenResolver;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -98,7 +97,7 @@ class ReflectionTokenResolverTest extends TestCase
     public function testResolve(): void
     {
         $reflectionTokenResolver = new ReflectionTokenResolver();
-        $useStatementsReflection = $reflectionTokenResolver->resolve(TokenResolver::class);
+        $useStatementsReflection = $reflectionTokenResolver->resolve('DataMapper\Tests\MockClasses\TokenResolver');
 
         $expected = new UseStatementsReflection(
             'DataMapper\Tests\MockClasses',
