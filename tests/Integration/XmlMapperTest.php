@@ -90,24 +90,24 @@ class XmlMapperTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-    // public function testXmlMapperClassMap(): void
-    // {
-    //     $file = __DIR__ . '/Files/XmlMapperTest02.xml';
-    //
-    //     $dataConfig = new DataConfig(
-    //         ApproachEnum::PROPERTY,
-    //         classMap: [
-    //             DateTimeInterface::class => DateTime::class,
-    //         ],
-    //     );
-    //     $dataMapper = new DataMapper($dataConfig);
-    //     $return = $dataMapper->xml(file_get_contents($file), RootClassMap::class);
-    //
-    //     $expected = new RootClassMap();
-    //     $expected->name = 'property';
-    //     $expected->created = new DateTime('2024-07-02T09:05:50.131+02:00');
-    //
-    //     $this->assertInstanceOf(RootClassMap::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
+    public function testXmlMapperClassMap(): void
+    {
+        $file = __DIR__ . '/Files/XmlMapperTest02.xml';
+
+        $dataConfig = new DataConfig(
+            ApproachEnum::PROPERTY,
+            classMap: [
+                DateTimeInterface::class => DateTime::class,
+            ],
+        );
+        $dataMapper = new DataMapper($dataConfig);
+        $return = $dataMapper->xml(file_get_contents($file), RootClassMap::class);
+
+        $expected = new RootClassMap();
+        $expected->name = 'property';
+        $expected->created = new DateTime('2024-07-02T09:05:50.131+02:00');
+
+        $this->assertInstanceOf(RootClassMap::class, $return);
+        $this->assertEquals($expected, $return);
+    }
 }

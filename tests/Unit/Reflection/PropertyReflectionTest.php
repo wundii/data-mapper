@@ -124,11 +124,27 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
+            ['DateTimeInterface'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('DateTimeInterface', $property->getTargetType(true));
+
+        $property = new PropertyReflection(
+            'name',
             ['DataMapper\Tests\MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
         );
 
         $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
+
+        $property = new PropertyReflection(
+            'name',
+            ['DateTimeInterface[]'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertSame('DateTimeInterface', $property->getTargetType(true));
 
         $property = new PropertyReflection(
             'name',

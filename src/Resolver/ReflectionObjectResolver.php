@@ -181,9 +181,6 @@ final readonly class ReflectionObjectResolver
      */
     public function resolve(DataConfig $dataConfig, string|object $object, ?LoggerInterface $logger = null): ObjectReflection
     {
-        /**
-         * @todo unittest
-         */
         if (! is_object($object)) {
             $object = $dataConfig->mapClassName($object);
         }

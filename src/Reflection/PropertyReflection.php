@@ -24,21 +24,6 @@ final readonly class PropertyReflection
             return DataTypeEnum::NULL;
         }
 
-        $types = $this->getTypes();
-
-        if (count($types) === 1) {
-            $type = array_shift($types);
-
-            /**
-             * @todo unittest
-             */
-            if (class_exists($type) || interface_exists($type)) {
-                return DataTypeEnum::OBJECT;
-            }
-
-            return DataTypeEnum::fromString($type);
-        }
-
         foreach ($this->getTypes() as $type) {
             $type = DataTypeEnum::fromString($type);
 
@@ -65,9 +50,6 @@ final readonly class PropertyReflection
         $lowestType = null;
 
         foreach ($this->getTypes() as $type) {
-            /**
-             * @todo unittest
-             */
             if (class_exists($type) || interface_exists($type)) {
                 if ($classOnly) {
                     return $type;
@@ -78,10 +60,6 @@ final readonly class PropertyReflection
 
             if (str_ends_with($type, '[]')) {
                 $classType = substr($type, 0, -2);
-
-                /**
-                 * @todo unittest
-                 */
                 if (class_exists($classType) || interface_exists($classType)) {
                     if ($classOnly) {
                         return $classType;

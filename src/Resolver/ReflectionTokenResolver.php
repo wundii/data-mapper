@@ -108,9 +108,6 @@ final readonly class ReflectionTokenResolver
 
         $reflectionClass = new ReflectionClass($object);
 
-        /**
-         * @todo unittest
-         */
         if ($reflectionClass->isInternal()) {
             return new UseStatementsReflection(null, []);
         }

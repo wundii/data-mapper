@@ -69,6 +69,9 @@ class ElementObjectResolverTest extends TestCase
         $this->assertInstanceOf(RootSetters::class, $return);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCreateInstanceClassMap(): void
     {
         $dataConfig = new DataConfig(
@@ -77,15 +80,33 @@ class ElementObjectResolverTest extends TestCase
                 DateTimeInterface::class => DateTime::class,
             ],
         );
+        $dateTime = '2024-07-02T09:05:50.131+02:00';
         $elementData = new DataObject(
             'DateTimeInterface',
             [],
             'destination',
         );
 
+        $expected = new DateTime($dateTime);
+
         $elementObjectResolver = new ElementObjectResolver();
-        $return = $elementObjectResolver->createInstance($dataConfig, $elementData);
+        $return = $elementObjectResolver->createInstance($dataConfig, $elementData, [$dateTime]);
         $this->assertInstanceOf(DateTime::class, $return);
+        $this->assertNotEquals($expected, $return);
+
+        $elementData = new DataObject(
+            'DateTimeInterface',
+            [],
+            'destination',
+            true,
+        );
+
+        $expected = new DateTime($dateTime);
+
+        $elementObjectResolver = new ElementObjectResolver();
+        $return = $elementObjectResolver->createInstance($dataConfig, $elementData, [$dateTime]);
+        $this->assertInstanceOf(DateTime::class, $return);
+        $this->assertEquals($expected, $return);
     }
 
     /**

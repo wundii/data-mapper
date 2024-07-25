@@ -23,12 +23,23 @@ final readonly class ElementObjectResolver
         array $parameter = [],
     ): object {
         $object = $elementObject->getObject();
+        $approach = $dataConfig->getApproach();
+        $directValue = $elementObject->directValue();
 
         if (is_object($object)) {
             return $object;
         }
 
         $object = $dataConfig->mapClassName($object);
+
+        if ($directValue) {
+            $approach = ApproachEnum::CONSTRUCTOR;
+        }
+
+        $parameter = match($approach) {
+            ApproachEnum::CONSTRUCTOR => $parameter,
+            default => [],
+        };
 
         return new $object(...$parameter);
     }
@@ -91,7 +102,7 @@ final readonly class ElementObjectResolver
         DataConfig $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
-        $instance = $this->createInstance($dataConfig, $elementObject);
+        $instance = $this->constructor($dataConfig, $elementObject);
 
         foreach ($elementObject->getValue() as $elementData) {
             $destination = $elementData->getDestination();
@@ -119,7 +130,7 @@ final readonly class ElementObjectResolver
         DataConfig $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
-        $instance = $this->createInstance($dataConfig, $elementObject);
+        $instance = $this->constructor($dataConfig, $elementObject);
 
         foreach ($elementObject->getValue() as $elementData) {
             $destination = $elementData->getDestination();

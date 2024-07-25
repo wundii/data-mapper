@@ -70,6 +70,13 @@ final class XmlSourceData extends AbstractSourceData
         $objectReflection = (new ReflectionObjectResolver())->resolve($dataConfig, $object ?: '');
         $dataList = [];
 
+        if ($xmlElement->count() === 0) {
+            $value = (string) $xmlElement;
+            $dataList[] = new DataString($value, $destination);
+
+            return new DataObject($object ?: '', $dataList, $destination, true);
+        }
+
         foreach ($xmlElement->children() as $child) {
             $childReflection = $objectReflection->find($dataConfig->getApproach(), $child->getName());
             if (! $childReflection instanceof PropertyReflection) {
@@ -78,13 +85,15 @@ final class XmlSourceData extends AbstractSourceData
 
             $value = (string) $child;
             $name = $childReflection->getName();
+            $dataType = $childReflection->getDataType();
+            $targetType = $childReflection->getTargetType(true);
 
-            $dataList[] = match ($childReflection->getDataType()) {
+            $dataList[] = match ($dataType) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),
-                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $child, $childReflection->getTargetType(true), $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $childReflection->getTargetType(true), $name),
+                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $child, $targetType, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $targetType, $name),
                 default => new DataString($value, $name),
             };
         }

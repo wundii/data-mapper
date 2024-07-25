@@ -94,19 +94,12 @@ class ReflectionTokenResolverTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testResolve(): void
+    public function testResolveInternalFunction(): void
     {
         $reflectionTokenResolver = new ReflectionTokenResolver();
-        $useStatementsReflection = $reflectionTokenResolver->resolve('DataMapper\Tests\MockClasses\TokenResolver');
+        $useStatementsReflection = $reflectionTokenResolver->resolve('DateTime');
 
-        $expected = new UseStatementsReflection(
-            'DataMapper\Tests\MockClasses',
-            [
-                new UseStatementReflection('DataMapper\Tests\MockClasses\TokenResolver', 'TokenResolver'),
-                new UseStatementReflection('DataMapper\Tests\MockClasses\ItemConstructor', 'CustomItemConstructor'),
-                new UseStatementReflection('DataMapper\Tests\MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
-            ],
-        );
+        $expected = new UseStatementsReflection(null, []);
 
         $this->assertEquals($expected, $useStatementsReflection);
     }
