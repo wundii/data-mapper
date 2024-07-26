@@ -30,8 +30,6 @@ final readonly class ElementObjectResolver
             return $object;
         }
 
-        $object = $dataConfig->mapClassName($object);
-
         if ($directValue) {
             $approach = ApproachEnum::CONSTRUCTOR;
         }

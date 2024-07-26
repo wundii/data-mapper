@@ -67,8 +67,11 @@ final class XmlSourceData extends AbstractSourceData
         null|string|object $object,
         null|string $destination = null,
     ): ElementDataInterface {
-        $objectReflection = (new ReflectionObjectResolver())->resolve($dataConfig, $object ?: '');
         $dataList = [];
+
+        if (is_string($object)) {
+            $object = $dataConfig->mapClassName($object);
+        }
 
         if ($xmlElement->count() === 0) {
             $value = (string) $xmlElement;
@@ -76,6 +79,8 @@ final class XmlSourceData extends AbstractSourceData
 
             return new DataObject($object ?: '', $dataList, $destination, true);
         }
+
+        $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
 
         foreach ($xmlElement->children() as $child) {
             $childReflection = $objectReflection->find($dataConfig->getApproach(), $child->getName());

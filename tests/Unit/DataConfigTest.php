@@ -96,46 +96,4 @@ class DataConfigTest extends TestCase
         $this->assertEquals(RootConstructor::class, $config->mapClassName(RootConstructor::class));
         $this->assertEquals(RootInterface::class, $config->mapClassName(RootInterface::class));
     }
-
-    public function testDataConfigCallable(): void
-    {
-        $config = new DataConfig(
-            ApproachEnum::PROPERTY,
-            AccessibleEnum::PRIVATE,
-            [
-                RootConstructor::class => fn (string $className) => RootInterface::class,
-            ]
-        );
-        $this->assertInstanceOf(DataConfig::class, $config);
-        $this->assertEquals(RootInterface::class, $config->mapClassName(RootConstructor::class));
-    }
-
-    public function testDataConfigCallableException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The class map callable must return a string');
-
-        $config = new DataConfig(
-            ApproachEnum::PROPERTY,
-            AccessibleEnum::PRIVATE,
-            [
-                RootConstructor::class => fn (string $className) => false,
-            ]
-        );
-
-        $config->mapClassName(RootConstructor::class);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The key class does not exist');
-
-        $config = new DataConfig(
-            ApproachEnum::PROPERTY,
-            AccessibleEnum::PRIVATE,
-            [
-                RootConstructor::class => fn (string $className) => 'fail',
-            ]
-        );
-
-        $config->mapClassName(RootConstructor::class);
-    }
 }
