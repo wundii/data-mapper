@@ -10,7 +10,8 @@ use DataMapper\Enum\ApproachEnum;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeAlias;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeBasic;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\EnumBasic;
-use DataMapper\Tests\Integration\Objects\Types\TypeEnum;
+use DataMapper\Tests\Integration\Objects\Types\TypeEnumInt;
+use DataMapper\Tests\Integration\Objects\Types\TypeEnumString;
 use DateTime;
 use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
@@ -66,7 +67,8 @@ class XmlClassMapDirectValueTest extends TestCase
         $return = $dataMapper->xml(file_get_contents($file), EnumBasic::class, $dataConfig);
 
         $expected = new EnumBasic();
-        $expected->enum = TypeEnum::TOKYO;
+        $expected->enumString = TypeEnumString::TOKYO;
+        $expected->enumInt = TypeEnumInt::LONDON;
 
         $this->assertInstanceOf(EnumBasic::class, $return);
         $this->assertEquals($expected, $return);

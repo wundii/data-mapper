@@ -37,6 +37,12 @@ final readonly class ElementObjectResolver
                     throw new Exception('Enum class must have a from method: ' . $object);
                 }
 
+                /**
+                 * $reflectionEnum = new ReflectionEnum(Enum::class);
+                 * (string) $reflectionEnum->getBackingType();
+                 */
+                $parameter = array_map(static fn (mixed $value): mixed => is_numeric($value) ? (int) $value : $value, $parameter);
+
                 return $object::from(...$parameter);
             }
 
