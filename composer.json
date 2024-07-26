@@ -24,7 +24,7 @@
     "phpstan/phpstan-strict-rules": "^1.6",
     "phpunit/phpunit": "^10.5",
     "rector/rector": "^1.2",
-    "symfony/var-dumper": "^6.4",
+    "symfony/var-dumper": "^6 || ^7",
     "symplify/easy-coding-standard": "^12.3",
     "wundii/phplint": "^0.3"
   },
