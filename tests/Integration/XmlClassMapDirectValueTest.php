@@ -7,10 +7,10 @@ namespace DataMapper\Tests\Integration;
 use DataMapper\DataConfig;
 use DataMapper\DataMapper;
 use DataMapper\Enum\ApproachEnum;
-use DateTime;
-use DateTimeInterface;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeAlias;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeBasic;
+use DateTime;
+use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
 
 class XmlClassMapDirectValueTest extends TestCase

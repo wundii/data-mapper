@@ -11,12 +11,12 @@ final readonly class BaseConstructor
      * @param SubConstructor[] $subConstructors
      */
     public function __construct(
-        private float           $amount,
-        private string          $name,
-        private ?int            $id = null,
-        private array           $myStrings = [],
+        private float $amount,
+        private string $name,
+        private ?int $id = null,
+        private array $myStrings = [],
         private ?SubConstructor $subConstructor = null,
-        private array           $subConstructors = [],
+        private array $subConstructors = [],
     ) {
     }
 
