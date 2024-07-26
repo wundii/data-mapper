@@ -15,7 +15,7 @@ use DataMapper\Tests\Integration\Objects\ApproachBasic\SubProperty;
 use DataMapper\Tests\Integration\Objects\ApproachBasic\SubSetter;
 use PHPUnit\Framework\TestCase;
 
-class XmlBasicPropertyTest extends TestCase
+class XmlApproachBasicTest extends TestCase
 {
     public function testConstructorDefault(): void
     {
