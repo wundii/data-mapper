@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\Integration\Objects\ClassMapDirectValue;
 
-use DateTimeInterface;
-
-final class DateTimeBasic
+final class EnumBasic
 {
-    public DateTimeInterface $created;
+    public TestEnum $enum;
 }

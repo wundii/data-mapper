@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\Integration\Objects\Types;
 
-use DataMapper\Tests\MockClasses\RootInterface;
-
-final class TypeInt implements RootInterface
+final class TypeInt
 {
     public function __construct(
         public int $int,

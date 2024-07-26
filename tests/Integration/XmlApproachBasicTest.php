@@ -21,8 +21,7 @@ class XmlApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicConstructor.xml';
 
-        $dataConfig = new DataConfig();
-        $dataMapper = new DataMapper($dataConfig);
+        $dataMapper = new DataMapper();
         $return = $dataMapper->xml(file_get_contents($file), BaseConstructor::class);
 
         $expected = new BaseConstructor(
@@ -49,8 +48,8 @@ class XmlApproachBasicTest extends TestCase
         $file = __DIR__ . '/XmlFiles/ApproachBasicProperty.xml';
 
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
-        $dataMapper = new DataMapper($dataConfig);
-        $return = $dataMapper->xml(file_get_contents($file), BaseProperty::class);
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), BaseProperty::class, $dataConfig);
 
         $subProperty01 = new SubProperty();
         $subProperty01->active = true;
@@ -82,8 +81,8 @@ class XmlApproachBasicTest extends TestCase
         $file = __DIR__ . '/XmlFiles/ApproachBasicSetter.xml';
 
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
-        $dataMapper = new DataMapper($dataConfig);
-        $return = $dataMapper->xml(file_get_contents($file), BaseSetter::class);
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), BaseSetter::class, $dataConfig);
 
         $subSetter01 = new SubSetter();
         $subSetter01->setActive(true);

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\Integration\Objects\Types;
 
-use DataMapper\Tests\MockClasses\RootInterface;
-
-final class TypeObjectArray implements RootInterface
+final class TypeObjectArray
 {
     /**
      * @param TypeString[] $typeStrings

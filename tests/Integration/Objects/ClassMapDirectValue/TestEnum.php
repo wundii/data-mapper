@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DataMapper\Tests\Integration\Objects\ClassMapDirectValue;
 
-use DateTimeInterface;
-
-final class DateTimeBasic
+enum TestEnum: string
 {
-    public DateTimeInterface $created;
+    case BERLIN = 'Berlin';
+    case TOKYO = 'Tokyo';
+    case LONDON = 'London';
 }

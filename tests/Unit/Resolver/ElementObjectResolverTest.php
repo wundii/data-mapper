@@ -16,8 +16,8 @@ use DataMapper\Resolver\ElementObjectResolver;
 use DataMapper\Tests\MockClasses\ItemConstructor;
 use DataMapper\Tests\MockClasses\RootProperties;
 use DataMapper\Tests\MockClasses\RootSetters;
-use DateTime;
-use DateTimeInterface;
+use DataMapper\Tests\MockClasses\TestEnum;
+use DataMapper\Tests\MockClasses\TestStringEnum;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -69,45 +69,50 @@ class ElementObjectResolverTest extends TestCase
         $this->assertInstanceOf(RootSetters::class, $return);
     }
 
-    // /**
-    //  * @throws Exception
-    //  */
-    // public function testCreateInstanceClassMap(): void
-    // {
-    //     $dataConfig = new DataConfig(
-    //         approachEnum: ApproachEnum::PROPERTY,
-    //         classMap: [
-    //             DateTimeInterface::class => DateTime::class,
-    //         ],
-    //     );
-    //     $dateTime = '2024-07-02T09:05:50.131+02:00';
-    //     $elementData = new DataObject(
-    //         'DateTimeInterface',
-    //         [],
-    //         'destination',
-    //     );
-    //
-    //     $expected = new DateTime($dateTime);
-    //
-    //     $elementObjectResolver = new ElementObjectResolver();
-    //     $return = $elementObjectResolver->createInstance($dataConfig, $elementData, [$dateTime]);
-    //     $this->assertInstanceOf(DateTime::class, $return);
-    //     $this->assertNotEquals($expected, $return);
-    //
-    //     $elementData = new DataObject(
-    //         'DateTimeInterface',
-    //         [],
-    //         'destination',
-    //         true,
-    //     );
-    //
-    //     $expected = new DateTime($dateTime);
-    //
-    //     $elementObjectResolver = new ElementObjectResolver();
-    //     $return = $elementObjectResolver->createInstance($dataConfig, $elementData, [$dateTime]);
-    //     $this->assertInstanceOf(DateTime::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
+    /**
+     * @throws Exception
+     */
+    public function testCreateInstanceEnumException(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Enum class must have a from method: ' . TestEnum::class);
+
+        $dataConfig = new DataConfig(approachEnum: ApproachEnum::PROPERTY);
+        $elementData = new DataObject(
+            'DataMapper\Tests\MockClasses\TestEnum',
+            [
+                new DataString('two', 'destination'),
+            ],
+            'destination',
+            true
+        );
+
+        $elementObjectResolver = new ElementObjectResolver();
+        $elementObjectResolver->createInstance($dataConfig, $elementData, ['two']);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testCreateInstanceEnum(): void
+    {
+        $dataConfig = new DataConfig(approachEnum: ApproachEnum::PROPERTY);
+        $elementData = new DataObject(
+            'DataMapper\Tests\MockClasses\TestStringEnum',
+            [
+                new DataString('two', 'destination'),
+            ],
+            'destination',
+            true
+        );
+
+        $expected = TestStringEnum::TWO;
+
+        $elementObjectResolver = new ElementObjectResolver();
+        $return = $elementObjectResolver->createInstance($dataConfig, $elementData, ['two']);
+        $this->assertInstanceOf(TestStringEnum::class, $return);
+        $this->assertEquals($expected, $return);
+    }
 
     /**
      * @throws Exception

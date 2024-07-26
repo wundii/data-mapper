@@ -16,6 +16,7 @@ final readonly class ElementObjectResolver
 {
     /**
      * @param mixed[] $parameter
+     * @throws Exception
      */
     public function createInstance(
         DataConfig $dataConfig,
@@ -31,6 +32,14 @@ final readonly class ElementObjectResolver
         }
 
         if ($directValue) {
+            if (enum_exists($object)) {
+                if (! method_exists($object, 'from')) {
+                    throw new Exception('Enum class must have a from method: ' . $object);
+                }
+
+                return $object::from(...$parameter);
+            }
+
             $approach = ApproachEnum::CONSTRUCTOR;
         }
 

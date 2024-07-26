@@ -9,6 +9,8 @@ use DataMapper\DataMapper;
 use DataMapper\Enum\ApproachEnum;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeAlias;
 use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeBasic;
+use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\EnumBasic;
+use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\TestEnum;
 use DateTime;
 use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
@@ -25,8 +27,8 @@ class XmlClassMapDirectValueTest extends TestCase
                 DateTimeInterface::class => DateTime::class,
             ],
         );
-        $dataMapper = new DataMapper($dataConfig);
-        $return = $dataMapper->xml(file_get_contents($file), DateTimeBasic::class);
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), DateTimeBasic::class, $dataConfig);
 
         $expected = new DateTimeBasic();
         $expected->created = new DateTime('2024-07-02T09:05:50.131+02:00');
@@ -45,13 +47,28 @@ class XmlClassMapDirectValueTest extends TestCase
                 DateTimeInterface::class => DateTime::class,
             ],
         );
-        $dataMapper = new DataMapper($dataConfig);
-        $return = $dataMapper->xml(file_get_contents($file), DateTimeAlias::class);
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), DateTimeAlias::class, $dataConfig);
 
         $expected = new DateTimeAlias();
         $expected->created = new DateTime('2024-07-02T09:05:50.131+02:00');
 
         $this->assertInstanceOf(DateTimeAlias::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testEnumBasic(): void
+    {
+        $file = __DIR__ . '/XmlFiles/ClassMapDirectValueEnum.xml';
+
+        $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), EnumBasic::class, $dataConfig);
+
+        $expected = new EnumBasic();
+        $expected->enum = TestEnum::TOKYO;
+
+        $this->assertInstanceOf(EnumBasic::class, $return);
         $this->assertEquals($expected, $return);
     }
 }
