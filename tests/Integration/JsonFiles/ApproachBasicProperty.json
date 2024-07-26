@@ -1,0 +1,20 @@
+{
+    "amount": 222.22,
+    "name": "approach",
+    "id": 1337,
+    "myStrings": [
+        "hello",
+        "world"
+    ],
+    "subProperty": {
+        "active": true
+    },
+    "subProperties": [
+        {
+            "active": true
+        },
+        {
+            "active": false
+        }
+    ]
+}

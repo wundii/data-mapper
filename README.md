@@ -76,9 +76,10 @@ $testClass = $dataMapper->xml($xml, TestClass::class, $dataConfig);
 
 ## ToDo`s for the first release
 - [ ] Psr\Log implementation
-- [ ] JsonSourceData implementation
-- [ ] Json unit test
+- [x] JsonSourceData implementation
+- [x] Json unit test
 
 ### optional ToDo`s
 - [ ] `ElementObjectResolver->CreateInstance(...)` private properties/methods
 - [ ] XmlSourceData unit test
+- [ ] JsonSourceData phpstan issues

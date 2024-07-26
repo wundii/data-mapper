@@ -7,15 +7,6 @@ namespace DataMapper;
 use DataMapper\Enum\SourceTypeEnum;
 use InvalidArgumentException;
 
-if (PHP_VERSION_ID < 80300) {
-    function json_validate(string $string): bool
-    {
-        json_decode($string);
-
-        return json_last_error() === JSON_ERROR_NONE;
-    }
-}
-
 final readonly class DataMapper
 {
     /**
@@ -40,10 +31,6 @@ final readonly class DataMapper
         string|object $object,
         null|DataConfig $dataConfig = null,
     ): object {
-        if (! json_validate($source)) {
-            throw new InvalidArgumentException('Invalid JSON string');
-        }
-
         return $this->map(SourceTypeEnum::JSON, $source, $object, $dataConfig);
     }
 
