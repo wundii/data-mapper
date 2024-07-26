@@ -284,6 +284,33 @@ class PropertyReflectionTest extends TestCase
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
     }
 
+    public function testIsNullable(): void
+    {
+        $property = new PropertyReflection(
+            'name',
+            ['string'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertFalse($property->isNullable());
+
+        $property = new PropertyReflection(
+            'name',
+            ['string', 'null'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertTrue($property->isNullable());
+
+        $property = new PropertyReflection(
+            'name',
+            ['NULL', 'string'],
+            $this->annotationEmpty(),
+        );
+
+        $this->assertTrue($property->isNullable());
+    }
+
     public function testGetType(): void
     {
         $property = new PropertyReflection(

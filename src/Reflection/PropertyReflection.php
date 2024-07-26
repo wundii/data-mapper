@@ -109,6 +109,13 @@ final readonly class PropertyReflection
         return count($types) === 1;
     }
 
+    public function isNullable(): bool
+    {
+        $types = array_map(fn (string $type): string => strtolower($type), $this->types);
+
+        return in_array('null', $types, true);
+    }
+
     public function getName(): string
     {
         return $this->name;

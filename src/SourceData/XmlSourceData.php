@@ -9,6 +9,7 @@ use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataBool;
 use DataMapper\Elements\DataFloat;
 use DataMapper\Elements\DataInt;
+use DataMapper\Elements\DataNull;
 use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
 use DataMapper\Enum\DataTypeEnum;
@@ -45,8 +46,6 @@ final class XmlSourceData extends AbstractSourceData
         foreach ($xmlElement->children() as $child) {
             $name = $child->getName();
             $value = (string) $child;
-
-            // dump($name, $value, $type, $dataType, '_______________');
 
             $dataList[] = match ($dataType) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
@@ -95,9 +94,12 @@ final class XmlSourceData extends AbstractSourceData
             $dataType = $childReflection->getDataType();
             $targetType = $childReflection->getTargetType(true);
 
-            // dump($name, $value, $dataType, $targetType, $objectReflection->getSetters(), '_______________');
+            if ($childReflection->isNullable() && $value === '') {
+                $dataType = DataTypeEnum::NULL;
+            }
 
             $dataList[] = match ($dataType) {
+                DataTypeEnum::NULL => new DataNull($name),
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),

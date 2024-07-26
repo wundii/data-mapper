@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <strings>
+        <string>one</string>
+        <string>two</string>
+    </strings>
+    <ints>
+        <int>1</int>
+        <int>2</int>
+    </ints>
+    <floats>
+        <float>3.3</float>
+        <float>4.4</float>
+    </floats>
+</root>
