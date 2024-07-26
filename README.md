@@ -73,3 +73,12 @@ $testClass = $dataMapper->array($array, TestClass::class, $dataConfig);
 $testClass = $dataMapper->json($json, TestClass::class, $dataConfig);
 $testClass = $dataMapper->xml($xml, TestClass::class, $dataConfig);
 ```
+
+## ToDo for first release
+- [ ] Psr\Log implementation
+- [ ] JsonSourceData implementation
+- [ ] Json unit test
+
+## optionals
+- [ ] `ElementObjectResolver->CreateInstance(...)` private properties/methods *optional
+- [ ] XmlSourceData unit test *optional
