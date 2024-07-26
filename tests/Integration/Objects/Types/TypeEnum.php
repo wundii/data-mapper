@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Integration\Objects\ClassMapDirectValue;
+namespace DataMapper\Tests\Integration\Objects\Types;
 
-enum TestEnum: string
+enum TypeEnum: string
 {
     case BERLIN = 'Berlin';
     case TOKYO = 'Tokyo';
