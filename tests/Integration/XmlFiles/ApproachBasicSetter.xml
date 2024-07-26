@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <amount>222.22</amount>
+    <name>approach</name>
+    <id>1337</id>
+    <myStrings>
+        <string>hello</string>
+        <string>world</string>
+    </myStrings>
+    <subSetter>
+        <active>true</active>
+    </subSetter>
+    <subSetters>
+        <subSetter>
+            <active>yes</active>
+        </subSetter>
+        <subSetter>
+            <active>false</active>
+        </subSetter>
+    </subSetters>
+</root>

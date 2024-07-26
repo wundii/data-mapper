@@ -25,6 +25,14 @@ class PropertyReflectionTest extends TestCase
         );
     }
 
+    public function annotationArraySetter(): AnnotationReflection
+    {
+        return new AnnotationReflection(
+            [new ParameterReflection('myStrings', ['string'])],
+            [],
+        );
+    }
+
     public function annotationComplex(): AnnotationReflection
     {
         return new AnnotationReflection(
@@ -88,6 +96,22 @@ class PropertyReflectionTest extends TestCase
             'DataMapper\Tests\MockClasses\RootConstructor',
             'null',
             'float',
+        ];
+
+        $this->assertSame($expected, $property->getTypes());
+    }
+
+    public function testTypesArraySetter(): void
+    {
+        $property = new PropertyReflection(
+            'setMyStrings',
+            ['array'],
+            $this->annotationArraySetter(),
+        );
+
+        $expected = [
+            'array',
+            'string',
         ];
 
         $this->assertSame($expected, $property->getTypes());

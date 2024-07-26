@@ -124,7 +124,13 @@ final readonly class PropertyReflection
         $types = array_merge($types, $this->annotationReflection->getVariables());
 
         foreach ($this->annotationReflection->getParameterReflections() as $parameterReflection) {
-            if (strcasecmp($parameterReflection->getParameter(), $this->name) === 0) {
+            $name = $this->name;
+
+            if (str_starts_with($name, 'set')) {
+                $name = substr($name, 3);
+            }
+
+            if (strcasecmp($parameterReflection->getParameter(), $name) === 0) {
                 $types = array_merge($types, $parameterReflection->getTypes());
                 break;
             }

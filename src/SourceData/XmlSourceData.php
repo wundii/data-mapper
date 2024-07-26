@@ -46,6 +46,8 @@ final class XmlSourceData extends AbstractSourceData
             $name = $child->getName();
             $value = (string) $child;
 
+            // dump($name, $value, $type, $dataType, '_______________');
+
             $dataList[] = match ($dataType) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
@@ -92,6 +94,8 @@ final class XmlSourceData extends AbstractSourceData
             $name = $childReflection->getName();
             $dataType = $childReflection->getDataType();
             $targetType = $childReflection->getTargetType(true);
+
+            // dump($name, $value, $dataType, $targetType, $objectReflection->getSetters(), '_______________');
 
             $dataList[] = match ($dataType) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
