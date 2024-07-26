@@ -11,6 +11,8 @@ use DataMapper\Tests\Integration\Objects\Types\TypeBool;
 use DataMapper\Tests\Integration\Objects\Types\TypeFloat;
 use DataMapper\Tests\Integration\Objects\Types\TypeInt;
 use DataMapper\Tests\Integration\Objects\Types\TypeNull;
+use DataMapper\Tests\Integration\Objects\Types\TypeObject;
+use DataMapper\Tests\Integration\Objects\Types\TypeObjectArray;
 use DataMapper\Tests\Integration\Objects\Types\TypeString;
 use PHPUnit\Framework\TestCase;
 
@@ -170,6 +172,39 @@ class XmlTypesTest extends TestCase
         );
 
         $this->assertInstanceOf(TypeArray::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testObject(): void
+    {
+        $file = __DIR__ . '/XmlFiles/TypeObject.xml';
+
+        $dataMapper = new DataMapper(new DataConfig());
+        $return = $dataMapper->xml(file_get_contents($file), TypeObject::class);
+
+        $expected = new TypeObject(
+            new TypeString('Nostromo'),
+        );
+
+        $this->assertInstanceOf(TypeObject::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testObjectArray(): void
+    {
+        $file = __DIR__ . '/XmlFiles/TypeObjectArray.xml';
+
+        $dataMapper = new DataMapper(new DataConfig());
+        $return = $dataMapper->xml(file_get_contents($file), TypeObjectArray::class);
+
+        $expected = new TypeObjectArray(
+            [
+                new TypeString('one'),
+                new TypeString('two'),
+            ],
+        );
+
+        $this->assertInstanceOf(TypeObjectArray::class, $return);
         $this->assertEquals($expected, $return);
     }
 }
