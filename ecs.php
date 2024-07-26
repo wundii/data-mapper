@@ -14,10 +14,6 @@ return function (ECSConfig $ecsConfig): void {
         __DIR__ . '/tests',
     ]);
 
-    $ecsConfig->skip([
-        __DIR__ . '/tests/FaultyFiles',
-    ]);
-
     $ecsConfig->parallel();
 
     // this way you add a single rule
