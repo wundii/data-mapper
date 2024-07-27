@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace DataMapper;
 
 use DataMapper\Enum\SourceTypeEnum;
+use DataMapper\Interface\DataConfigInterface;
 use InvalidArgumentException;
 
-final readonly class DataMapper
+readonly class DataMapper
 {
     /**
      * @param mixed[] $source
@@ -15,7 +16,7 @@ final readonly class DataMapper
     public function array(
         array $source,
         string|object $object,
-        null|DataConfig $dataConfig = null,
+        null|DataConfigInterface $dataConfig = null,
     ): object {
         $json = json_encode($source);
 
@@ -29,7 +30,7 @@ final readonly class DataMapper
     public function json(
         string $source,
         string|object $object,
-        null|DataConfig $dataConfig = null,
+        null|DataConfigInterface $dataConfig = null,
     ): object {
         return $this->map(SourceTypeEnum::JSON, $source, $object, $dataConfig);
     }
@@ -37,7 +38,7 @@ final readonly class DataMapper
     public function xml(
         string $source,
         string|object $object,
-        null|DataConfig $dataConfig = null,
+        null|DataConfigInterface $dataConfig = null,
     ): object {
         return $this->map(SourceTypeEnum::XML, $source, $object, $dataConfig);
     }
@@ -46,9 +47,9 @@ final readonly class DataMapper
         SourceTypeEnum $sourceTypeEnum,
         string $source,
         string|object $object,
-        null|DataConfig $dataConfig = null,
+        null|DataConfigInterface $dataConfig = null,
     ): object {
-        if (! $dataConfig instanceof DataConfig) {
+        if (! $dataConfig instanceof DataConfigInterface) {
             $dataConfig = new DataConfig();
         }
 

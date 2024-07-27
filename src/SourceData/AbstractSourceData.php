@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\SourceData;
 
-use DataMapper\DataConfig;
+use DataMapper\Interface\DataConfigInterface;
 use DataMapper\Interface\SourceDataInterface;
 use DataMapper\Reflection\ObjectReflection;
 use DataMapper\Resolver\ReflectionObjectResolver;
@@ -18,7 +18,7 @@ abstract class AbstractSourceData implements SourceDataInterface
     protected static array $objectReflections = [];
 
     public function __construct(
-        protected DataConfig $dataConfig,
+        protected DataConfigInterface $dataConfig,
         protected string $source,
         protected string|object $object,
     ) {

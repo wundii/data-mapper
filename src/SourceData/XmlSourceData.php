@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DataMapper\SourceData;
 
-use DataMapper\DataConfig;
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataBool;
 use DataMapper\Elements\DataFloat;
@@ -13,6 +12,7 @@ use DataMapper\Elements\DataNull;
 use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
 use DataMapper\Enum\DataTypeEnum;
+use DataMapper\Interface\DataConfigInterface;
 use DataMapper\Interface\ElementArrayInterface;
 use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
@@ -27,7 +27,7 @@ final class XmlSourceData extends AbstractSourceData
      * @throws Exception
      */
     public function elementArray(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         SimpleXMLElement $xmlElement,
         null|string $type,
         null|string $destination = null,
@@ -62,7 +62,7 @@ final class XmlSourceData extends AbstractSourceData
      * @throws Exception
      */
     public function elementObject(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         SimpleXMLElement $xmlElement,
         null|string|object $object,
         null|string $destination = null,

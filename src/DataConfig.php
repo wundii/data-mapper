@@ -6,9 +6,10 @@ namespace DataMapper;
 
 use DataMapper\Enum\AccessibleEnum;
 use DataMapper\Enum\ApproachEnum;
+use DataMapper\Interface\DataConfigInterface;
 use InvalidArgumentException;
 
-final readonly class DataConfig
+final readonly class DataConfig implements DataConfigInterface
 {
     /**
      * @param string[] $classMap

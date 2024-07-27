@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DataMapper\Enum;
 
-use DataMapper\DataConfig;
+use DataMapper\Interface\DataConfigInterface;
 use DataMapper\Interface\SourceDataInterface;
 use DataMapper\SourceData\JsonSourceData;
 use DataMapper\SourceData\XmlSourceData;
@@ -16,7 +16,7 @@ enum SourceTypeEnum
 
     public static function sourceDataInstance(
         SourceTypeEnum $sourceTypeEnum,
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         string $source,
         string|object $object,
     ): SourceDataInterface {

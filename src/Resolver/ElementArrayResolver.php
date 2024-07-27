@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DataMapper\Resolver;
 
-use DataMapper\DataConfig;
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataObject;
+use DataMapper\Interface\DataConfigInterface;
 use DataMapper\Interface\ElementArrayInterface;
 use DataMapper\Interface\ElementDataInterface;
 use Exception;
@@ -17,7 +17,7 @@ final readonly class ElementArrayResolver
      * @throws Exception
      */
     public function matchValue(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementDataInterface $elementData,
     ): mixed {
         $elementObjectResolver = new ElementObjectResolver();
@@ -35,7 +35,7 @@ final readonly class ElementArrayResolver
      * @return mixed[]
      */
     public function resolve(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementArrayInterface $elementArray
     ): array {
         $return = [];

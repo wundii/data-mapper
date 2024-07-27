@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DataMapper\Resolver;
 
-use DataMapper\DataConfig;
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataObject;
 use DataMapper\Enum\ApproachEnum;
+use DataMapper\Interface\DataConfigInterface;
 use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
 use Exception;
@@ -19,7 +19,7 @@ final readonly class ElementObjectResolver
      * @throws Exception
      */
     public function createInstance(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
         array $parameter = [],
     ): object {
@@ -61,7 +61,7 @@ final readonly class ElementObjectResolver
      * @throws Exception
      */
     public function matchValue(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementDataInterface $elementData,
     ): mixed {
         $elementArrayResolver = new ElementArrayResolver();
@@ -78,7 +78,7 @@ final readonly class ElementObjectResolver
      * @throws Exception
      */
     public function resolve(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
         return match ($dataConfig->getApproach()) {
@@ -92,7 +92,7 @@ final readonly class ElementObjectResolver
      * @throws Exception
      */
     private function constructor(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
         if (is_object($elementObject->getObject())) {
@@ -112,7 +112,7 @@ final readonly class ElementObjectResolver
      * @throws Exception
      */
     private function properties(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
         $instance = $this->constructor($dataConfig, $elementObject);
@@ -140,7 +140,7 @@ final readonly class ElementObjectResolver
      * @throws Exception
      */
     private function setters(
-        DataConfig $dataConfig,
+        DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
         $instance = $this->constructor($dataConfig, $elementObject);
