@@ -74,6 +74,9 @@
     ],
     "cache-clear": [
       "rm -R ./cache/* -f"
+    ],
+    "phplint": [
+      "php vendor/bin/phplint"
     ]
   },
   "minimum-stability": "stable",
