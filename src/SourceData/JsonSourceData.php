@@ -18,7 +18,6 @@ use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
 use DataMapper\Reflection\PropertyReflection;
 use DataMapper\Resolver\ElementObjectResolver;
-use DataMapper\Resolver\ReflectionObjectResolver;
 use Exception;
 use InvalidArgumentException;
 
@@ -94,7 +93,7 @@ final class JsonSourceData extends AbstractSourceData
             return new DataObject($object ?: '', $dataList, $destination, true);
         }
 
-        $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
+        $objectReflection = $this->reflectionObject($object ?: '');
 
         foreach ($jsonArray as $jsonKey => $jsonValue) {
             $jsonKey = (string) $jsonKey;

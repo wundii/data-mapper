@@ -6,6 +6,10 @@ namespace DataMapper\Reflection;
 
 use DataMapper\Enum\DataTypeEnum;
 
+/**
+ * @todo performance optimization ~3 tenths possible with 10000 repeats
+ */
+
 final readonly class PropertyReflection
 {
     /**

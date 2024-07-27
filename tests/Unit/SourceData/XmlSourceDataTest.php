@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Unit\SourceData;
+namespace DataMapper\Tests\Unit\SourceData;
 
 use PHPUnit\Framework\TestCase;
 

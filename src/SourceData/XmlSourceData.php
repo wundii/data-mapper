@@ -18,7 +18,6 @@ use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
 use DataMapper\Reflection\PropertyReflection;
 use DataMapper\Resolver\ElementObjectResolver;
-use DataMapper\Resolver\ReflectionObjectResolver;
 use Exception;
 use SimpleXMLElement;
 
@@ -81,7 +80,7 @@ final class XmlSourceData extends AbstractSourceData
             return new DataObject($object ?: '', $dataList, $destination, true);
         }
 
-        $objectReflection = (new ReflectionObjectResolver())->resolve($object ?: '');
+        $objectReflection = $this->reflectionObject($object ?: '');
 
         foreach ($xmlElement->children() as $child) {
             $childReflection = $objectReflection->find($dataConfig->getApproach(), $child->getName());

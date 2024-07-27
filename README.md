@@ -78,8 +78,10 @@ $testClass = $dataMapper->xml($xml, TestClass::class, $dataConfig);
 - [ ] Psr\Log implementation
 - [x] JsonSourceData implementation
 - [x] Json unit test
+- [x] Performance issue
 
 ### optional ToDo`s
 - [ ] `ElementObjectResolver->CreateInstance(...)` private properties/methods
 - [ ] XmlSourceData unit test
 - [ ] JsonSourceData phpstan issues
+- [ ] Smaller performance todos
