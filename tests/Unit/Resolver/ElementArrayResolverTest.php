@@ -13,10 +13,10 @@ use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
 use DataMapper\Enum\ApproachEnum;
 use DataMapper\Resolver\ElementArrayResolver;
-use DataMapper\Tests\MockClasses\ItemConstructor;
-use DataMapper\Tests\MockClasses\RootProperties;
-use DataMapper\Tests\MockClasses\RootSetters;
 use Exception;
+use MockClasses\ItemConstructor;
+use MockClasses\RootProperties;
+use MockClasses\RootSetters;
 use PHPUnit\Framework\TestCase;
 
 class ElementArrayResolverTest extends TestCase
@@ -108,7 +108,7 @@ class ElementArrayResolverTest extends TestCase
     {
         $dataConfig = new DataConfig();
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\ItemConstructor',
+            'MockClasses\ItemConstructor',
             [
                 new DataFloat(4.4, 'price'),
                 new DataBool(false, 'isAvailable'),
@@ -129,7 +129,7 @@ class ElementArrayResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootProperties',
+            'MockClasses\RootProperties',
             [
                 new DataInt(4, 'id'),
                 new DataString('test', 'name'),
@@ -154,7 +154,7 @@ class ElementArrayResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootSetters',
+            'MockClasses\RootSetters',
             [
                 new DataInt(4, 'setId'),
                 new DataString('test', 'setName'),
@@ -202,7 +202,7 @@ class ElementArrayResolverTest extends TestCase
                 new DataBool(true, 'destination6'),
             ], 'destination7'),
             new DataObject(
-                'DataMapper\Tests\MockClasses\ItemConstructor',
+                'MockClasses\ItemConstructor',
                 [
                     new DataFloat(2.2, 'price'),
                     new DataBool(true, 'isAvailable'),

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\MockClasses\Sub;
+namespace MockClasses\Sub;
 
-use DataMapper\Tests\MockClasses\RootInterface;
+use MockClasses\RootInterface;
 
 final readonly class SubItemConstructor implements RootInterface
 {

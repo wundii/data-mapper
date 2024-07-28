@@ -7,9 +7,9 @@ namespace Unit;
 use DataMapper\DataConfig;
 use DataMapper\Enum\AccessibleEnum;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Tests\MockClasses\RootConstructor;
-use DataMapper\Tests\MockClasses\RootInterface;
 use InvalidArgumentException;
+use MockClasses\RootConstructor;
+use MockClasses\RootInterface;
 use PHPUnit\Framework\TestCase;
 
 class DataConfigTest extends TestCase

@@ -28,17 +28,17 @@ class ObjectReflectionTest extends TestCase
             [
                 new PropertyReflection('nameProperty', ['string', 'null', 'float'], $annotationReflection),
                 new PropertyReflection('dataProperty', ['array'], $annotationReflection),
-                new PropertyReflection('itemProperty', ['DataMapper\Tests\MockClasses\ItemConstructor'], $annotationReflection),
+                new PropertyReflection('itemProperty', ['MockClasses\ItemConstructor'], $annotationReflection),
             ],
             [
                 new PropertyReflection('nameConstructor', ['string', 'null', 'float'], $annotationReflection),
                 new PropertyReflection('dataConstructor', ['array'], $annotationReflection),
-                new PropertyReflection('itemConstructor', ['DataMapper\Tests\MockClasses\ItemConstructor'], $annotationReflection),
+                new PropertyReflection('itemConstructor', ['MockClasses\ItemConstructor'], $annotationReflection),
             ],
             [
                 new PropertyReflection('nameSetter', ['string', 'null', 'float'], $annotationReflection),
                 new PropertyReflection('dataSetter', ['array'], $annotationReflection),
-                new PropertyReflection('itemSetter', ['DataMapper\Tests\MockClasses\ItemConstructor'], $annotationReflection),
+                new PropertyReflection('itemSetter', ['MockClasses\ItemConstructor'], $annotationReflection),
             ],
         );
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Integration\Objects\ApproachBasic;
+namespace Integration\Objects\ApproachBasic;
 
 final class SubProperty
 {

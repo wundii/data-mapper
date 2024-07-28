@@ -36,7 +36,8 @@
   "autoload-dev": {
     "psr-4": {
       "DataMapper\\Tests\\": "tests/",
-      "Integration\\": "tests/Integration/"
+      "Integration\\": "tests/Integration/",
+      "MockClasses\\": "tests/MockClasses/"
     }
   },
   "scripts": {

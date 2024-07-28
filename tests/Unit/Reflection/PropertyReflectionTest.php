@@ -39,9 +39,9 @@ class PropertyReflectionTest extends TestCase
             [
                 new ParameterReflection('name', ['string', 'null', 'float']),
                 new ParameterReflection('data', ['array']),
-                new ParameterReflection('item', ['DataMapper\Tests\MockClasses\ItemConstructor']),
+                new ParameterReflection('item', ['MockClasses\ItemConstructor']),
             ],
-            ['bool', 'string', 'DataMapper\Tests\MockClasses\ItemConstructor[]', 'DataMapper\Tests\MockClasses\RootConstructor'],
+            ['bool', 'string', 'MockClasses\ItemConstructor[]', 'MockClasses\RootConstructor'],
         );
     }
 
@@ -51,7 +51,7 @@ class PropertyReflectionTest extends TestCase
             [
                 new ParameterReflection('name', ['string', 'null', 'float']),
                 new ParameterReflection('data', ['array']),
-                new ParameterReflection('item', ['DataMapper\Tests\MockClasses\ItemConstructor']),
+                new ParameterReflection('item', ['MockClasses\ItemConstructor']),
             ],
             [],
         );
@@ -92,8 +92,8 @@ class PropertyReflectionTest extends TestCase
         $expected = [
             'string',
             'bool',
-            'DataMapper\Tests\MockClasses\ItemConstructor[]',
-            'DataMapper\Tests\MockClasses\RootConstructor',
+            'MockClasses\ItemConstructor[]',
+            'MockClasses\RootConstructor',
             'null',
             'float',
         ];
@@ -140,11 +140,11 @@ class PropertyReflectionTest extends TestCase
     {
         $property = new PropertyReflection(
             'name',
-            ['DataMapper\Tests\MockClasses\ItemConstructor'],
+            ['MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
+        $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType(true));
 
         $property = new PropertyReflection(
             'name',
@@ -156,11 +156,11 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
-            ['DataMapper\Tests\MockClasses\ItemConstructor[]'],
+            ['MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
         );
 
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
+        $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType(true));
 
         $property = new PropertyReflection(
             'name',
@@ -176,7 +176,7 @@ class PropertyReflectionTest extends TestCase
             $this->annotationComplex(),
         );
 
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $property->getTargetType(true));
+        $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType(true));
 
         $property = new PropertyReflection(
             'name',
@@ -215,7 +215,7 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
-            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor'],
+            ['array', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
         );
 
@@ -234,7 +234,7 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
-            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor[]'],
+            ['array', 'MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
         );
 
@@ -277,7 +277,7 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
-            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor'],
+            ['array', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
         );
 
@@ -323,7 +323,7 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
-            ['array', 'DataMapper\Tests\MockClasses\ItemConstructor[]'],
+            ['array', 'MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
         );
 
@@ -347,7 +347,7 @@ class PropertyReflectionTest extends TestCase
 
         $property = new PropertyReflection(
             'name',
-            ['null', 'DataMapper\Tests\MockClasses\ItemConstructor'],
+            ['null', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
         );
 

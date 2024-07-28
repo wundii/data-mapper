@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\MockClasses;
+namespace MockClasses;
 
 use DataMapper\Reflection\ObjectReflection;
 use DataMapper\SourceData\AbstractSourceData;

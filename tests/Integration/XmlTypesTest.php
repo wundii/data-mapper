@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Integration;
 
 use DataMapper\DataMapper;
-use DataMapper\Tests\Integration\Objects\Types\TypeArray;
-use DataMapper\Tests\Integration\Objects\Types\TypeBool;
-use DataMapper\Tests\Integration\Objects\Types\TypeFloat;
-use DataMapper\Tests\Integration\Objects\Types\TypeInt;
-use DataMapper\Tests\Integration\Objects\Types\TypeNull;
-use DataMapper\Tests\Integration\Objects\Types\TypeObject;
-use DataMapper\Tests\Integration\Objects\Types\TypeObjectArray;
-use DataMapper\Tests\Integration\Objects\Types\TypeString;
+use Integration\Objects\Types\TypeArray;
+use Integration\Objects\Types\TypeBool;
+use Integration\Objects\Types\TypeFloat;
+use Integration\Objects\Types\TypeInt;
+use Integration\Objects\Types\TypeNull;
+use Integration\Objects\Types\TypeObject;
+use Integration\Objects\Types\TypeObjectArray;
+use Integration\Objects\Types\TypeString;
 use PHPUnit\Framework\TestCase;
 
 class XmlTypesTest extends TestCase

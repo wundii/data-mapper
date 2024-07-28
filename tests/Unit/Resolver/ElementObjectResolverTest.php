@@ -13,12 +13,12 @@ use DataMapper\Elements\DataObject;
 use DataMapper\Elements\DataString;
 use DataMapper\Enum\ApproachEnum;
 use DataMapper\Resolver\ElementObjectResolver;
-use DataMapper\Tests\MockClasses\ItemConstructor;
-use DataMapper\Tests\MockClasses\RootProperties;
-use DataMapper\Tests\MockClasses\RootSetters;
-use DataMapper\Tests\MockClasses\TestEnum;
-use DataMapper\Tests\MockClasses\TestStringEnum;
 use Exception;
+use MockClasses\ItemConstructor;
+use MockClasses\RootProperties;
+use MockClasses\RootSetters;
+use MockClasses\TestEnum;
+use MockClasses\TestStringEnum;
 use PHPUnit\Framework\TestCase;
 
 class ElementObjectResolverTest extends TestCase
@@ -27,7 +27,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig();
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\ItemConstructor',
+            'MockClasses\ItemConstructor',
             [],
             'destination',
         );
@@ -45,7 +45,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootProperties',
+            'MockClasses\RootProperties',
             [],
             'destination',
         );
@@ -59,7 +59,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootSetters',
+            'MockClasses\RootSetters',
             [],
             'destination',
         );
@@ -79,7 +79,7 @@ class ElementObjectResolverTest extends TestCase
 
         $dataConfig = new DataConfig(approachEnum: ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\TestEnum',
+            'MockClasses\TestEnum',
             [
                 new DataString('two', 'destination'),
             ],
@@ -98,7 +98,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(approachEnum: ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\TestStringEnum',
+            'MockClasses\TestStringEnum',
             [
                 new DataString('two', 'destination'),
             ],
@@ -201,7 +201,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig();
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\ItemConstructor',
+            'MockClasses\ItemConstructor',
             [
                 new DataFloat(4.4, 'price'),
                 new DataBool(false, 'isAvailable'),
@@ -222,7 +222,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootProperties',
+            'MockClasses\RootProperties',
             [
                 new DataInt(4, 'id'),
                 new DataString('test', 'name'),
@@ -247,7 +247,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootSetters',
+            'MockClasses\RootSetters',
             [
                 new DataInt(4, 'setId'),
                 new DataString('test', 'setName'),
@@ -294,7 +294,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig();
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\ItemConstructor',
+            'MockClasses\ItemConstructor',
             [
                 new DataFloat(4.4, 'price'),
                 new DataBool(false, 'isAvailable'),
@@ -318,7 +318,7 @@ class ElementObjectResolverTest extends TestCase
 
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootProperties',
+            'MockClasses\RootProperties',
             [
                 new DataInt(4),
                 new DataString('test'),
@@ -337,7 +337,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootProperties',
+            'MockClasses\RootProperties',
             [
                 new DataInt(4, 'id'),
                 new DataString('test', 'name'),
@@ -365,7 +365,7 @@ class ElementObjectResolverTest extends TestCase
 
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootSetters',
+            'MockClasses\RootSetters',
             [
                 new DataInt(4),
                 new DataString('test'),
@@ -384,7 +384,7 @@ class ElementObjectResolverTest extends TestCase
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $elementData = new DataObject(
-            'DataMapper\Tests\MockClasses\RootSetters',
+            'MockClasses\RootSetters',
             [
                 new DataInt(4, 'setId'),
                 new DataString('test', 'setName'),

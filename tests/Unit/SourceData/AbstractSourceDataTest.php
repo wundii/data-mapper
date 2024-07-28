@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Unit\SourceData;
 
 use DataMapper\DataConfig;
-use DataMapper\Tests\MockClasses\AbstractSourceDataTest as AbstractSourceData;
-use DataMapper\Tests\MockClasses\RootProperties;
 use Exception;
+use MockClasses\AbstractSourceDataTest as AbstractSourceData;
+use MockClasses\RootProperties;
 use PHPUnit\Framework\TestCase;
 
 class AbstractSourceDataTest extends TestCase
@@ -26,8 +26,8 @@ class AbstractSourceDataTest extends TestCase
             'object'
         );
 
-        $abstractSourceData->reflectionObject('DataMapper\Tests\MockClasses\RootConstructor');
-        $abstractSourceData->reflectionObject('DataMapper\Tests\MockClasses\RootSetters');
+        $abstractSourceData->reflectionObject('MockClasses\RootConstructor');
+        $abstractSourceData->reflectionObject('MockClasses\RootSetters');
     }
 
     /**
@@ -44,8 +44,8 @@ class AbstractSourceDataTest extends TestCase
             'object'
         );
 
-        $abstractSourceData->reflectionObject('DataMapper\Tests\MockClasses\RootConstructor');
-        $abstractSourceData->reflectionObject('DataMapper\Tests\MockClasses\ItemConstructor');
+        $abstractSourceData->reflectionObject('MockClasses\RootConstructor');
+        $abstractSourceData->reflectionObject('MockClasses\ItemConstructor');
     }
 
     /**
@@ -62,9 +62,9 @@ class AbstractSourceDataTest extends TestCase
 
         $reflectionObjects = $abstractSourceData->getReflectionObjects();
         $expected = [
-            'DataMapper\Tests\MockClasses\RootConstructor',
-            'DataMapper\Tests\MockClasses\RootSetters',
-            'DataMapper\Tests\MockClasses\ItemConstructor',
+            'MockClasses\RootConstructor',
+            'MockClasses\RootSetters',
+            'MockClasses\ItemConstructor',
         ];
 
         $this->assertCount(3, $reflectionObjects);

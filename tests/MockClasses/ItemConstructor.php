@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\MockClasses;
+namespace MockClasses;
 
 final readonly class ItemConstructor implements RootInterface
 {

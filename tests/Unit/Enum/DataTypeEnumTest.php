@@ -65,15 +65,15 @@ class DataTypeEnumTest extends TestCase
 
     public function testDataTypeInstance(): void
     {
-        $dataType = DataTypeEnum::fromString('DataMapper\Tests\MockClasses\ItemConstructor');
+        $dataType = DataTypeEnum::fromString('MockClasses\ItemConstructor');
         $this->assertIsString($dataType);
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor', $dataType);
+        $this->assertSame('MockClasses\ItemConstructor', $dataType);
     }
 
     public function testDataTypeInstanceArray(): void
     {
-        $dataType = DataTypeEnum::fromString('DataMapper\Tests\MockClasses\ItemConstructor[]');
+        $dataType = DataTypeEnum::fromString('MockClasses\ItemConstructor[]');
         $this->assertIsString($dataType);
-        $this->assertSame('DataMapper\Tests\MockClasses\ItemConstructor[]', $dataType);
+        $this->assertSame('MockClasses\ItemConstructor[]', $dataType);
     }
 }

@@ -14,9 +14,9 @@ use DataMapper\Elements\DataString;
 use DataMapper\Interface\ElementArrayInterface;
 use DataMapper\Interface\ElementDataInterface;
 use DataMapper\Interface\ElementObjectInterface;
-use DataMapper\Tests\MockClasses\RootConstructor;
-use DataMapper\Tests\MockClasses\RootInterface;
 use InvalidArgumentException;
+use MockClasses\RootConstructor;
+use MockClasses\RootInterface;
 use PHPUnit\Framework\TestCase;
 
 class ElementsTest extends TestCase

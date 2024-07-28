@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\MockClasses;
+namespace MockClasses;
 
-use DataMapper\Tests\MockClasses\ItemConstructor as CustomItemConstructor;
-use DataMapper\Tests\MockClasses\Sub\SubItemConstructor as SubItemConstructor;
+use MockClasses\ItemConstructor as CustomItemConstructor;
+use MockClasses\Sub\SubItemConstructor as SubItemConstructor;
 
 final readonly class TokenResolver implements RootInterface
 {

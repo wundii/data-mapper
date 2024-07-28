@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\MockClasses;
+namespace MockClasses;
 
 final class RootProperties implements RootInterface
 {

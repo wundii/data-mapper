@@ -17,7 +17,7 @@ class ReflectionTokenResolverTest extends TestCase
     {
         $reflectionTokenResolver = new ReflectionTokenResolver();
 
-        $basename = $reflectionTokenResolver->basename('DataMapper\Tests\MockClasses\RootConstructor');
+        $basename = $reflectionTokenResolver->basename('MockClasses\RootConstructor');
 
         $this->assertEquals('RootConstructor', $basename);
 
@@ -33,7 +33,7 @@ class ReflectionTokenResolverTest extends TestCase
     public function testParseToken(): void
     {
         $reflectionClass = $this->createMock(ReflectionClass::class);
-        $reflectionClass->method('getName')->willReturn('DataMapper\Tests\MockClasses\RootConstructor');
+        $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
         $reflectionClass->method('getFileName')->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
         $reflectionClass->method('getNamespaceName')->willReturn('');
 
@@ -42,25 +42,25 @@ class ReflectionTokenResolverTest extends TestCase
         $expected = new UseStatementsReflection(
             null,
             [
-                new UseStatementReflection('DataMapper\Tests\MockClasses\RootConstructor', 'RootConstructor'),
-                new UseStatementReflection('DataMapper\Tests\MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
+                new UseStatementReflection('MockClasses\RootConstructor', 'RootConstructor'),
+                new UseStatementReflection('MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
             ],
         );
 
         $this->assertEquals($expected, $reflectionTokenResolver->parseToken($reflectionClass));
 
         $reflectionClass = $this->createMock(ReflectionClass::class);
-        $reflectionClass->method('getName')->willReturn('DataMapper\Tests\MockClasses\RootConstructor');
+        $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
         $reflectionClass->method('getFileName')->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
-        $reflectionClass->method('getNamespaceName')->willReturn('DataMapper\Tests\MockClasses');
+        $reflectionClass->method('getNamespaceName')->willReturn('MockClasses');
 
         $reflectionTokenResolver = new ReflectionTokenResolver();
 
         $expected = new UseStatementsReflection(
-            'DataMapper\Tests\MockClasses',
+            'MockClasses',
             [
-                new UseStatementReflection('DataMapper\Tests\MockClasses\RootConstructor', 'RootConstructor'),
-                new UseStatementReflection('DataMapper\Tests\MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
+                new UseStatementReflection('MockClasses\RootConstructor', 'RootConstructor'),
+                new UseStatementReflection('MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
             ],
         );
 
@@ -77,7 +77,7 @@ class ReflectionTokenResolverTest extends TestCase
         $this->expectExceptionMessage('Could not read file content from invalid-file-name');
 
         $reflectionClass = $this->createMock(ReflectionClass::class);
-        $reflectionClass->method('getName')->willReturn('DataMapper\Tests\MockClasses\RootConstructor');
+        $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
         $reflectionClass->method('getFileName')->willReturn('invalid-file-name');
 
         /**

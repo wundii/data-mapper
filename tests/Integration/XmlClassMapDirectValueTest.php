@@ -7,13 +7,13 @@ namespace Integration;
 use DataMapper\DataConfig;
 use DataMapper\DataMapper;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeAlias;
-use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\DateTimeBasic;
-use DataMapper\Tests\Integration\Objects\ClassMapDirectValue\EnumBasic;
-use DataMapper\Tests\Integration\Objects\Types\TypeEnumInt;
-use DataMapper\Tests\Integration\Objects\Types\TypeEnumString;
 use DateTime;
 use DateTimeInterface;
+use Integration\Objects\ClassMapDirectValue\DateTimeAlias;
+use Integration\Objects\ClassMapDirectValue\DateTimeBasic;
+use Integration\Objects\ClassMapDirectValue\EnumBasic;
+use Integration\Objects\Types\TypeEnumInt;
+use Integration\Objects\Types\TypeEnumString;
 use PHPUnit\Framework\TestCase;
 
 class XmlClassMapDirectValueTest extends TestCase

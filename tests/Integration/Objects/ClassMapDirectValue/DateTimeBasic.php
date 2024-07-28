@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Integration\Objects\ClassMapDirectValue;
+namespace Integration\Objects\ClassMapDirectValue;
 
 use DateTimeInterface;
 

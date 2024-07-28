@@ -7,12 +7,12 @@ namespace Integration;
 use DataMapper\DataConfig;
 use DataMapper\DataMapper;
 use DataMapper\Enum\ApproachEnum;
-use DataMapper\Tests\Integration\Objects\ApproachBasic\BaseConstructor;
-use DataMapper\Tests\Integration\Objects\ApproachBasic\BaseProperty;
-use DataMapper\Tests\Integration\Objects\ApproachBasic\BaseSetter;
-use DataMapper\Tests\Integration\Objects\ApproachBasic\SubConstructor;
-use DataMapper\Tests\Integration\Objects\ApproachBasic\SubProperty;
-use DataMapper\Tests\Integration\Objects\ApproachBasic\SubSetter;
+use Integration\Objects\ApproachBasic\BaseConstructor;
+use Integration\Objects\ApproachBasic\BaseProperty;
+use Integration\Objects\ApproachBasic\BaseSetter;
+use Integration\Objects\ApproachBasic\SubConstructor;
+use Integration\Objects\ApproachBasic\SubProperty;
+use Integration\Objects\ApproachBasic\SubSetter;
 use PHPUnit\Framework\TestCase;
 
 class JsonApproachBasicTest extends TestCase
