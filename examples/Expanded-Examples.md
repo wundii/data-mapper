@@ -74,9 +74,9 @@
 
 enum GenderEnum: string
 {
-    case MA: 'male';
-    case FE: 'female';
-    case OT: 'other';
+    case MA = 'male';
+    case FE = 'female';
+    case OT = 'other';
 }
 
 class Car
