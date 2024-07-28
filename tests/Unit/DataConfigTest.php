@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Unit;
 
-use Wundii\DataMapper\DataConfig;
-use Wundii\DataMapper\Enum\AccessibleEnum;
-use Wundii\DataMapper\Enum\ApproachEnum;
 use InvalidArgumentException;
 use MockClasses\RootConstructor;
 use MockClasses\RootInterface;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 class DataConfigTest extends TestCase
 {

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Unit;
 
+use InvalidArgumentException;
+use MockClasses\RootConstructor;
+use MockClasses\RootInterface;
+use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
 use Wundii\DataMapper\Elements\DataFloat;
@@ -14,10 +18,6 @@ use Wundii\DataMapper\Elements\DataString;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use InvalidArgumentException;
-use MockClasses\RootConstructor;
-use MockClasses\RootInterface;
-use PHPUnit\Framework\TestCase;
 
 class ElementsTest extends TestCase
 {

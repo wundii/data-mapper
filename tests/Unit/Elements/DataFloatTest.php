@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Unit\Elements;
 
-use Wundii\DataMapper\Elements\DataFloat;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\Elements\DataFloat;
 
 class DataFloatTest extends TestCase
 {

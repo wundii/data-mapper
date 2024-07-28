@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\SourceData;
 
+use Exception;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\SourceDataInterface;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
-use Exception;
 
 abstract class AbstractSourceData implements SourceDataInterface
 {

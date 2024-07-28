@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Unit\Reflection;
 
+use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\PropertyReflection;
-use PHPUnit\Framework\TestCase;
 
 class ObjectReflectionTest extends TestCase
 {

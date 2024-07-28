@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper;
 
+use InvalidArgumentException;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Interface\DataConfigInterface;
-use InvalidArgumentException;
 
 readonly class DataMapper
 {

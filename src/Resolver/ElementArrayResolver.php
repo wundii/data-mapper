@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use Exception;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
-use Exception;
 
 final readonly class ElementArrayResolver
 {

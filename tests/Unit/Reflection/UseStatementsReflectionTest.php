@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Unit\Reflection;
 
+use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Reflection\UseStatementReflection;
 use Wundii\DataMapper\Reflection\UseStatementsReflection;
-use PHPUnit\Framework\TestCase;
 
 class UseStatementsReflectionTest extends TestCase
 {

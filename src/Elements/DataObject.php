@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Elements;
 
+use InvalidArgumentException;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use InvalidArgumentException;
 
 final readonly class DataObject implements ElementObjectInterface
 {

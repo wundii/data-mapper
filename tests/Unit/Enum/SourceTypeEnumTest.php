@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Unit\Enum;
 
+use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\SourceData\JsonSourceData;
 use Wundii\DataMapper\SourceData\XmlSourceData;
-use PHPUnit\Framework\TestCase;
 
 class SourceTypeEnumTest extends TestCase
 {

@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Wundii\DataMapper\Reflection\AnnotationReflection;
-use Wundii\DataMapper\Reflection\ObjectReflection;
-use Wundii\DataMapper\Reflection\ParameterReflection;
-use Wundii\DataMapper\Reflection\PropertyReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
 use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -20,6 +15,11 @@ use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
+use Wundii\DataMapper\Reflection\AnnotationReflection;
+use Wundii\DataMapper\Reflection\ObjectReflection;
+use Wundii\DataMapper\Reflection\ParameterReflection;
+use Wundii\DataMapper\Reflection\PropertyReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
 
 final readonly class ReflectionObjectResolver
 {

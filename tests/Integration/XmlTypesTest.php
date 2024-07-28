@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Integration;
 
-use Wundii\DataMapper\DataMapper;
 use Integration\Objects\Types\TypeArray;
 use Integration\Objects\Types\TypeBool;
 use Integration\Objects\Types\TypeFloat;
@@ -14,6 +13,7 @@ use Integration\Objects\Types\TypeObject;
 use Integration\Objects\Types\TypeObjectArray;
 use Integration\Objects\Types\TypeString;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\DataMapper;
 
 class XmlTypesTest extends TestCase
 {

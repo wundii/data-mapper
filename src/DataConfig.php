@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper;
 
+use InvalidArgumentException;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Interface\DataConfigInterface;
-use InvalidArgumentException;
 
 final readonly class DataConfig implements DataConfigInterface
 {

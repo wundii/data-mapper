@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
-use Wundii\DataMapper\Reflection\AnnotationReflection;
-use Wundii\DataMapper\Reflection\ParameterReflection;
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
-use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionIntersectionType;
@@ -17,6 +12,11 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionUnionType;
+use Wundii\DataMapper\Reflection\AnnotationReflection;
+use Wundii\DataMapper\Reflection\ParameterReflection;
+use Wundii\DataMapper\Reflection\UseStatementReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
 class ReflectionObjectResolverTest extends TestCase
 {

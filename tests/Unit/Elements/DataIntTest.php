@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Unit\Elements;
 
-use Wundii\DataMapper\Elements\DataInt;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\Elements\DataInt;
 
 class DataIntTest extends TestCase
 {

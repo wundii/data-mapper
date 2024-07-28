@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
 use Exception;
 use InvalidArgumentException;
 use ReflectionClass;
+use Wundii\DataMapper\Reflection\UseStatementReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
 
 final readonly class ReflectionTokenResolver
 {

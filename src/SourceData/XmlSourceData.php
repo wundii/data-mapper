@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\SourceData;
 
+use Exception;
+use SimpleXMLElement;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
 use Wundii\DataMapper\Elements\DataFloat;
@@ -18,8 +20,6 @@ use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
-use Exception;
-use SimpleXMLElement;
 
 final class XmlSourceData extends AbstractSourceData
 {

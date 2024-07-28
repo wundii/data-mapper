@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Integration;
 
-use Wundii\DataMapper\DataConfig;
-use Wundii\DataMapper\DataMapper;
-use Wundii\DataMapper\Enum\ApproachEnum;
 use DateTime;
 use DateTimeInterface;
 use Integration\Objects\ClassMapDirectValue\DateTimeAlias;
@@ -15,6 +12,9 @@ use Integration\Objects\ClassMapDirectValue\EnumBasic;
 use Integration\Objects\Types\TypeEnumInt;
 use Integration\Objects\Types\TypeEnumString;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\DataMapper;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 class XmlClassMapDirectValueTest extends TestCase
 {

@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
+use Exception;
+use MockClasses\ItemConstructor;
+use MockClasses\RootProperties;
+use MockClasses\RootSetters;
+use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
@@ -13,11 +18,6 @@ use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Elements\DataString;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Resolver\ElementArrayResolver;
-use Exception;
-use MockClasses\ItemConstructor;
-use MockClasses\RootProperties;
-use MockClasses\RootSetters;
-use PHPUnit\Framework\TestCase;
 
 class ElementArrayResolverTest extends TestCase
 {

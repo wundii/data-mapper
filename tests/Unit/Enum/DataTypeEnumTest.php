@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Unit\Enum;
 
-use Wundii\DataMapper\Enum\DataTypeEnum;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\Enum\DataTypeEnum;
 
 class DataTypeEnumTest extends TestCase
 {

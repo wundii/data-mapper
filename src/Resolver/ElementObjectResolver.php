@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use Exception;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Exception;
 
 final readonly class ElementObjectResolver
 {

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
+use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Wundii\DataMapper\Resolver\ElementValueResolver;
-use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 
 class ElementValueResolverTest extends TestCase
 {

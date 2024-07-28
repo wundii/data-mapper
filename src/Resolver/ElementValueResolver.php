@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use Exception;
+use InvalidArgumentException;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Exception;
-use InvalidArgumentException;
 
 final readonly class ElementValueResolver
 {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
-use Wundii\DataMapper\Resolver\ReflectionTokenResolver;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use Wundii\DataMapper\Reflection\UseStatementReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Resolver\ReflectionTokenResolver;
 
 class ReflectionTokenResolverTest extends TestCase
 {

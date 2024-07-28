@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Integration;
 
-use Wundii\DataMapper\DataConfig;
-use Wundii\DataMapper\DataMapper;
-use Wundii\DataMapper\Enum\ApproachEnum;
 use Integration\Objects\ApproachBasic\BaseConstructor;
 use Integration\Objects\ApproachBasic\BaseProperty;
 use Integration\Objects\ApproachBasic\BaseSetter;
@@ -14,6 +11,9 @@ use Integration\Objects\ApproachBasic\SubConstructor;
 use Integration\Objects\ApproachBasic\SubProperty;
 use Integration\Objects\ApproachBasic\SubSetter;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\DataMapper;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 class XmlApproachBasicTest extends TestCase
 {

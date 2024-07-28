@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Unit\SourceData;
 
-use Wundii\DataMapper\DataConfig;
 use Exception;
 use MockClasses\AbstractSourceDataTest as AbstractSourceData;
 use MockClasses\RootProperties;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\DataConfig;
 
 class AbstractSourceDataTest extends TestCase
 {
