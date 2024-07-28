@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Unit\Reflection;
 
-use DataMapper\Enum\DataTypeEnum;
-use DataMapper\Reflection\AnnotationReflection;
-use DataMapper\Reflection\ParameterReflection;
-use DataMapper\Reflection\PropertyReflection;
+use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Reflection\AnnotationReflection;
+use Wundii\DataMapper\Reflection\ParameterReflection;
+use Wundii\DataMapper\Reflection\PropertyReflection;
 use PHPUnit\Framework\TestCase;
 
 class PropertyReflectionTest extends TestCase

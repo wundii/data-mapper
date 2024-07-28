@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Reflection;
+namespace Wundii\DataMapper\Reflection;
 
 final readonly class AnnotationReflection
 {

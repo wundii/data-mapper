@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Enum;
+namespace Wundii\DataMapper\Enum;
 
-use DataMapper\Interface\DataConfigInterface;
-use DataMapper\Interface\SourceDataInterface;
-use DataMapper\SourceData\JsonSourceData;
-use DataMapper\SourceData\XmlSourceData;
+use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\SourceDataInterface;
+use Wundii\DataMapper\SourceData\JsonSourceData;
+use Wundii\DataMapper\SourceData\XmlSourceData;
 
 enum SourceTypeEnum
 {

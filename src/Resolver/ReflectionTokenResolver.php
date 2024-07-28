@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Resolver;
+namespace Wundii\DataMapper\Resolver;
 
-use DataMapper\Reflection\UseStatementReflection;
-use DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Reflection\UseStatementReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
 use Exception;
 use InvalidArgumentException;
 use ReflectionClass;

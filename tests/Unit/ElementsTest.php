@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Unit;
 
-use DataMapper\Elements\DataArray;
-use DataMapper\Elements\DataBool;
-use DataMapper\Elements\DataFloat;
-use DataMapper\Elements\DataInt;
-use DataMapper\Elements\DataNull;
-use DataMapper\Elements\DataObject;
-use DataMapper\Elements\DataString;
-use DataMapper\Interface\ElementArrayInterface;
-use DataMapper\Interface\ElementDataInterface;
-use DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Elements\DataArray;
+use Wundii\DataMapper\Elements\DataBool;
+use Wundii\DataMapper\Elements\DataFloat;
+use Wundii\DataMapper\Elements\DataInt;
+use Wundii\DataMapper\Elements\DataNull;
+use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Elements\DataString;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
 use InvalidArgumentException;
 use MockClasses\RootConstructor;
 use MockClasses\RootInterface;

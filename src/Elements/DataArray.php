@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Elements;
+namespace Wundii\DataMapper\Elements;
 
-use DataMapper\Interface\ElementArrayInterface;
-use DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
 
 final readonly class DataArray implements ElementArrayInterface
 {

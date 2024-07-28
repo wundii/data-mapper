@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Reflection;
+namespace Wundii\DataMapper\Reflection;
 
-use DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Enum\DataTypeEnum;
 
 /**
  * @todo performance optimization ~3 tenths possible with 10000 repeats

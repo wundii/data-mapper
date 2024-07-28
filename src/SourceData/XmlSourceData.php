@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\SourceData;
+namespace Wundii\DataMapper\SourceData;
 
-use DataMapper\Elements\DataArray;
-use DataMapper\Elements\DataBool;
-use DataMapper\Elements\DataFloat;
-use DataMapper\Elements\DataInt;
-use DataMapper\Elements\DataNull;
-use DataMapper\Elements\DataObject;
-use DataMapper\Elements\DataString;
-use DataMapper\Enum\DataTypeEnum;
-use DataMapper\Interface\DataConfigInterface;
-use DataMapper\Interface\ElementArrayInterface;
-use DataMapper\Interface\ElementDataInterface;
-use DataMapper\Interface\ElementObjectInterface;
-use DataMapper\Reflection\PropertyReflection;
-use DataMapper\Resolver\ElementObjectResolver;
+use Wundii\DataMapper\Elements\DataArray;
+use Wundii\DataMapper\Elements\DataBool;
+use Wundii\DataMapper\Elements\DataFloat;
+use Wundii\DataMapper\Elements\DataInt;
+use Wundii\DataMapper\Elements\DataNull;
+use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Elements\DataString;
+use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Reflection\PropertyReflection;
+use Wundii\DataMapper\Resolver\ElementObjectResolver;
 use Exception;
 use SimpleXMLElement;
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Resolver;
+namespace Wundii\DataMapper\Resolver;
 
-use DataMapper\Reflection\AnnotationReflection;
-use DataMapper\Reflection\ObjectReflection;
-use DataMapper\Reflection\ParameterReflection;
-use DataMapper\Reflection\PropertyReflection;
-use DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Reflection\AnnotationReflection;
+use Wundii\DataMapper\Reflection\ObjectReflection;
+use Wundii\DataMapper\Reflection\ParameterReflection;
+use Wundii\DataMapper\Reflection\PropertyReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
 use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;

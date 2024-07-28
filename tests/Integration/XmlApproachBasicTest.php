@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Integration;
 
-use DataMapper\DataConfig;
-use DataMapper\DataMapper;
-use DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\DataMapper;
+use Wundii\DataMapper\Enum\ApproachEnum;
 use Integration\Objects\ApproachBasic\BaseConstructor;
 use Integration\Objects\ApproachBasic\BaseProperty;
 use Integration\Objects\ApproachBasic\BaseSetter;

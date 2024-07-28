@@ -39,7 +39,7 @@ Require the bundle and its dependencies with composer:
 ## Usage
 ### Minimal usage
 ```php
-use DataMapper\DataMapper;
+use Wundii\DataMapper\DataMapper;
 
 /**
  * DataConfig default settings
@@ -57,9 +57,9 @@ $testClass = $dataMapper->xml($xml, TestClass::class);
 
 ### Usage with custom configuration
 ```php
-use DataMapper\DataConfig;
-use DataMapper\DataMapper;
-use DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\DataMapper;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 $dataConfig = new DataConfig(
         approachEnum: ApproachEnum::PROPERTY,

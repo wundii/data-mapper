@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DataMapper;
+namespace Wundii\DataMapper;
 
-use DataMapper\Enum\SourceTypeEnum;
-use DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Enum\SourceTypeEnum;
+use Wundii\DataMapper\Interface\DataConfigInterface;
 use InvalidArgumentException;
 
 readonly class DataMapper

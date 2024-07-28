@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DataMapper;
+namespace Wundii\DataMapper;
 
-use DataMapper\Enum\AccessibleEnum;
-use DataMapper\Enum\ApproachEnum;
-use DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Interface\DataConfigInterface;
 use InvalidArgumentException;
 
 final readonly class DataConfig implements DataConfigInterface

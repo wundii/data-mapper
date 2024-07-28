@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
-use DataMapper\Reflection\UseStatementReflection;
-use DataMapper\Reflection\UseStatementsReflection;
-use DataMapper\Resolver\ReflectionTokenResolver;
+use Wundii\DataMapper\Reflection\UseStatementReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Resolver\ReflectionTokenResolver;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Integration;
 
-use DataMapper\DataMapper;
+use Wundii\DataMapper\DataMapper;
 use Integration\Objects\Types\TypeArray;
 use Integration\Objects\Types\TypeBool;
 use Integration\Objects\Types\TypeFloat;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
-use DataMapper\Interface\ElementArrayInterface;
-use DataMapper\Interface\ElementDataInterface;
-use DataMapper\Interface\ElementObjectInterface;
-use DataMapper\Resolver\ElementValueResolver;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Resolver\ElementValueResolver;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Interface;
+namespace Wundii\DataMapper\Interface;
 
 interface ElementArrayInterface extends ElementDataInterface
 {

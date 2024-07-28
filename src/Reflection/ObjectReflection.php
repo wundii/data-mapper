@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Reflection;
+namespace Wundii\DataMapper\Reflection;
 
-use DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 final readonly class ObjectReflection
 {

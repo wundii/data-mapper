@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Enum;
+namespace Wundii\DataMapper\Enum;
 
 enum DataTypeEnum: string
 {

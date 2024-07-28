@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Unit;
 
-use DataMapper\DataConfig;
-use DataMapper\Enum\AccessibleEnum;
-use DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\ApproachEnum;
 use InvalidArgumentException;
 use MockClasses\RootConstructor;
 use MockClasses\RootInterface;

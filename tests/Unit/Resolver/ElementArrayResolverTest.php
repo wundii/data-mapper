@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
-use DataMapper\DataConfig;
-use DataMapper\Elements\DataArray;
-use DataMapper\Elements\DataBool;
-use DataMapper\Elements\DataFloat;
-use DataMapper\Elements\DataInt;
-use DataMapper\Elements\DataObject;
-use DataMapper\Elements\DataString;
-use DataMapper\Enum\ApproachEnum;
-use DataMapper\Resolver\ElementArrayResolver;
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\Elements\DataArray;
+use Wundii\DataMapper\Elements\DataBool;
+use Wundii\DataMapper\Elements\DataFloat;
+use Wundii\DataMapper\Elements\DataInt;
+use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Elements\DataString;
+use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Resolver\ElementArrayResolver;
 use Exception;
 use MockClasses\ItemConstructor;
 use MockClasses\RootProperties;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Resolver;
+namespace Wundii\DataMapper\Resolver;
 
-use DataMapper\Elements\DataArray;
-use DataMapper\Elements\DataObject;
-use DataMapper\Interface\DataConfigInterface;
-use DataMapper\Interface\ElementArrayInterface;
-use DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Elements\DataArray;
+use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
 use Exception;
 
 final readonly class ElementArrayResolver

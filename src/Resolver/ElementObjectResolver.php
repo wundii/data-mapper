@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Resolver;
+namespace Wundii\DataMapper\Resolver;
 
-use DataMapper\Elements\DataArray;
-use DataMapper\Elements\DataObject;
-use DataMapper\Enum\ApproachEnum;
-use DataMapper\Interface\DataConfigInterface;
-use DataMapper\Interface\ElementDataInterface;
-use DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Elements\DataArray;
+use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Exception;
 
 final readonly class ElementObjectResolver

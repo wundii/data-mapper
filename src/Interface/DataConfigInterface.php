@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Interface;
+namespace Wundii\DataMapper\Interface;
 
-use DataMapper\Enum\AccessibleEnum;
-use DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 interface DataConfigInterface
 {

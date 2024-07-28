@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Resolver;
+namespace Wundii\DataMapper\Resolver;
 
-use DataMapper\Interface\ElementArrayInterface;
-use DataMapper\Interface\ElementDataInterface;
-use DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Exception;
 use InvalidArgumentException;
 

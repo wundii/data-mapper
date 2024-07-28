@@ -30,13 +30,12 @@
   },
   "autoload": {
     "psr-4": {
-      "DataMapper\\": "src/"
+      "Wundii\\DataMapper\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "DataMapper\\Tests\\": "tests/",
-      "Integration\\": "tests/Integration/",
+      "Integration\\Objects\\": "tests/Integration/Objects/",
       "MockClasses\\": "tests/MockClasses/"
     }
   },

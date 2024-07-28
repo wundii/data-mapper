@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Elements;
+namespace Wundii\DataMapper\Elements;
 
-use DataMapper\Interface\ElementDataInterface;
-use DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
 use InvalidArgumentException;
 
 final readonly class DataObject implements ElementObjectInterface

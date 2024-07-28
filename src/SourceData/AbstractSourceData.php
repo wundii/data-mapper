@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\SourceData;
+namespace Wundii\DataMapper\SourceData;
 
-use DataMapper\Interface\DataConfigInterface;
-use DataMapper\Interface\SourceDataInterface;
-use DataMapper\Reflection\ObjectReflection;
-use DataMapper\Resolver\ReflectionObjectResolver;
+use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\SourceDataInterface;
+use Wundii\DataMapper\Reflection\ObjectReflection;
+use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 use Exception;
 
 abstract class AbstractSourceData implements SourceDataInterface

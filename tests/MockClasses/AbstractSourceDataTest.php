@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MockClasses;
 
-use DataMapper\Reflection\ObjectReflection;
-use DataMapper\SourceData\AbstractSourceData;
+use Wundii\DataMapper\Reflection\ObjectReflection;
+use Wundii\DataMapper\SourceData\AbstractSourceData;
 
 class AbstractSourceDataTest extends AbstractSourceData
 {

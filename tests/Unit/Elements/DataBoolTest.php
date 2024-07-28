@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unit\Elements;
 
-use DataMapper\Elements\DataBool;
+use Wundii\DataMapper\Elements\DataBool;
 use PHPUnit\Framework\TestCase;
 
 class DataBoolTest extends TestCase

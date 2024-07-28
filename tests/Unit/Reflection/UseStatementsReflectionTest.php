@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Unit\Reflection;
 
-use DataMapper\Reflection\UseStatementReflection;
-use DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Reflection\UseStatementReflection;
+use Wundii\DataMapper\Reflection\UseStatementsReflection;
 use PHPUnit\Framework\TestCase;
 
 class UseStatementsReflectionTest extends TestCase
