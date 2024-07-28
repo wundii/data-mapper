@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit;
+namespace Unit;
 
 use DataMapper\Elements\DataArray;
 use DataMapper\Elements\DataBool;

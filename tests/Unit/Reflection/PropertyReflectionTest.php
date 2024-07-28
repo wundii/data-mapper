@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit\Reflection;
+namespace Unit\Reflection;
 
 use DataMapper\Enum\DataTypeEnum;
 use DataMapper\Reflection\AnnotationReflection;

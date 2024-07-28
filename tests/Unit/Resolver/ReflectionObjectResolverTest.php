@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit\Resolver;
+namespace Unit\Resolver;
 
 use DataMapper\Reflection\AnnotationReflection;
 use DataMapper\Reflection\ParameterReflection;

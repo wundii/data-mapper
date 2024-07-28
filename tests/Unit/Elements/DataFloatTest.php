@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit\Elements;
+namespace Unit\Elements;
 
 use DataMapper\Elements\DataFloat;
 use PHPUnit\Framework\TestCase;

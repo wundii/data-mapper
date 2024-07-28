@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit\Resolver;
+namespace Unit\Resolver;
 
 use DataMapper\Interface\ElementArrayInterface;
 use DataMapper\Interface\ElementDataInterface;

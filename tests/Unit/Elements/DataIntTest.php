@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Unit\Elements;
+namespace Unit\Elements;
 
 use DataMapper\Elements\DataInt;
 use PHPUnit\Framework\TestCase;

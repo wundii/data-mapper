@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DataMapper\Tests\Integration;
+namespace Integration;
 
 use DataMapper\DataMapper;
 use DataMapper\Tests\Integration\Objects\Types\TypeArray;
