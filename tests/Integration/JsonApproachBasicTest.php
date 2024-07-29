@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
+use Integration\Objects\ApproachBasic\BaseMix;
 use Integration\Objects\ApproachBasic\BaseProperty;
 use Integration\Objects\ApproachBasic\BaseSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
@@ -108,6 +109,36 @@ class JsonApproachBasicTest extends TestCase
         ]);
 
         $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMix(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), BaseMix::class);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMixWithCustomRoot(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRoot.json';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), BaseMix::class, ['result']);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
         $this->assertEquals($expected, $return);
     }
 }
