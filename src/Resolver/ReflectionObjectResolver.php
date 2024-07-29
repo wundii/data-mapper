@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Exception;
-use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -14,6 +13,7 @@ use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\ParameterReflection;
@@ -175,16 +175,16 @@ final readonly class ReflectionObjectResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function resolve(string|object $object): ObjectReflection
     {
         if (! is_object($object) && interface_exists($object)) {
-            throw new InvalidArgumentException(sprintf('%s: interfaces are not allowed', $object));
+            throw DataMapperException::InvalidArgument(sprintf('%s: interfaces are not allowed', $object));
         }
 
         if (! is_object($object) && ! class_exists($object)) {
-            throw new InvalidArgumentException(sprintf('object %s does not exist', $object));
+            throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $object));
         }
 
         $constructor = [];

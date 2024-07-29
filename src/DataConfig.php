@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper;
 
-use InvalidArgumentException;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 
 final readonly class DataConfig implements DataConfigInterface
@@ -21,15 +21,18 @@ final readonly class DataConfig implements DataConfigInterface
     ) {
         foreach ($classMap as $key => $value) {
             if (! is_string($key) || ! is_string($value)) {
-                throw new InvalidArgumentException('The class map must contain only strings');
+                throw DataMapperException::InvalidArgument('The class map must contain only strings', [
+                    'source' => (string) $key,
+                    'target' => (string) $value,
+                ]);
             }
 
             if (! interface_exists($key) && ! class_exists($key)) {
-                throw new InvalidArgumentException('The key class does not exist');
+                throw DataMapperException::InvalidArgument('The key class does not exist', $key);
             }
 
             if (! class_exists($value)) {
-                throw new InvalidArgumentException('The value class does not exist');
+                throw DataMapperException::InvalidArgument('The value class does not exist', $value);
             }
         }
     }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Interface;
 
-interface ElementDataInterface
+use Stringable;
+
+interface ElementDataInterface extends Stringable
 {
     public function getDestination(): ?string;
 

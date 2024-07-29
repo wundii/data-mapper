@@ -4,25 +4,21 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Exception;
-use InvalidArgumentException;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
 
 final readonly class ElementValueResolver
 {
-    /**
-     * @throws Exception
-     */
     public function resolve(ElementDataInterface $elementData): mixed
     {
         if ($elementData instanceof ElementObjectInterface) {
-            throw new InvalidArgumentException('ObjectElementInterface not supported');
+            throw DataMapperException::InvalidArgument('ObjectElementInterface not supported', (string) $elementData);
         }
 
         if ($elementData instanceof ElementArrayInterface) {
-            throw new InvalidArgumentException('DataObject not supported');
+            throw DataMapperException::InvalidArgument('DataObject not supported', (string) $elementData);
         }
 
         return $elementData->getValue();

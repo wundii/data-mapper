@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Exception;
-use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Reflection\UseStatementReflection;
 use Wundii\DataMapper\Reflection\UseStatementsReflection;
 
@@ -20,7 +20,7 @@ final readonly class ReflectionTokenResolver
     /**
      * @template T of object
      * @param ReflectionClass<T> $reflectionClass
-     * @throws Exception
+     * @throws DataMapperException
      */
     public function parseToken(ReflectionClass $reflectionClass): UseStatementsReflection
     {
@@ -34,7 +34,7 @@ final readonly class ReflectionTokenResolver
 
         $fileContent = file_get_contents($reflectionClass->getFileName() ?: '');
         if ($fileContent === false) {
-            throw new Exception('Could not read file content from ' . $reflectionClass->getFileName());
+            throw DataMapperException::Error('Could not read file content from ' . $reflectionClass->getFileName());
         }
 
         $useStatement = null;
@@ -98,12 +98,12 @@ final readonly class ReflectionTokenResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function resolve(string|object $object): UseStatementsReflection
     {
         if (! is_object($object) && ! class_exists($object) && ! interface_exists($object)) {
-            throw new InvalidArgumentException(sprintf('object %s does not exist', $object));
+            throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $object));
         }
 
         $reflectionClass = new ReflectionClass($object);
@@ -114,7 +114,7 @@ final readonly class ReflectionTokenResolver
 
         if ($reflectionClass->getFileName() === false) {
             $classString = is_object($object) ? $object::class : $object;
-            throw new Exception('Could not get file name from ' . $classString);
+            throw DataMapperException::Error('Could not get file name from ' . $classString);
         }
 
         return $this->parseToken($reflectionClass);

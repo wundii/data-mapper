@@ -14,6 +14,11 @@ final readonly class DataFloat implements ElementDataInterface
     ) {
     }
 
+    public function __toString(): string
+    {
+        return (string) $this->value;
+    }
+
     public function getDestination(): ?string
     {
         return $this->destination;

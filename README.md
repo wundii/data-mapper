@@ -2,6 +2,7 @@
 
 [![PHP-Tests](https://github.com/wundii/data-mapper/actions/workflows/code_quality.yml/badge.svg)](https://github.com/wundii/data-mapper/actions/workflows/code_quality.yml)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=flat)](https://phpstan.org/)
+[![Downloads](https://img.shields.io/packagist/dt/wundii/data-mapper.svg?style=flat)](https://packagist.org/packages/wundii/data-mapper)
 
 This mapper relies on strict data types, dependency capability and convenient processing for mapping xml, json and arrays into objects.
 
@@ -24,7 +25,7 @@ This mapper relies on strict data types, dependency capability and convenient pr
   - `string[]`
   - `object[]`
 - `object`|`?object`
-- `enum`
+- `enum`|`?enum`
 
 ## Supported Formats
 - `array`
@@ -74,14 +75,7 @@ $testClass = $dataMapper->json($json, TestClass::class, $dataConfig);
 $testClass = $dataMapper->xml($xml, TestClass::class, $dataConfig);
 ```
 
-## ToDo`s for the first release
-- [ ] Psr\Log implementation
-- [x] JsonSourceData implementation
-- [x] Json unit test
-- [x] Performance issue
-
-### optional ToDo`s
+### ToDo`s
 - [ ] `ElementObjectResolver->CreateInstance(...)` private properties/methods
-- [ ] XmlSourceData unit test
 - [ ] JsonSourceData phpstan issues
 - [ ] Smaller performance todos

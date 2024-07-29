@@ -13,6 +13,11 @@ final readonly class DataNull implements ElementDataInterface
     ) {
     }
 
+    public function __toString(): string
+    {
+        return 'null';
+    }
+
     public function getDestination(): ?string
     {
         return $this->destination;

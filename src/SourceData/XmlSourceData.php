@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use Exception;
+use ReflectionException;
 use SimpleXMLElement;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
@@ -14,6 +15,7 @@ use Wundii\DataMapper\Elements\DataNull;
 use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Elements\DataString;
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
@@ -24,7 +26,7 @@ use Wundii\DataMapper\Resolver\ElementObjectResolver;
 final class XmlSourceData extends AbstractSourceData
 {
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function elementArray(
         DataConfigInterface $dataConfig,
@@ -39,7 +41,7 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         if (! $dataType instanceof DataTypeEnum) {
-            throw new Exception('Element array invalid type');
+            throw DataMapperException::Error('Element array invalid type');
         }
 
         foreach ($xmlElement->children() as $child) {
@@ -51,7 +53,7 @@ final class XmlSourceData extends AbstractSourceData
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $type, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
-                default => throw new Exception('Element array invalid element data type'),
+                default => throw DataMapperException::Error('Element array invalid element data type'),
             };
         }
 
@@ -59,7 +61,7 @@ final class XmlSourceData extends AbstractSourceData
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
@@ -112,19 +114,19 @@ final class XmlSourceData extends AbstractSourceData
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function resolve(): object
     {
         try {
             $xmlElement = new SimpleXmlElement($this->source);
         } catch (Exception $exception) {
-            throw new Exception('Invalid XML: ' . $exception->getMessage(), (int) $exception->getCode(), $exception);
+            throw DataMapperException::Error('Invalid XML: ' . $exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
         $elementData = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
         if (! $elementData instanceof ElementObjectInterface) {
-            throw new Exception('Invalid ElementDataInterface');
+            throw DataMapperException::Error('Invalid ElementDataInterface from from XmlResolver');
         }
 
         return (new ElementObjectResolver())->resolve($this->dataConfig, $elementData);

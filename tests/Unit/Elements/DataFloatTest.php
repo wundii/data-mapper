@@ -35,4 +35,10 @@ class DataFloatTest extends TestCase
         $dataFloat = new DataFloat('999');
         $this->assertSame(999.0, $dataFloat->getValue());
     }
+
+    public function testInstanceToString(): void
+    {
+        $dataFloat = new DataFloat(333.33);
+        $this->assertSame('333.33', (string) $dataFloat);
+    }
 }

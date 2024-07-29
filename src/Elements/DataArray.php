@@ -18,6 +18,12 @@ final readonly class DataArray implements ElementArrayInterface
     ) {
     }
 
+    public function __toString(): string
+    {
+        $value = array_slice($this->value, 0, 3);
+        return implode(', ', $value);
+    }
+
     public function getDestination(): ?string
     {
         return $this->destination;

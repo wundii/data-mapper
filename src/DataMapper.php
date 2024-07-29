@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper;
 
-use InvalidArgumentException;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 
 class DataMapper
@@ -30,7 +30,7 @@ class DataMapper
         $json = json_encode($source);
 
         if ($json === false) {
-            throw new InvalidArgumentException('Could not encode the array to JSON');
+            throw DataMapperException::InvalidArgument('Could not encode the array to JSON');
         }
 
         return $this->map(SourceTypeEnum::JSON, $json, $object);

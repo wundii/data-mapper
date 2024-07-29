@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Exception;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
@@ -14,7 +14,7 @@ use Wundii\DataMapper\Interface\ElementDataInterface;
 final readonly class ElementArrayResolver
 {
     /**
-     * @throws Exception
+     * @throws DataMapperException
      */
     public function matchValue(
         DataConfigInterface $dataConfig,
@@ -31,8 +31,8 @@ final readonly class ElementArrayResolver
     }
 
     /**
-     * @throws Exception
      * @return mixed[]
+     * @throws DataMapperException
      */
     public function resolve(
         DataConfigInterface $dataConfig,

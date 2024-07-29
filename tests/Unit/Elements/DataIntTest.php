@@ -41,4 +41,10 @@ class DataIntTest extends TestCase
         $dataInt = new DataInt('999');
         $this->assertSame(999, $dataInt->getValue());
     }
+
+    public function testInstanceToString(): void
+    {
+        $dataInt = new DataInt(333);
+        $this->assertSame('333', (string) $dataInt);
+    }
 }

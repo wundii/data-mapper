@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Exception;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
@@ -16,7 +16,7 @@ final readonly class ElementObjectResolver
 {
     /**
      * @param mixed[] $parameter
-     * @throws Exception
+     * @throws DataMapperException
      */
     public function createInstance(
         DataConfigInterface $dataConfig,
@@ -34,7 +34,7 @@ final readonly class ElementObjectResolver
         if ($directValue) {
             if (enum_exists($object)) {
                 if (! method_exists($object, 'from')) {
-                    throw new Exception('Enum class must have a from method: ' . $object);
+                    throw DataMapperException::Error('Enum class must have a from method: ' . $object);
                 }
 
                 /**
@@ -58,7 +58,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException
      */
     public function matchValue(
         DataConfigInterface $dataConfig,
@@ -75,7 +75,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException
      */
     public function resolve(
         DataConfigInterface $dataConfig,
@@ -89,14 +89,14 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException
      */
     private function constructor(
         DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
         if ($dataConfig->getApproach() === ApproachEnum::CONSTRUCTOR && is_object($elementObject->getObject())) {
-            throw new Exception('You can not use constructor approach with an object');
+            throw DataMapperException::Error('You can not use constructor approach with an object');
         }
 
         $parameter = [];
@@ -109,7 +109,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException
      */
     private function properties(
         DataConfigInterface $dataConfig,
@@ -121,7 +121,7 @@ final readonly class ElementObjectResolver
             $destination = $elementData->getDestination();
 
             if ($destination === null) {
-                throw new Exception('Destination is not declared');
+                throw DataMapperException::Error('Destination is not declared');
             }
 
             if (! property_exists($instance, $destination)) {
@@ -137,7 +137,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException
      */
     private function setters(
         DataConfigInterface $dataConfig,
@@ -149,7 +149,7 @@ final readonly class ElementObjectResolver
             $destination = $elementData->getDestination();
 
             if ($destination === null) {
-                throw new Exception('Destination is not declared');
+                throw DataMapperException::Error('Destination is not declared');
             }
 
             if (! method_exists($instance, $destination)) {

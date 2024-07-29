@@ -59,4 +59,13 @@ class DataBoolTest extends TestCase
         $dataBool = new DataBool('yes');
         $this->assertTrue($dataBool->getValue());
     }
+
+    public function testInstanceToString(): void
+    {
+        $dataBool = new DataBool(true);
+        $this->assertSame('true', (string) $dataBool);
+
+        $dataBool = new DataBool(false);
+        $this->assertSame('false', (string) $dataBool);
+    }
 }

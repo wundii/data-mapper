@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\SourceData;
 
-use Exception;
+use ReflectionException;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\SourceDataInterface;
 use Wundii\DataMapper\Reflection\ObjectReflection;
@@ -25,7 +26,7 @@ abstract class AbstractSourceData implements SourceDataInterface
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function reflectionObject(string|object $object): ObjectReflection
     {

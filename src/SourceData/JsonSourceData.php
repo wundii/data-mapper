@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\SourceData;
 
-use Exception;
-use InvalidArgumentException;
+use ReflectionException;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
 use Wundii\DataMapper\Elements\DataFloat;
@@ -14,6 +13,7 @@ use Wundii\DataMapper\Elements\DataNull;
 use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Elements\DataString;
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
@@ -33,7 +33,7 @@ if (PHP_VERSION_ID < 80300) {
 final class JsonSourceData extends AbstractSourceData
 {
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      * @phpstan-ignore-next-line
      */
     public function elementArray(
@@ -49,7 +49,7 @@ final class JsonSourceData extends AbstractSourceData
         }
 
         if (! $dataType instanceof DataTypeEnum) {
-            throw new Exception('Element array invalid type');
+            throw DataMapperException::Error('Element array invalid type');
         }
 
         foreach ($jsonArray as $jsonKey => $jsonValue) {
@@ -61,7 +61,7 @@ final class JsonSourceData extends AbstractSourceData
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $jsonValue, $type, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
-                default => throw new Exception('Element array invalid element data type'),
+                default => throw DataMapperException::Error('Element array invalid element data type'),
             };
         }
 
@@ -70,7 +70,7 @@ final class JsonSourceData extends AbstractSourceData
 
     /**
      * @param int|string[] $jsonArray
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
@@ -128,22 +128,22 @@ final class JsonSourceData extends AbstractSourceData
     }
 
     /**
-     * @throws Exception
+     * @throws DataMapperException|ReflectionException
      */
     public function resolve(): object
     {
         if (! json_validate($this->source)) {
-            throw new InvalidArgumentException('Invalid JSON string');
+            throw DataMapperException::InvalidArgument('Invalid JSON string');
         }
 
         $jsonArray = json_decode($this->source, true);
         if (! is_int($jsonArray) && ! is_string($jsonArray) && ! is_array($jsonArray)) {
-            throw new InvalidArgumentException('Invalid JSON decode return');
+            throw DataMapperException::InvalidArgument('Invalid JSON decode return');
         }
 
         $elementData = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
         if (! $elementData instanceof ElementObjectInterface) {
-            throw new Exception('Invalid ElementDataInterface');
+            throw DataMapperException::Error('Invalid ElementDataInterface from JsonResolver');
         }
 
         return (new ElementObjectResolver())->resolve($this->dataConfig, $elementData);

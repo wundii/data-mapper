@@ -14,6 +14,11 @@ final readonly class DataBool implements ElementDataInterface
     ) {
     }
 
+    public function __toString(): string
+    {
+        return $this->value ? 'true' : 'false';
+    }
+
     public function getDestination(): ?string
     {
         return $this->destination;

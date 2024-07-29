@@ -14,6 +14,11 @@ final readonly class DataString implements ElementDataInterface
     ) {
     }
 
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
     public function getDestination(): ?string
     {
         return $this->destination;
