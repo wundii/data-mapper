@@ -67,11 +67,11 @@ $dataConfig = new DataConfig(
             DateTimeInterface::class => DateTime::class,
         ],
     );
-$dataMapper = new DataMapper();
+$dataMapper = new DataMapper($dataConfig);
 
-$testClass = $dataMapper->array($array, TestClass::class, $dataConfig);
-$testClass = $dataMapper->json($json, TestClass::class, $dataConfig);
-$testClass = $dataMapper->xml($xml, TestClass::class, $dataConfig);
+$testClass = $dataMapper->array($array, TestClass::class);
+$testClass = $dataMapper->json($json, TestClass::class);
+$testClass = $dataMapper->xml($xml, TestClass::class);
 ```
 
 ### ToDo`s
