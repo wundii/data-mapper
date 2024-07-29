@@ -141,6 +141,10 @@ final class JsonSourceData extends AbstractSourceData
             throw DataMapperException::InvalidArgument('Invalid JSON decode return');
         }
 
+        foreach ($this->customRoot as $root) {
+            $jsonArray = $jsonArray[$root] ?? $jsonArray;
+        }
+
         $elementData = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
         if (! $elementData instanceof ElementObjectInterface) {
             throw DataMapperException::Error('Invalid ElementDataInterface from JsonResolver');

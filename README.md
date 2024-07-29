@@ -12,6 +12,7 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 - Initialize object via constructor, properties or methods
 - Map nested objects, arrays of objects
 - Class mapping for interfaces or other classes
+- Custom root element for starting with the source data
 
 ## Supported Types
 - `null`

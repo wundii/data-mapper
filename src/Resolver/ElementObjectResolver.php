@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Enum\ApproachEnum;
@@ -16,7 +19,7 @@ final readonly class ElementObjectResolver
 {
     /**
      * @param mixed[] $parameter
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     public function createInstance(
         DataConfigInterface $dataConfig,
@@ -54,7 +57,29 @@ final readonly class ElementObjectResolver
             default => [],
         };
 
-        return new $object(...$parameter);
+        if ($approach === ApproachEnum::CONSTRUCTOR) {
+            return new $object(...$parameter);
+        }
+
+        /**
+         * @todo template T of object by $elementObject->getObject();
+         * after that, remove the following if statement
+         */
+        if (! class_exists($object)) {
+            throw DataMapperException::Error('Class does not exist: ' . $object);
+        }
+
+        $reflectionClass = new ReflectionClass($object);
+        $constructor = $reflectionClass->getConstructor();
+
+        if (
+            $constructor instanceof ReflectionMethod
+            && $constructor->getNumberOfRequiredParameters() === 0
+        ) {
+            return $reflectionClass->newInstance();
+        }
+
+        return $reflectionClass->newInstanceWithoutConstructor();
     }
 
     /**
