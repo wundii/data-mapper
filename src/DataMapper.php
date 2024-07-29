@@ -8,15 +8,24 @@ use InvalidArgumentException;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 
-readonly class DataMapper
+class DataMapper
 {
+    public function __construct(
+        private ?DataConfigInterface $dataConfig = null,
+    ) {
+    }
+
+    public function setDataConfig(DataConfigInterface $dataConfig): void
+    {
+        $this->dataConfig = $dataConfig;
+    }
+
     /**
      * @param mixed[] $source
      */
     public function array(
         array $source,
         string|object $object,
-        null|DataConfigInterface $dataConfig = null,
     ): object {
         $json = json_encode($source);
 
@@ -24,38 +33,35 @@ readonly class DataMapper
             throw new InvalidArgumentException('Could not encode the array to JSON');
         }
 
-        return $this->map(SourceTypeEnum::JSON, $json, $object, $dataConfig);
+        return $this->map(SourceTypeEnum::JSON, $json, $object);
     }
 
     public function json(
         string $source,
         string|object $object,
-        null|DataConfigInterface $dataConfig = null,
     ): object {
-        return $this->map(SourceTypeEnum::JSON, $source, $object, $dataConfig);
+        return $this->map(SourceTypeEnum::JSON, $source, $object);
     }
 
     public function xml(
         string $source,
         string|object $object,
-        null|DataConfigInterface $dataConfig = null,
     ): object {
-        return $this->map(SourceTypeEnum::XML, $source, $object, $dataConfig);
+        return $this->map(SourceTypeEnum::XML, $source, $object);
     }
 
     private function map(
         SourceTypeEnum $sourceTypeEnum,
         string $source,
         string|object $object,
-        null|DataConfigInterface $dataConfig = null,
     ): object {
-        if (! $dataConfig instanceof DataConfigInterface) {
-            $dataConfig = new DataConfig();
+        if (! $this->dataConfig instanceof DataConfigInterface) {
+            $this->dataConfig = new DataConfig();
         }
 
         $sourceData = SourceTypeEnum::sourceDataInstance(
             $sourceTypeEnum,
-            $dataConfig,
+            $this->dataConfig,
             $source,
             $object,
         );

@@ -28,8 +28,8 @@ class XmlClassMapDirectValueTest extends TestCase
                 DateTimeInterface::class => DateTime::class,
             ],
         );
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), DateTimeBasic::class, $dataConfig);
+        $dataMapper = new DataMapper($dataConfig);
+        $return = $dataMapper->xml(file_get_contents($file), DateTimeBasic::class);
 
         $expected = new DateTimeBasic();
         $expected->created = new DateTime('2024-07-02T09:05:50.131+02:00');
@@ -48,8 +48,8 @@ class XmlClassMapDirectValueTest extends TestCase
                 DateTimeInterface::class => DateTime::class,
             ],
         );
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), DateTimeAlias::class, $dataConfig);
+        $dataMapper = new DataMapper($dataConfig);
+        $return = $dataMapper->xml(file_get_contents($file), DateTimeAlias::class);
 
         $expected = new DateTimeAlias();
         $expected->created = new DateTime('2024-07-02T09:05:50.131+02:00');
@@ -63,8 +63,8 @@ class XmlClassMapDirectValueTest extends TestCase
         $file = __DIR__ . '/XmlFiles/ClassMapDirectValueEnum.xml';
 
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), EnumBasic::class, $dataConfig);
+        $dataMapper = new DataMapper($dataConfig);
+        $return = $dataMapper->xml(file_get_contents($file), EnumBasic::class);
 
         $expected = new EnumBasic();
         $expected->enumString = TypeEnumString::TOKYO;

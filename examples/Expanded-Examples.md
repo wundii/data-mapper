@@ -178,7 +178,8 @@ $dataConfig = new DataConfig(
     ]
 );
 $dataMapper = new DataMapper();
+$dataMapper->setDataConfig($dataConfig);
 
-$user = $dataMapper->json($json, User::class, $dataConfig);
-$user = $dataMapper->xml($xml, User::class, $dataConfig);
+$user = $dataMapper->json($json, User::class);
+$user = $dataMapper->xml($xml, User::class);
 ```

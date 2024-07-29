@@ -68,9 +68,9 @@ $dataConfig = new DataConfig(
     approachEnum: ApproachEnum::CONSTRUCTOR,
 );
 
-$dataMapper = new DataMapper();
+$dataMapper = new DataMapper($dataConfig);
 $car = $dataMapper->json($array, Car::class);
-$car = $dataMapper->xml($array, Car::class, $dataConfig);
+$car = $dataMapper->xml($array, Car::class);
 ```
 
 ### Property
@@ -97,9 +97,9 @@ $dataConfig = new DataConfig(
     approachEnum: ApproachEnum::PROPERTY,
 );
 
-$dataMapper = new DataMapper();
-$car = $dataMapper->json($array, Car::class, $dataConfig);
-$car = $dataMapper->xml($array, Car::class, $dataConfig);
+$dataMapper = new DataMapper($dataConfig);
+$car = $dataMapper->json($array, Car::class);
+$car = $dataMapper->xml($array, Car::class);
 ```
 
 ### Setter
@@ -146,7 +146,7 @@ $dataConfig = new DataConfig(
     approachEnum: ApproachEnum::SETTER,
 );
 
-$dataMapper = new DataMapper();
-$car = $dataMapper->json($array, Car::class, $dataConfig);
-$car = $dataMapper->xml($array, Car::class, $dataConfig);
+$dataMapper = new DataMapper($dataConfig);
+$car = $dataMapper->json($array, Car::class);
+$car = $dataMapper->xml($array, Car::class);
 ```

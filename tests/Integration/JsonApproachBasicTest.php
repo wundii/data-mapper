@@ -49,7 +49,8 @@ class JsonApproachBasicTest extends TestCase
 
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $dataMapper = new DataMapper();
-        $return = $dataMapper->json(file_get_contents($file), BaseProperty::class, $dataConfig);
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), BaseProperty::class);
 
         $subProperty01 = new SubProperty();
         $subProperty01->active = true;
@@ -82,7 +83,8 @@ class JsonApproachBasicTest extends TestCase
 
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $dataMapper = new DataMapper();
-        $return = $dataMapper->json(file_get_contents($file), BaseSetter::class, $dataConfig);
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), BaseSetter::class);
 
         $subSetter01 = new SubSetter();
         $subSetter01->setActive(true);
