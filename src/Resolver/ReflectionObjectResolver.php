@@ -6,7 +6,6 @@ namespace Wundii\DataMapper\Resolver;
 
 use Exception;
 use InvalidArgumentException;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
@@ -178,7 +177,7 @@ final readonly class ReflectionObjectResolver
     /**
      * @throws Exception
      */
-    public function resolve(string|object $object, ?LoggerInterface $logger = null): ObjectReflection
+    public function resolve(string|object $object): ObjectReflection
     {
         if (! is_object($object) && interface_exists($object)) {
             throw new InvalidArgumentException(sprintf('%s: interfaces are not allowed', $object));
@@ -216,15 +215,6 @@ final readonly class ReflectionObjectResolver
 
             if (str_starts_with($reflectionMethod->getName(), 'set')) {
                 if (count($reflectionMethod->getParameters()) !== 1) {
-                    if ($logger instanceof LoggerInterface) {
-                        $logger->warning(
-                            sprintf(
-                                'Method %s has more than one parameter',
-                                $reflectionMethod->getName(),
-                            ),
-                        );
-                    }
-
                     continue;
                 }
 

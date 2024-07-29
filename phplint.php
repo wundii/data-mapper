@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use PHPLint\Config\LintConfig;
+use Wundii\PHPLint\Config\LintConfig;
 
 return static function (LintConfig $lintConfig): void {
     $lintConfig->cacheDirectory('cache/phplint');
