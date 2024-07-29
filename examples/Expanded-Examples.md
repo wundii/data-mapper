@@ -164,7 +164,7 @@ class User
 }
 ```
 
-## Usage
+## Usage with custom configuration
 ```php
 <?php
 
@@ -182,4 +182,24 @@ $dataMapper->setDataConfig($dataConfig);
 
 $user = $dataMapper->json($json, User::class);
 $user = $dataMapper->xml($xml, User::class);
+```
+
+## Usage with custom configuration and custom source root element
+```php
+<?php
+
+use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\DataMapper;
+
+$dataConfig = new DataConfig(
+    approachEnum: ApproachEnum::CONSTRUCTOR,
+    classMap: [
+        DateTimeInterface::class => DateTime
+    ]
+);
+$dataMapper = new DataMapper();
+$dataMapper->setDataConfig($dataConfig);
+
+$car = $dataMapper->json($json, Car::class, ['currentCar']);
+$car = $dataMapper->xml($xml, Car::class, ['currentCar']);
 ```
