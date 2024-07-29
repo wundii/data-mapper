@@ -125,7 +125,7 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         foreach ($this->customRoot as $root) {
-            $xmlElement = $xmlElement->$root;
+            $xmlElement = $xmlElement->{$root};
         }
 
         $elementData = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
