@@ -11,7 +11,6 @@ This mapper relies on strict data types, dependency capability and convenient pr
 - Initialize object via constructor, properties or methods
 - Map nested objects, arrays of objects
 - Class mapping for interfaces or other classes
-- Psr\Log compatible
 
 ## Supported Types
 - `null`
