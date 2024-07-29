@@ -95,7 +95,7 @@ final readonly class ElementObjectResolver
         DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
     ): object {
-        if (is_object($elementObject->getObject())) {
+        if ($dataConfig->getApproach() === ApproachEnum::CONSTRUCTOR && is_object($elementObject->getObject())) {
             throw new Exception('You can not use constructor approach with an object');
         }
 

@@ -333,11 +333,39 @@ class ElementObjectResolverTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testResolveProperty()
+    public function testResolvePropertyWithClassString()
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
         $elementData = new DataObject(
             'MockClasses\RootProperties',
+            [
+                new DataInt(4, 'id'),
+                new DataString('test', 'name'),
+            ],
+            'destination',
+        );
+
+        $elementObjectResolver = new ElementObjectResolver();
+        $result = $elementObjectResolver->resolve($dataConfig, $elementData);
+
+        $expected = new RootProperties();
+        $expected->name = 'test';
+        $expected->id = 4;
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testResolvePropertyWithObject()
+    {
+        $object = new RootProperties();
+        $object->id = 999;
+
+        $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
+        $elementData = new DataObject(
+            $object,
             [
                 new DataInt(4, 'id'),
                 new DataString('test', 'name'),
@@ -380,11 +408,39 @@ class ElementObjectResolverTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testResolveSetter()
+    public function testResolveSetterWithClassString()
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $elementData = new DataObject(
             'MockClasses\RootSetters',
+            [
+                new DataInt(4, 'setId'),
+                new DataString('test', 'setName'),
+            ],
+            'destination',
+        );
+
+        $elementObjectResolver = new ElementObjectResolver();
+        $result = $elementObjectResolver->resolve($dataConfig, $elementData);
+
+        $expected = new RootSetters();
+        $expected->setId(4);
+        $expected->setName('test');
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testResolveSetterWithObject()
+    {
+        $object = new RootSetters();
+        $object->setId(999);
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $elementData = new DataObject(
+            $object,
             [
                 new DataInt(4, 'setId'),
                 new DataString('test', 'setName'),
