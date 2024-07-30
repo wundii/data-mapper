@@ -83,7 +83,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     public function matchValue(
         DataConfigInterface $dataConfig,
@@ -100,7 +100,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     public function resolve(
         DataConfigInterface $dataConfig,
@@ -114,7 +114,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     private function constructor(
         DataConfigInterface $dataConfig,
@@ -134,7 +134,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     private function properties(
         DataConfigInterface $dataConfig,
@@ -162,7 +162,7 @@ final readonly class ElementObjectResolver
     }
 
     /**
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     private function setters(
         DataConfigInterface $dataConfig,

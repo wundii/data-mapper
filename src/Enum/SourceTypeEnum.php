@@ -15,18 +15,18 @@ enum SourceTypeEnum
     case XML;
 
     /**
-     * @param string[] $customRoot
+     * @param string[] $rootElementTree
      */
     public static function sourceDataInstance(
         SourceTypeEnum $sourceTypeEnum,
         DataConfigInterface $dataConfig,
         string $source,
         string|object $object,
-        array $customRoot = [],
+        array $rootElementTree = [],
     ): SourceDataInterface {
         return match ($sourceTypeEnum) {
-            SourceTypeEnum::JSON => new JsonSourceData($dataConfig, $source, $object, $customRoot),
-            SourceTypeEnum::XML => new XmlSourceData($dataConfig, $source, $object, $customRoot),
+            SourceTypeEnum::JSON => new JsonSourceData($dataConfig, $source, $object, $rootElementTree),
+            SourceTypeEnum::XML => new XmlSourceData($dataConfig, $source, $object, $rootElementTree),
         };
     }
 }

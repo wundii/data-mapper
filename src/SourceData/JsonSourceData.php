@@ -141,7 +141,7 @@ final class JsonSourceData extends AbstractSourceData
             throw DataMapperException::InvalidArgument('Invalid JSON decode return');
         }
 
-        foreach ($this->customRoot as $root) {
+        foreach ($this->rootElementTree as $root) {
             $jsonArray = $jsonArray[$root] ?? $jsonArray;
         }
 

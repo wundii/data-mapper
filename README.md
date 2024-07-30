@@ -45,7 +45,7 @@ use Wundii\DataMapper\DataMapper;
 
 /**
  * DataConfig default settings
- * - ApproachEnum::CONSTRUCTOR - will use the constructor to map the data
+ * - ApproachEnum::SETTER - will use the constructor to map the data
  * - AccessibleEnum::PUBLIC - will use only public properties/methods
  * - classMap = [] - will not map any classes 
  */

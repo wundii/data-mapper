@@ -13,16 +13,23 @@ use Integration\Objects\Types\TypeObject;
 use Integration\Objects\Types\TypeObjectArray;
 use Integration\Objects\Types\TypeString;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 class XmlTypesTest extends TestCase
 {
+    public function dataMapper(): DataMapper
+    {
+        $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
+        return new DataMapper($dataConfig);
+    }
+
     public function testNull(): void
     {
         $file = __DIR__ . '/XmlFiles/TypeNull.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeNull::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeNull::class);
 
         $expected = new TypeNull(null);
 
@@ -35,8 +42,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeBool01.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -48,8 +54,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeBool02.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -61,8 +66,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeBool03.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -74,8 +78,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeBool04.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -87,8 +90,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeInt01.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeInt::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeInt::class);
 
         $expected = new TypeInt(22);
 
@@ -100,8 +102,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeInt02.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeInt::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeInt::class);
 
         $expected = new TypeInt(33);
 
@@ -113,8 +114,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeFloat01.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(12.34);
 
@@ -126,8 +126,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeFloat02.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(12.0);
 
@@ -139,8 +138,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeString.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeString::class);
 
         $expected = new TypeString('Nostromo');
 
@@ -152,8 +150,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeArray.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeArray::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeArray::class);
 
         $expected = new TypeArray(
             [
@@ -178,8 +175,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeObject.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeObject::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeObject::class);
 
         $expected = new TypeObject(
             new TypeString('Nostromo'),
@@ -193,8 +189,7 @@ class XmlTypesTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/TypeObjectArray.xml';
 
-        $dataMapper = new DataMapper();
-        $return = $dataMapper->xml(file_get_contents($file), TypeObjectArray::class);
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeObjectArray::class);
 
         $expected = new TypeObjectArray(
             [

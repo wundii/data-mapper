@@ -15,7 +15,7 @@ final readonly class DataConfig implements DataConfigInterface
      * @param string[] $classMap
      */
     public function __construct(
-        private ApproachEnum $approachEnum = ApproachEnum::CONSTRUCTOR,
+        private ApproachEnum $approachEnum = ApproachEnum::SETTER,
         private AccessibleEnum $accessibleEnum = AccessibleEnum::PUBLIC,
         private array $classMap = [],
     ) {

@@ -19,13 +19,13 @@ abstract class AbstractSourceData implements SourceDataInterface
     protected static array $objectReflections = [];
 
     /**
-     * @param string[] $customRoot
+     * @param string[] $rootElementTree
      */
     public function __construct(
         protected DataConfigInterface $dataConfig,
         protected string $source,
         protected string|object $object,
-        protected array $customRoot = [],
+        protected array $rootElementTree = [],
     ) {
     }
 

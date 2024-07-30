@@ -26,7 +26,7 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testMatchDataBool()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataBool(true, 'destination');
 
         $elementArrayResolver = new ElementArrayResolver();
@@ -47,7 +47,7 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testMatchDataInt()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataInt(11, 'destination');
 
         $elementArrayResolver = new ElementArrayResolver();
@@ -61,7 +61,7 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testMatchDataFloat()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataFloat(22.2, 'destination');
 
         $elementArrayResolver = new ElementArrayResolver();
@@ -75,7 +75,7 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testMatchDataString()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataString('Value', 'destination');
 
         $elementArrayResolver = new ElementArrayResolver();
@@ -89,7 +89,7 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testMatchDataArray()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataArray([
             new DataString('value1', 'destination1'),
             new DataBool(false, 'destination2'),
@@ -106,7 +106,9 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testMatchDataObjectConstructor()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::CONSTRUCTOR
+        );
         $elementData = new DataObject(
             'MockClasses\ItemConstructor',
             [
@@ -177,7 +179,7 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testResolveDataArrayEmpty()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataArray([]);
 
         $elementArrayResolver = new ElementArrayResolver();
@@ -191,7 +193,9 @@ class ElementArrayResolverTest extends TestCase
      */
     public function testResolveDataArray()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::CONSTRUCTOR
+        );
         $elementData = new DataArray([
             new DataString('value1', 'destination1'),
             new DataBool(false, 'destination2'),

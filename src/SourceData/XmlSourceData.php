@@ -124,7 +124,7 @@ final class XmlSourceData extends AbstractSourceData
             throw DataMapperException::Error('Invalid XML: ' . $exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
-        foreach ($this->customRoot as $root) {
+        foreach ($this->rootElementTree as $root) {
             $xmlElement = $xmlElement->{$root};
         }
 
