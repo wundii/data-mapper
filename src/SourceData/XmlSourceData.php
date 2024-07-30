@@ -93,7 +93,7 @@ final class XmlSourceData extends AbstractSourceData
             $value = (string) $child;
             $name = $childReflection->getName();
             $dataType = $childReflection->getDataType();
-            $targetType = $childReflection->getTargetType(true);
+            $targetType = $childReflection->getTargetType();
 
             if ($childReflection->isNullable() && $value === '') {
                 $dataType = DataTypeEnum::NULL;

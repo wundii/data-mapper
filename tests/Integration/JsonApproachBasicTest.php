@@ -114,6 +114,44 @@ class JsonApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
+    // public function testBenchmark(): void
+    // {
+    //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetter.json';
+    //
+    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
+    //     $dataMapper = new DataMapper();
+    //     $dataMapper->setDataConfig($dataConfig);
+    //
+    //     $subSetter01 = new SubSetter();
+    //     $subSetter01->setActive(true);
+    //     $subsetter02 = new SubSetter();
+    //     $subsetter02->setActive(true);
+    //     $subSetter03 = new SubSetter();
+    //     $subSetter03->setActive(false);
+    //
+    //     $expected = new BaseSetter();
+    //     $expected->setAmount(222.22);
+    //     $expected->setName('approach');
+    //     $expected->setId(1337);
+    //     $expected->setMyStrings([
+    //         'hello',
+    //         'world',
+    //     ]);
+    //     $expected->setSubSetter($subSetter01);
+    //     $expected->setSubSetters([
+    //         $subsetter02,
+    //         $subSetter03,
+    //     ]);
+    //
+    //     $fileContent = file_get_contents($file);
+    //
+    //     for ($i = 0; $i < 10000; $i++) {
+    //         $return = $dataMapper->json($fileContent, BaseSetter::class);
+    //         $this->assertInstanceOf(BaseSetter::class, $return);
+    //         $this->assertEquals($expected, $return);
+    //     }
+    // }
+
     public function testMix(): void
     {
         $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';

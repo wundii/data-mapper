@@ -6,7 +6,7 @@ namespace Unit\Reflection;
 
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Reflection\AnnotationReflection;
+use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 
@@ -19,26 +19,21 @@ class ObjectReflectionTest extends TestCase
 
     public function objectComplex(): ObjectReflection
     {
-        $annotationReflection = new AnnotationReflection(
-            [],
-            [],
-        );
-
         return new ObjectReflection(
             [
-                new PropertyReflection('nameProperty', ['string', 'null', 'float'], $annotationReflection),
-                new PropertyReflection('dataProperty', ['array'], $annotationReflection),
-                new PropertyReflection('itemProperty', ['MockClasses\ItemConstructor'], $annotationReflection),
+                new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true),
+                new PropertyReflection('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false),
+                new PropertyReflection('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false),
             ],
             [
-                new PropertyReflection('nameConstructor', ['string', 'null', 'float'], $annotationReflection),
-                new PropertyReflection('dataConstructor', ['array'], $annotationReflection),
-                new PropertyReflection('itemConstructor', ['MockClasses\ItemConstructor'], $annotationReflection),
+                new PropertyReflection('nameConstructor', DataTypeEnum::STRING, 'target1', false, true),
+                new PropertyReflection('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false),
+                new PropertyReflection('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false),
             ],
             [
-                new PropertyReflection('nameSetter', ['string', 'null', 'float'], $annotationReflection),
-                new PropertyReflection('dataSetter', ['array'], $annotationReflection),
-                new PropertyReflection('itemSetter', ['MockClasses\ItemConstructor'], $annotationReflection),
+                new PropertyReflection('nameSetter', DataTypeEnum::STRING, 'target1', false, true),
+                new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false),
+                new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false),
             ],
         );
     }

@@ -197,7 +197,7 @@ final readonly class ReflectionObjectResolver
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
             if (str_starts_with($reflectionMethod->getName(), '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                    $constructor[] = new PropertyReflection(
+                    $constructor[] = (new PropertyReflectionResolver())->resolve(
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
                         $this->annotation($useStatementsReflection, $reflectionMethod),
@@ -210,7 +210,7 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $setters[] = new PropertyReflection(
+                $setters[] = (new PropertyReflectionResolver())->resolve(
                     $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $this->annotation($useStatementsReflection, $reflectionMethod),
@@ -220,6 +220,7 @@ final readonly class ReflectionObjectResolver
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $annotation = $this->annotation($useStatementsReflection, $reflectionProperty);
+            $propertyReflection = null;
 
             if ($annotation->isEmpty()) {
                 foreach ($constructor as $property) {
@@ -227,16 +228,20 @@ final readonly class ReflectionObjectResolver
                         continue;
                     }
 
-                    $annotation = $property->getAnnotation();
+                    $propertyReflection = $property;
                     break;
                 }
             }
 
-            $properties[] = new PropertyReflection(
-                $this->name($reflectionProperty),
-                $this->types($reflectionProperty->getType()),
-                $annotation,
-            );
+            if (! $propertyReflection instanceof PropertyReflection) {
+                $propertyReflection = (new PropertyReflectionResolver())->resolve(
+                    $this->name($reflectionProperty),
+                    $this->types($reflectionProperty->getType()),
+                    $annotation,
+                );
+            }
+
+            $properties[] = $propertyReflection;
         }
 
         return new ObjectReflection(
