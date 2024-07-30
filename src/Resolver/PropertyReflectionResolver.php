@@ -18,15 +18,14 @@ final readonly class PropertyReflectionResolver
         string $name,
         array $types,
         AnnotationReflection $annotationReflection,
-    ): array
-    {
+    ): array {
+        if (str_starts_with($name, 'set')) {
+            $name = substr($name, 3);
+        }
+
         $types = array_merge($types, $annotationReflection->getVariables());
 
         foreach ($annotationReflection->getParameterReflections() as $parameterReflection) {
-            if (str_starts_with($name, 'set')) {
-                $name = substr($name, 3);
-            }
-
             if (strcasecmp($parameterReflection->getParameter(), $name) === 0) {
                 $types = array_merge($types, $parameterReflection->getTypes());
                 break;
@@ -41,8 +40,6 @@ final readonly class PropertyReflectionResolver
      */
     public function getTargetType(array $types): ?string
     {
-        $lowestType = null;
-
         foreach ($types as $type) {
             if (class_exists($type) || interface_exists($type)) {
                 return $type;
@@ -56,36 +53,39 @@ final readonly class PropertyReflectionResolver
 
                 $classType = DataTypeEnum::fromString($classType);
                 if ($classType instanceof DataTypeEnum) {
-                    $lowestType = $classType->value;
+                    return $classType->value;
                 }
             }
         }
 
-        return $lowestType;
+        return null;
     }
 
+    /**
+     * @param string[] $targetTypes
+     */
     public function getDataType(bool $oneType, array $targetTypes): string|DataTypeEnum
     {
-        if ($oneType === false) {
+        if (! $oneType) {
             return DataTypeEnum::NULL;
         }
 
-        foreach ($targetTypes as $type) {
-            $type = DataTypeEnum::fromString($type);
+        foreach ($targetTypes as $targetType) {
+            $targetType = DataTypeEnum::fromString($targetType);
 
-            if ($type === DataTypeEnum::NULL) {
+            if ($targetType === DataTypeEnum::NULL) {
                 continue;
             }
 
-            if (is_string($type) && str_ends_with($type, '[]')) {
+            if (is_string($targetType) && str_ends_with($targetType, '[]')) {
                 continue;
             }
 
-            if (is_string($type) && (class_exists($type) || interface_exists($type))) {
+            if (is_string($targetType) && (class_exists($targetType) || interface_exists($targetType))) {
                 return DataTypeEnum::OBJECT;
             }
 
-            return $type;
+            return $targetType;
         }
 
         return DataTypeEnum::NULL;
@@ -96,7 +96,7 @@ final readonly class PropertyReflectionResolver
      */
     public function isNullable(array $types): bool
     {
-        $types = array_map(fn (string $type): string => strtolower($type), $types);
+        $types = array_map(static fn (string $type): string => strtolower($type), $types);
 
         return in_array('null', $types, true);
     }
@@ -131,12 +131,14 @@ final readonly class PropertyReflectionResolver
         return count($tmp) === 1;
     }
 
+    /**
+     * @param string[] $types
+     */
     public function resolve(
         string $name,
         array $types,
         AnnotationReflection $annotationReflection,
-    ): PropertyReflection
-    {
+    ): PropertyReflection {
         $targetTypes = $this->getTargetTypes($name, $types, $annotationReflection);
 
         $oneType = $this->isOneType($targetTypes);

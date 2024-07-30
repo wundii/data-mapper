@@ -17,6 +17,7 @@ use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\ParameterReflection;
+use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Reflection\UseStatementsReflection;
 
 final readonly class ReflectionObjectResolver
@@ -232,7 +233,7 @@ final readonly class ReflectionObjectResolver
                 }
             }
 
-            if ($propertyReflection === null) {
+            if (! $propertyReflection instanceof PropertyReflection) {
                 $propertyReflection = (new PropertyReflectionResolver())->resolve(
                     $this->name($reflectionProperty),
                     $this->types($reflectionProperty->getType()),
