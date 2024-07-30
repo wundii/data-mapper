@@ -46,7 +46,6 @@ class ElementObjectResolverTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-
     /**
      * @throws Exception
      */
