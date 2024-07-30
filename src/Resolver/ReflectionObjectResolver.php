@@ -197,7 +197,7 @@ final readonly class ReflectionObjectResolver
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
             if (str_starts_with($reflectionMethod->getName(), '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                    $constructor[] = new PropertyReflection(
+                    $constructor[] = (new PropertyReflectionResolver())->resolve(
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
                         $this->annotation($useStatementsReflection, $reflectionMethod),
@@ -210,7 +210,7 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $setters[] = new PropertyReflection(
+                $setters[] = (new PropertyReflectionResolver())->resolve(
                     $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $this->annotation($useStatementsReflection, $reflectionMethod),
@@ -232,7 +232,7 @@ final readonly class ReflectionObjectResolver
                 }
             }
 
-            $properties[] = new PropertyReflection(
+            $properties[] = (new PropertyReflectionResolver())->resolve(
                 $this->name($reflectionProperty),
                 $this->types($reflectionProperty->getType()),
                 $annotation,
