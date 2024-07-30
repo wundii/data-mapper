@@ -8,12 +8,15 @@ use Integration\Objects\ApproachBasic\BaseConstructor;
 use Integration\Objects\ApproachBasic\BaseMix;
 use Integration\Objects\ApproachBasic\BaseProperty;
 use Integration\Objects\ApproachBasic\BaseSetter;
+use Integration\Objects\ApproachBasic\PrivateProperty;
+use Integration\Objects\ApproachBasic\PrivateSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
 use Integration\Objects\ApproachBasic\SubProperty;
 use Integration\Objects\ApproachBasic\SubSetter;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 
 class JsonApproachBasicTest extends TestCase
@@ -178,5 +181,39 @@ class JsonApproachBasicTest extends TestCase
 
         $this->assertInstanceOf(BaseMix::class, $return);
         $this->assertEquals($expected, $return);
+    }
+
+    public function testPrivateProperty(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
+
+        $dataConfig = new DataConfig(
+            ApproachEnum::PROPERTY,
+            AccessibleEnum::PRIVATE,
+        );
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), PrivateProperty::class);
+
+        $this->assertInstanceOf(PrivateProperty::class, $return);
+        $this->assertEquals(222.22, $return->getAmount());
+        $this->assertEquals('approach', $return->getName());
+    }
+
+    public function testPrivateSetter(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
+
+        $dataConfig = new DataConfig(
+            ApproachEnum::SETTER,
+            AccessibleEnum::PRIVATE,
+        );
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), PrivateSetter::class);
+
+        $this->assertInstanceOf(PrivateSetter::class, $return);
+        $this->assertEquals(222.22, $return->getAmount());
+        $this->assertEquals('approach', $return->getName());
     }
 }
