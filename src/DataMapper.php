@@ -26,11 +26,13 @@ class DataMapper
     /**
      * @param mixed[] $source
      * @param class-string<T>|T $object
+     * @param string[] $rootElementTree
      * @return ($object is class-string ? T : object)
      */
     public function array(
         array $source,
         string|object $object,
+        array $rootElementTree = [],
     ): object {
         $json = json_encode($source);
 
@@ -38,45 +40,45 @@ class DataMapper
             throw DataMapperException::InvalidArgument('Could not encode the array to JSON');
         }
 
-        return $this->map(SourceTypeEnum::JSON, $json, $object);
+        return $this->map(SourceTypeEnum::JSON, $json, $object, $rootElementTree);
     }
 
     /**
      * @param class-string<T>|T $object
-     * @param string[] $customRoot
+     * @param string[] $rootElementTree
      * @return ($object is class-string ? T : object)
      */
     public function json(
         string $source,
         string|object $object,
-        array $customRoot = [],
+        array $rootElementTree = [],
     ): object {
-        return $this->map(SourceTypeEnum::JSON, $source, $object, $customRoot);
+        return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree);
     }
 
     /**
      * @param class-string<T>|T $object
-     * @param string[] $customRoot
+     * @param string[] $rootElementTree
      * @return ($object is class-string ? T : object)
      */
     public function xml(
         string $source,
         string|object $object,
-        array $customRoot = [],
+        array $rootElementTree = [],
     ): object {
-        return $this->map(SourceTypeEnum::XML, $source, $object, $customRoot);
+        return $this->map(SourceTypeEnum::XML, $source, $object, $rootElementTree);
     }
 
     /**
      * @param class-string<T>|T $object
-     * @param string[] $customRoot
+     * @param string[] $rootElementTree
      * @return ($object is class-string ? T : object)
      */
     private function map(
         SourceTypeEnum $sourceTypeEnum,
         string $source,
         string|object $object,
-        array $customRoot = [],
+        array $rootElementTree = [],
     ): object {
         if (! $this->dataConfig instanceof DataConfigInterface) {
             $this->dataConfig = new DataConfig();
@@ -87,7 +89,7 @@ class DataMapper
             $this->dataConfig,
             $source,
             $object,
-            $customRoot,
+            $rootElementTree,
         );
 
         return $sourceData->resolve();
