@@ -194,14 +194,6 @@ final readonly class ReflectionObjectResolver
         $reflectionClass = new ReflectionClass($object);
         $useStatementsReflection = (new ReflectionTokenResolver())->resolve($object);
 
-        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $properties[] = new PropertyReflection(
-                $this->name($reflectionProperty),
-                $this->types($reflectionProperty->getType()),
-                $this->annotation($useStatementsReflection, $reflectionProperty),
-            );
-        }
-
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
             if (str_starts_with($reflectionMethod->getName(), '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
@@ -224,6 +216,27 @@ final readonly class ReflectionObjectResolver
                     $this->annotation($useStatementsReflection, $reflectionMethod),
                 );
             }
+        }
+
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $annotation = $this->annotation($useStatementsReflection, $reflectionProperty);
+
+            if ($annotation->isEmpty()) {
+                foreach ($constructor as $property) {
+                    if ($property->getName() !== $this->name($reflectionProperty)) {
+                        continue;
+                    }
+
+                    $annotation = $property->getAnnotation();
+                    break;
+                }
+            }
+
+            $properties[] = new PropertyReflection(
+                $this->name($reflectionProperty),
+                $this->types($reflectionProperty->getType()),
+                $annotation,
+            );
         }
 
         return new ObjectReflection(

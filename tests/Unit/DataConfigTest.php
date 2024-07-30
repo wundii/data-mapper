@@ -19,7 +19,7 @@ class DataConfigTest extends TestCase
         $config = new DataConfig();
 
         $this->assertInstanceOf(DataConfig::class, $config);
-        $this->assertEquals(ApproachEnum::CONSTRUCTOR, $config->getApproach());
+        $this->assertEquals(ApproachEnum::SETTER, $config->getApproach());
         $this->assertEquals(AccessibleEnum::PUBLIC, $config->getAccessible());
         $this->assertIsArray($config->getClassMap());
         $this->assertCount(0, $config->getClassMap());

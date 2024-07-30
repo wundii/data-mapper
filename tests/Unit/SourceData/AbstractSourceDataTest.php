@@ -9,6 +9,7 @@ use MockClasses\AbstractSourceDataTest as AbstractSourceData;
 use MockClasses\RootProperties;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\Enum\ApproachEnum;
 
 class AbstractSourceDataTest extends TestCase
 {
@@ -19,7 +20,7 @@ class AbstractSourceDataTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $abstractSourceData = new AbstractSourceData(
             $dataConfig,
             'source',
@@ -37,7 +38,7 @@ class AbstractSourceDataTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $abstractSourceData = new AbstractSourceData(
             $dataConfig,
             'source',
@@ -53,7 +54,7 @@ class AbstractSourceDataTest extends TestCase
      */
     public function testReflectionObjectCheckStaticProperty(): void
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $abstractSourceData = new AbstractSourceData(
             $dataConfig,
             'source',
@@ -78,7 +79,7 @@ class AbstractSourceDataTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $abstractSourceData = new AbstractSourceData(
             $dataConfig,
             'source',

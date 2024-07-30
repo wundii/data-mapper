@@ -31,4 +31,9 @@ final readonly class AnnotationReflection
     {
         return $this->variables;
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->parameterReflections === [] && $this->variables === [];
+    }
 }

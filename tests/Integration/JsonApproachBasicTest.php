@@ -22,7 +22,9 @@ class JsonApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/ApproachBasicConstructor.json';
 
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->json(file_get_contents($file), BaseConstructor::class);
 
         $expected = new BaseConstructor(
@@ -116,9 +118,7 @@ class JsonApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
 
-        $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $dataMapper = new DataMapper();
-        $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->json(file_get_contents($file), BaseMix::class);
 
         $expected = new BaseMix(222.22, 'approach');

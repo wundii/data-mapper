@@ -22,7 +22,9 @@ class XmlApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicConstructor.xml';
 
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->xml(file_get_contents($file), BaseConstructor::class);
 
         $expected = new BaseConstructor(
@@ -81,8 +83,7 @@ class XmlApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicSetter.xml';
 
-        $dataConfig = new DataConfig(ApproachEnum::SETTER);
-        $dataMapper = new DataMapper($dataConfig);
+        $dataMapper = new DataMapper();
         $return = $dataMapper->xml(file_get_contents($file), BaseSetter::class);
 
         $subSetter01 = new SubSetter();
@@ -114,9 +115,7 @@ class XmlApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicMix.xml';
 
-        $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $dataMapper = new DataMapper();
-        $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->xml(file_get_contents($file), BaseMix::class);
 
         $expected = new BaseMix(222.22, 'approach');
@@ -129,9 +128,7 @@ class XmlApproachBasicTest extends TestCase
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicMixCustomRoot.xml';
 
-        $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $dataMapper = new DataMapper();
-        $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->xml(file_get_contents($file), BaseMix::class, ['result']);
 
         $expected = new BaseMix(222.22, 'approach');

@@ -6,6 +6,7 @@ namespace Unit\Enum;
 
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
+use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\SourceData\JsonSourceData;
 use Wundii\DataMapper\SourceData\XmlSourceData;
@@ -16,7 +17,7 @@ class SourceTypeEnumTest extends TestCase
     {
         $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::JSON,
-            new DataConfig(),
+            new DataConfig(ApproachEnum::CONSTRUCTOR),
             'source',
             'objectName',
         );
@@ -24,7 +25,7 @@ class SourceTypeEnumTest extends TestCase
 
         $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::JSON,
-            new DataConfig(),
+            new DataConfig(ApproachEnum::CONSTRUCTOR),
             'source',
             new \stdClass(),
         );
@@ -35,7 +36,7 @@ class SourceTypeEnumTest extends TestCase
     {
         $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::XML,
-            new DataConfig(),
+            new DataConfig(ApproachEnum::CONSTRUCTOR),
             'source',
             'objectName',
         );
@@ -43,7 +44,7 @@ class SourceTypeEnumTest extends TestCase
 
         $sourceDataInstance = SourceTypeEnum::sourceDataInstance(
             SourceTypeEnum::XML,
-            new DataConfig(),
+            new DataConfig(ApproachEnum::CONSTRUCTOR),
             'source',
             new \stdClass(),
         );

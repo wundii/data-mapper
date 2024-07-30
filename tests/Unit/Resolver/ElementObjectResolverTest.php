@@ -23,9 +23,14 @@ use Wundii\DataMapper\Resolver\ElementObjectResolver;
 
 class ElementObjectResolverTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testCreateInstanceConstructor(): void
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::CONSTRUCTOR,
+        );
         $elementData = new DataObject(
             'MockClasses\ItemConstructor',
             [],
@@ -41,6 +46,10 @@ class ElementObjectResolverTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
+
+    /**
+     * @throws Exception
+     */
     public function testCreateInstanceProperty(): void
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
@@ -55,6 +64,9 @@ class ElementObjectResolverTest extends TestCase
         $this->assertInstanceOf(RootProperties::class, $return);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCreateInstanceSetter(): void
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
@@ -119,7 +131,7 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testMatchDataBool()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataBool(true, 'destination');
 
         $elementObjectResolver = new ElementObjectResolver();
@@ -140,7 +152,7 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testMatchDataInt()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataInt(11, 'destination');
 
         $elementObjectResolver = new ElementObjectResolver();
@@ -154,7 +166,7 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testMatchDataFloat()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataFloat(22.2, 'destination');
 
         $elementObjectResolver = new ElementObjectResolver();
@@ -168,7 +180,7 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testMatchDataString()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataString('Value', 'destination');
 
         $elementObjectResolver = new ElementObjectResolver();
@@ -182,7 +194,7 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testMatchDataArray()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $elementData = new DataArray([
             new DataString('value1', 'destination1'),
             new DataBool(false, 'destination2'),
@@ -199,7 +211,9 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testMatchDataObjectConstructor()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::CONSTRUCTOR,
+        );
         $elementData = new DataObject(
             'MockClasses\ItemConstructor',
             [
@@ -273,7 +287,9 @@ class ElementObjectResolverTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You can not use constructor approach with an object');
 
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::CONSTRUCTOR,
+        );
         $elementData = new DataObject(
             new ItemConstructor(4.4, false),
             [
@@ -292,7 +308,9 @@ class ElementObjectResolverTest extends TestCase
      */
     public function testResolveConstructor()
     {
-        $dataConfig = new DataConfig();
+        $dataConfig = new DataConfig(
+            approachEnum: ApproachEnum::CONSTRUCTOR,
+        );
         $elementData = new DataObject(
             'MockClasses\ItemConstructor',
             [
