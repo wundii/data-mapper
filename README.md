@@ -77,6 +77,6 @@ $testClass = $dataMapper->xml($xml, TestClass::class);
 ```
 
 ### ToDo`s
-- [ ] `ElementObjectResolver->CreateInstance(...)` private properties/methods
+- [x] `ElementObjectResolver->CreateInstance(...)` private properties/methods
 - [ ] JsonSourceData phpstan issues
 - [x] Smaller performance todos

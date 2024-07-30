@@ -74,21 +74,14 @@ class ReflectionTokenResolverTest extends TestCase
     public function testParseTokenFileNotFound(): void
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Could not read file content from invalid-file-name');
+        $this->expectExceptionMessage('File not found: invalid-file-name');
 
         $reflectionClass = $this->createMock(ReflectionClass::class);
         $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
         $reflectionClass->method('getFileName')->willReturn('invalid-file-name');
 
-        /**
-         * file_get_contents will return false, because the file does not exist
-         */
-        set_error_handler(function () {});
-
         $reflectionTokenResolver = new ReflectionTokenResolver();
         $reflectionTokenResolver->parseToken($reflectionClass);
-
-        restore_error_handler();
     }
 
     /**

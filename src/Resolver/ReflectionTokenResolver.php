@@ -32,6 +32,10 @@ final readonly class ReflectionTokenResolver
             );
         }
 
+        if (file_exists((string) $reflectionClass->getFileName()) === false) {
+            throw DataMapperException::Error('File not found: ' . $reflectionClass->getFileName());
+        }
+
         $fileContent = file_get_contents($reflectionClass->getFileName() ?: '');
         if ($fileContent === false) {
             throw DataMapperException::Error('Could not read file content from ' . $reflectionClass->getFileName());

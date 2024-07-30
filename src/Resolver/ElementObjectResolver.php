@@ -7,8 +7,10 @@ namespace Wundii\DataMapper\Resolver;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionProperty;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataObject;
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
@@ -155,6 +157,13 @@ final readonly class ElementObjectResolver
 
             $value = $this->matchValue($dataConfig, $elementData);
 
+            if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
+                $reflectionProperty = new ReflectionProperty($instance, $destination);
+                $reflectionProperty->setAccessible(true);
+                $reflectionProperty->setValue($instance, $value);
+                continue;
+            }
+
             $instance->{$destination} = $value;
         }
 
@@ -182,6 +191,13 @@ final readonly class ElementObjectResolver
             }
 
             $value = $this->matchValue($dataConfig, $elementData);
+
+            if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
+                $reflectionMethod = new ReflectionMethod($instance, $destination);
+                $reflectionMethod->setAccessible(true);
+                $reflectionMethod->invoke($instance, $value);
+                continue;
+            }
 
             $instance->{$destination}($value);
         }
