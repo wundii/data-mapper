@@ -106,7 +106,7 @@ final class JsonSourceData extends AbstractSourceData
 
             $name = $childReflection->getName();
             $dataType = $childReflection->getDataType();
-            $targetType = $childReflection->getTargetType(true);
+            $targetType = $childReflection->getTargetType();
 
             /** @phpstan-ignore-next-line */
             if ($childReflection->isNullable() && ($value === null || $value === '')) {

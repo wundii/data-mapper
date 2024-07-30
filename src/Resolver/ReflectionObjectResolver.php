@@ -17,7 +17,6 @@ use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\ParameterReflection;
-use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Reflection\UseStatementsReflection;
 
 final readonly class ReflectionObjectResolver
@@ -220,6 +219,7 @@ final readonly class ReflectionObjectResolver
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $annotation = $this->annotation($useStatementsReflection, $reflectionProperty);
+            $propertyReflection = null;
 
             if ($annotation->isEmpty()) {
                 foreach ($constructor as $property) {
@@ -227,16 +227,20 @@ final readonly class ReflectionObjectResolver
                         continue;
                     }
 
-                    $annotation = $property->getAnnotation();
+                    $propertyReflection = $property;
                     break;
                 }
             }
 
-            $properties[] = (new PropertyReflectionResolver())->resolve(
-                $this->name($reflectionProperty),
-                $this->types($reflectionProperty->getType()),
-                $annotation,
-            );
+            if ($propertyReflection === null) {
+                $propertyReflection = (new PropertyReflectionResolver())->resolve(
+                    $this->name($reflectionProperty),
+                    $this->types($reflectionProperty->getType()),
+                    $annotation,
+                );
+            }
+
+            $properties[] = $propertyReflection;
         }
 
         return new ObjectReflection(
