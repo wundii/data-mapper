@@ -18,7 +18,6 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
-use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
@@ -68,7 +67,7 @@ final class XmlSourceData extends AbstractSourceData
         SimpleXMLElement $xmlElement,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementDataInterface {
+    ): ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
@@ -128,11 +127,8 @@ final class XmlSourceData extends AbstractSourceData
             $xmlElement = $xmlElement->{$root};
         }
 
-        $elementData = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
-        if (! $elementData instanceof ElementObjectInterface) {
-            throw DataMapperException::Error('Invalid ElementDataInterface from from XmlResolver');
-        }
+        $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
 
-        return (new ElementObjectResolver())->resolve($this->dataConfig, $elementData);
+        return (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
     }
 }

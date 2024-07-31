@@ -16,7 +16,6 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
-use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
@@ -77,7 +76,7 @@ final class JsonSourceData extends AbstractSourceData
         array|string|int $jsonArray,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementDataInterface {
+    ): ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
@@ -145,11 +144,8 @@ final class JsonSourceData extends AbstractSourceData
             $jsonArray = $jsonArray[$root] ?? $jsonArray;
         }
 
-        $elementData = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
-        if (! $elementData instanceof ElementObjectInterface) {
-            throw DataMapperException::Error('Invalid ElementDataInterface from JsonResolver');
-        }
+        $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
 
-        return (new ElementObjectResolver())->resolve($this->dataConfig, $elementData);
+        return (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
     }
 }

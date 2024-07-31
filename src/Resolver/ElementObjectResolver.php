@@ -8,14 +8,14 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
-use Wundii\DataMapper\Elements\DataArray;
-use Wundii\DataMapper\Elements\DataObject;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Interface\ElementValueInterface;
 
 final readonly class ElementObjectResolver
 {
@@ -94,10 +94,11 @@ final readonly class ElementObjectResolver
         $elementArrayResolver = new ElementArrayResolver();
         $elementValueResolver = new ElementValueResolver();
 
-        return match (get_class($elementData)) {
-            DataArray::class => $elementArrayResolver->resolve($dataConfig, $elementData),
-            DataObject::class => $this->resolve($dataConfig, $elementData),
-            default => $elementValueResolver->resolve($elementData),
+        return match (true) {
+            $elementData instanceof ElementArrayInterface => $elementArrayResolver->resolve($dataConfig, $elementData),
+            $elementData instanceof ElementObjectInterface => $this->resolve($dataConfig, $elementData),
+            $elementData instanceof ElementValueInterface => $elementValueResolver->resolve($elementData),
+            default => throw DataMapperException::Error('ElementInterface not implemented: ' . $elementData::class),
         };
     }
 
