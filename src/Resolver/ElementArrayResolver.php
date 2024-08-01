@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
-use Wundii\DataMapper\Elements\DataArray;
-use Wundii\DataMapper\Elements\DataObject;
+use ReflectionException;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Interface\ElementValueInterface;
 
 final readonly class ElementArrayResolver
 {
     /**
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     public function matchValue(
         DataConfigInterface $dataConfig,
@@ -23,16 +24,17 @@ final readonly class ElementArrayResolver
         $elementObjectResolver = new ElementObjectResolver();
         $elementValueResolver = new ElementValueResolver();
 
-        return match (get_class($elementData)) {
-            DataArray::class => $this->resolve($dataConfig, $elementData),
-            DataObject::class => $elementObjectResolver->resolve($dataConfig, $elementData),
-            default => $elementValueResolver->resolve($elementData),
+        return match (true) {
+            $elementData instanceof ElementArrayInterface => $this->resolve($dataConfig, $elementData),
+            $elementData instanceof ElementObjectInterface => $elementObjectResolver->resolve($dataConfig, $elementData),
+            $elementData instanceof ElementValueInterface => $elementValueResolver->resolve($elementData),
+            default => throw DataMapperException::Error('ElementInterface not implemented: ' . $elementData::class),
         };
     }
 
     /**
      * @return mixed[]
-     * @throws DataMapperException
+     * @throws DataMapperException|ReflectionException
      */
     public function resolve(
         DataConfigInterface $dataConfig,

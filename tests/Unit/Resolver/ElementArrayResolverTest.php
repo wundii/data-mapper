@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unit\Resolver;
 
 use Exception;
+use MockClasses\ElementData;
 use MockClasses\ItemConstructor;
 use MockClasses\RootProperties;
 use MockClasses\RootSetters;
@@ -21,6 +22,21 @@ use Wundii\DataMapper\Resolver\ElementArrayResolver;
 
 class ElementArrayResolverTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
+    public function testMatchExceptionWithoutInterface()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('ElementInterface not implemented: MockClasses\ElementData');
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $elementData = new ElementData();
+
+        $elementArrayResolver = new ElementArrayResolver();
+        $elementArrayResolver->matchValue($dataConfig, $elementData);
+    }
+
     /**
      * @throws Exception
      */

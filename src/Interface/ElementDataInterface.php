@@ -9,6 +9,4 @@ use Stringable;
 interface ElementDataInterface extends Stringable
 {
     public function getDestination(): ?string;
-
-    public function getValue(): mixed;
 }

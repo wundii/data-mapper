@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Unit\Resolver;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Wundii\DataMapper\Interface\ElementArrayInterface;
-use Wundii\DataMapper\Interface\ElementDataInterface;
-use Wundii\DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Interface\ElementValueInterface;
 use Wundii\DataMapper\Resolver\ElementValueResolver;
 
 class ElementValueResolverTest extends TestCase
@@ -18,44 +15,12 @@ class ElementValueResolverTest extends TestCase
      * @throws Exception
      * @throws \Exception
      */
-    public function testResolveThrowsExceptionForElementObjectInterface()
+    public function testResolve()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('ObjectElementInterface not supported');
-
-        $elementData = $this->createMock(ElementObjectInterface::class);
+        $elementData = $this->createMock(ElementValueInterface::class);
+        $elementData->method('getValue')->willReturn('testValue');
         $resolver = new ElementValueResolver();
-        $resolver->resolve($elementData);
-    }
 
-    /**
-     * @throws Exception
-     * @throws \Exception
-     */
-    public function testResolveThrowsExceptionForElementArrayInterface()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('DataObject not supported');
-
-        $elementData = $this->createMock(ElementArrayInterface::class);
-        $resolver = new ElementValueResolver();
-        $resolver->resolve($elementData);
-    }
-
-    /**
-     * @throws Exception
-     * @throws \Exception
-     */
-    public function testResolveReturnsValueForElementDataInterface()
-    {
-        $expectedValue = 'testValue';
-
-        $elementData = $this->createMock(ElementDataInterface::class);
-        $elementData->method('getValue')->willReturn($expectedValue);
-
-        $resolver = new ElementValueResolver();
-        $result = $resolver->resolve($elementData);
-
-        $this->assertEquals($expectedValue, $result);
+        $this->assertSame('testValue', $resolver->resolve($elementData));
     }
 }

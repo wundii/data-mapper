@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Elements;
 
-use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ElementValueInterface;
 
-final readonly class DataString implements ElementDataInterface
+final readonly class DataString implements ElementValueInterface
 {
     public function __construct(
         private string $value,
