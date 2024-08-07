@@ -129,6 +129,11 @@ final class XmlSourceData extends AbstractSourceData
 
         $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
 
-        return (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
+        $object = (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
+        if ($object === null) {
+            throw DataMapperException::Error('Invalid object from XmlResolver');
+        }
+
+        return $object;
     }
 }

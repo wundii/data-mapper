@@ -146,6 +146,13 @@ final class JsonSourceData extends AbstractSourceData
 
         $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
 
-        return (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
+        // dump($elementObject);
+
+        $object = (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
+        if ($object === null) {
+            throw DataMapperException::Error('Invalid object from JsonResolver');
+        }
+
+        return $object;
     }
 }

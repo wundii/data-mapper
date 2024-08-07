@@ -108,7 +108,7 @@ final readonly class ElementObjectResolver
     public function resolve(
         DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
-    ): object {
+    ): ?object {
         return match ($dataConfig->getApproach()) {
             ApproachEnum::CONSTRUCTOR => $this->constructor($dataConfig, $elementObject),
             ApproachEnum::PROPERTY => $this->properties($dataConfig, $elementObject),
@@ -142,7 +142,8 @@ final readonly class ElementObjectResolver
     private function properties(
         DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
-    ): object {
+    ): ?object {
+        $setValues = $elementObject->directValue();
         $instance = $this->constructor($dataConfig, $elementObject);
 
         foreach ($elementObject->getValue() as $elementData) {
@@ -156,6 +157,7 @@ final readonly class ElementObjectResolver
                 continue;
             }
 
+            $setValues = true;
             $value = $this->matchValue($dataConfig, $elementData);
 
             if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
@@ -168,6 +170,10 @@ final readonly class ElementObjectResolver
             $instance->{$destination} = $value;
         }
 
+        if (! $setValues) {
+            return null;
+        }
+
         return $instance;
     }
 
@@ -177,7 +183,8 @@ final readonly class ElementObjectResolver
     private function setters(
         DataConfigInterface $dataConfig,
         ElementObjectInterface $elementObject,
-    ): object {
+    ): ?object {
+        $setValues = $elementObject->directValue();
         $instance = $this->constructor($dataConfig, $elementObject);
 
         foreach ($elementObject->getValue() as $elementData) {
@@ -191,6 +198,7 @@ final readonly class ElementObjectResolver
                 continue;
             }
 
+            $setValues = true;
             $value = $this->matchValue($dataConfig, $elementData);
 
             if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
@@ -201,6 +209,10 @@ final readonly class ElementObjectResolver
             }
 
             $instance->{$destination}($value);
+        }
+
+        if (! $setValues) {
+            return null;
         }
 
         return $instance;
