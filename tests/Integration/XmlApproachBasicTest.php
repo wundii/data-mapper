@@ -114,6 +114,31 @@ class XmlApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
+    public function testSetterWithFailSubSetters(): void
+    {
+        $file = __DIR__ . '/XmlFiles/ApproachBasicSetterFail.xml';
+
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), BaseSetter::class);
+
+        $subSetter01 = new SubSetter();
+        $subSetter01->setActive(true);
+
+        $expected = new BaseSetter();
+        $expected->setAmount(222.22);
+        $expected->setName('approach');
+        $expected->setId(1337);
+        $expected->setMyStrings([
+            'hello',
+            'world',
+        ]);
+        $expected->setSubSetter($subSetter01);
+        $expected->setSubSetters([]);
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
     public function testMix(): void
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicMix.xml';

@@ -43,7 +43,13 @@ final readonly class ElementArrayResolver
         $return = [];
 
         foreach ($elementArray->getValue() as $dataKey => $elementData) {
-            $return[$dataKey] = $this->matchValue($dataConfig, $elementData);
+            $data = $this->matchValue($dataConfig, $elementData);
+
+            if ($elementData instanceof ElementObjectInterface && $data === null) {
+                continue;
+            }
+
+            $return[$dataKey] = $data;
         }
 
         return $return;
