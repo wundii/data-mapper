@@ -170,11 +170,7 @@ final readonly class ElementObjectResolver
             $instance->{$destination} = $value;
         }
 
-        if (! $setValues) {
-            return null;
-        }
-
-        return $instance;
+        return $setValues ? $instance : null;
     }
 
     /**
@@ -211,10 +207,6 @@ final readonly class ElementObjectResolver
             $instance->{$destination}($value);
         }
 
-        if (! $setValues) {
-            return null;
-        }
-
-        return $instance;
+        return $setValues ? $instance : null;
     }
 }
