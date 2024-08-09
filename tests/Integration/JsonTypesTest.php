@@ -229,4 +229,16 @@ class JsonTypesTest extends TestCase
         $this->assertInstanceOf(TypeObjectArray::class, $return);
         $this->assertEquals($expected, $return);
     }
+
+    public function testStringCrossTypes(): void
+    {
+        $file = __DIR__ . '/JsonFiles/TypeStringWithInt.json';
+
+        $return = $this->dataMapper()->json(file_get_contents($file), TypeString::class);
+
+        $expected = new TypeString('12345');
+
+        $this->assertInstanceOf(TypeString::class, $return);
+        $this->assertEquals($expected, $return);
+    }
 }

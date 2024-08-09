@@ -59,7 +59,7 @@ final class JsonSourceData extends AbstractSourceData
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $jsonValue, $type, $name),
-                DataTypeEnum::STRING => new DataString($value, $name),
+                DataTypeEnum::STRING => new DataString((string) $value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type'),
             };
         }
@@ -119,7 +119,8 @@ final class JsonSourceData extends AbstractSourceData
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, (array) $jsonValue, $targetType, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $jsonValue, $targetType, $name),
-                default => new DataString($value, $name),
+                DataTypeEnum::STRING => new DataString((string) $value, $name),
+                default => throw DataMapperException::Error('Element object invalid element data type'),
             };
         }
 

@@ -105,7 +105,8 @@ final class XmlSourceData extends AbstractSourceData
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $child, $targetType, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $targetType, $name),
-                default => new DataString($value, $name),
+                DataTypeEnum::STRING => new DataString($value, $name),
+                default => throw DataMapperException::Error('Element object invalid element data type'),
             };
         }
 
