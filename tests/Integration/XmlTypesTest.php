@@ -201,4 +201,16 @@ class XmlTypesTest extends TestCase
         $this->assertInstanceOf(TypeObjectArray::class, $return);
         $this->assertEquals($expected, $return);
     }
+
+    public function testStringCrossTypes(): void
+    {
+        $file = __DIR__ . '/XmlFiles/TypeStringWithInt.xml';
+
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeString::class);
+
+        $expected = new TypeString('12345');
+
+        $this->assertInstanceOf(TypeString::class, $return);
+        $this->assertEquals($expected, $return);
+    }
 }
