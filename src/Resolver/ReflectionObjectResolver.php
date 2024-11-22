@@ -47,7 +47,7 @@ final readonly class ReflectionObjectResolver
             /**
              * pre-process for annotation types
              */
-            foreach ($matches['name'] ?? [] as $key => $name) {
+            foreach ($matches['name'] as $key => $name) {
                 if (strtolower($name) === 'param') {
                     $parameters[] = $matches['value'][$key];
                 }
