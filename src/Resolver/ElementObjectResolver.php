@@ -48,7 +48,13 @@ final readonly class ElementObjectResolver
                  */
                 $parameter = array_map(static fn (mixed $value): mixed => is_numeric($value) ? (int) $value : $value, $parameter);
 
-                return $object::from(...$parameter);
+                $newInstance =  $object::from(...$parameter);
+
+                if (! $newInstance instanceof $object) {
+                    throw DataMapperException::Error('Enum is not an instance of ' . $object);
+                }
+
+                return $newInstance;
             }
 
             $approach = ApproachEnum::CONSTRUCTOR;
