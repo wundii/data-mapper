@@ -128,7 +128,7 @@ final class XmlSourceData extends AbstractSourceData
             $xmlElement = $xmlElement->{$root};
         }
 
-        if (!$xmlElement instanceof SimpleXMLElement) {
+        if (! $xmlElement instanceof SimpleXMLElement) {
             throw DataMapperException::Error('Invalid XML element');
         }
 

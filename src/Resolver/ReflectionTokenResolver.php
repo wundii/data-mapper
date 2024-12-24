@@ -28,7 +28,7 @@ final readonly class ReflectionTokenResolver
             new UseStatementReflection(
                 $reflectionClass->getName(),
                 $this->basename($reflectionClass->getName())
-            )
+            ),
         ];
 
         if (file_exists((string) $reflectionClass->getFileName()) === false) {
