@@ -55,10 +55,15 @@ final class JsonSourceData extends AbstractSourceData
             $name = (string) $jsonKey;
             $value = $jsonValue;
 
+            /** ignore phpstan rules, because $dataType has the correct data type */
             $dataList[] = match ($dataType) {
+                /** @phpstan-ignore argument.type */
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
+                /** @phpstan-ignore argument.type */
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
+                /** @phpstan-ignore argument.type */
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $jsonValue, $type, $name),
+                /** @phpstan-ignore cast.string */
                 DataTypeEnum::STRING => new DataString((string) $value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type'),
             };
@@ -142,12 +147,14 @@ final class JsonSourceData extends AbstractSourceData
         }
 
         foreach ($this->rootElementTree as $root) {
+            /** json_decode give mixed, but all only processed types are already checked above */
+            /** @phpstan-ignore offsetAccess.nonOffsetAccessible */
             $jsonArray = $jsonArray[$root] ?? $jsonArray;
         }
 
+        /** json_decode give mixed, but all only processed types are already checked above */
+        /** @phpstan-ignore argument.type */
         $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
-
-        // dump($elementObject);
 
         $object = (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
         if ($object === null) {

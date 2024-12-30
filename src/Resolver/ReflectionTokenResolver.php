@@ -24,13 +24,12 @@ final readonly class ReflectionTokenResolver
      */
     public function parseToken(ReflectionClass $reflectionClass): UseStatementsReflection
     {
-        $useStatements = [];
-        if ($reflectionClass->getName() !== null) {
-            $useStatements[] = new UseStatementReflection(
+        $useStatements = [
+            new UseStatementReflection(
                 $reflectionClass->getName(),
                 $this->basename($reflectionClass->getName())
-            );
-        }
+            ),
+        ];
 
         if (file_exists((string) $reflectionClass->getFileName()) === false) {
             throw DataMapperException::Error('File not found: ' . $reflectionClass->getFileName());

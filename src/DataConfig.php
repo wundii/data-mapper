@@ -20,6 +20,8 @@ final readonly class DataConfig implements DataConfigInterface
         private array $classMap = [],
     ) {
         foreach ($classMap as $key => $value) {
+            /** for a better error output if the input does not have the correct data type */
+            /** @phpstan-ignore function.alreadyNarrowedType */
             if (! is_string($key) || ! is_string($value)) {
                 throw DataMapperException::InvalidArgument('The class map must contain only strings', [
                     'source' => (string) $key,

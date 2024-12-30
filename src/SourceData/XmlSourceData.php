@@ -128,6 +128,10 @@ final class XmlSourceData extends AbstractSourceData
             $xmlElement = $xmlElement->{$root};
         }
 
+        if (! $xmlElement instanceof SimpleXMLElement) {
+            throw DataMapperException::Error('Invalid XML element');
+        }
+
         $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
 
         $object = (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
