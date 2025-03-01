@@ -2,21 +2,37 @@
 
 ## Source Data
 ```JSON
-{
+[
+  {
     "brand": "Toyota",
     "model": "Corolla",
     "year": 2021,
     "price": 20000.00
-}
+  },
+  {
+    "brand": "Toyota",
+    "model": "Corolla",
+    "year": 2022,
+    "price": 22000.00
+  }
+]
 ```
 
 ```XML
-<car>
-    <brand>Toyota</brand>
-    <model>Corolla</model>
-    <year>2021</year>
-    <price>20000.00</price>
-</car>
+<root>
+    <car>
+        <brand>Toyota</brand>
+        <model>Yaris</model>
+        <year>2021</year>
+        <price>20000.00</price>
+    </car>
+    <car>
+        <brand>Toyota</brand>
+        <model>Yaris</model>
+        <year>2022</year>
+        <price>22000.00</price>
+    </car>
+</root>
 ```
 
 ## Approaches
@@ -69,8 +85,8 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
-$car = $dataMapper->json($json, Car::class);
-$car = $dataMapper->xml($xml, Car::class);
+$listOfCars = $dataMapper->json($json, Car::class);
+$listOfCars = $dataMapper->xml($xml, Car::class);
 ```
 
 ### Property
@@ -98,8 +114,8 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
-$car = $dataMapper->json($json, Car::class);
-$car = $dataMapper->xml($xml, Car::class);
+$listOfCars = $dataMapper->json($json, Car::class);
+$listOfCars = $dataMapper->xml($xml, Car::class);
 ```
 
 ### Setter
@@ -147,6 +163,6 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
-$car = $dataMapper->json($json, Car::class);
-$car = $dataMapper->xml($xml, Car::class);
+$listOfCars = $dataMapper->json($json, Car::class);
+$listOfCars = $dataMapper->xml($xml, Car::class);
 ```

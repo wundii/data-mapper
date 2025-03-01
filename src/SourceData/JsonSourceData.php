@@ -29,6 +29,10 @@ if (PHP_VERSION_ID < 80300) {
     }
 }
 
+/**
+ * @template T of object
+ * @extends AbstractSourceData<T>
+ */
 final class JsonSourceData extends AbstractSourceData
 {
     /**
@@ -133,9 +137,10 @@ final class JsonSourceData extends AbstractSourceData
     }
 
     /**
+     * @return T|T[]
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(): object
+    public function resolve(): object|array
     {
         if (! json_validate($this->source)) {
             throw DataMapperException::InvalidArgument('Invalid JSON string');
@@ -152,15 +157,53 @@ final class JsonSourceData extends AbstractSourceData
             $jsonArray = $jsonArray[$root] ?? $jsonArray;
         }
 
+        $elementObjectResolver = new ElementObjectResolver();
+
         /** json_decode give mixed, but all only processed types are already checked above */
         /** @phpstan-ignore argument.type */
-        $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
+        $object = $this->resolveObject($elementObjectResolver, $jsonArray);
+        if ($object instanceof $this->object) {
+            /** @var T $object */
+            return $object;
+        }
 
-        $object = (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
-        if ($object === null) {
+        $objects = [];
+        if (is_iterable($jsonArray)) {
+            foreach ($jsonArray ?: [] as $key => $child) {
+                /** @phpstan-ignore argument.type */
+                $object = $this->resolveObject($elementObjectResolver, $child);
+
+                if ($object instanceof $this->object) {
+                    $objects[$key] = $object;
+                }
+            }
+        }
+
+        if ($objects === []) {
             throw DataMapperException::Error('Invalid object from JsonResolver');
         }
 
+        /** @var T[] $objects */
+        return $objects;
+    }
+
+    /**
+     * @param int|string[] $jsonArray
+     * @return null|T
+     * @throws DataMapperException|ReflectionException
+     */
+    private function resolveObject(
+        ElementObjectResolver $elementObjectResolver,
+        array|string|int $jsonArray,
+    ): ?object {
+        $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
+        $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
+
+        if (! is_object($object)) {
+            return null;
+        }
+
+        /** @var T $object */
         return $object;
     }
 }

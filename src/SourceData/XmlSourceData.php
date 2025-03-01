@@ -22,6 +22,10 @@ use Wundii\DataMapper\Interface\ElementObjectInterface;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
 
+/**
+ * @template T of object
+ * @extends AbstractSourceData<T>
+ */
 final class XmlSourceData extends AbstractSourceData
 {
     /**
@@ -114,9 +118,10 @@ final class XmlSourceData extends AbstractSourceData
     }
 
     /**
+     * @return T|T[]
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(): object
+    public function resolve(): object|array
     {
         try {
             $xmlElement = new SimpleXmlElement($this->source);
@@ -132,13 +137,46 @@ final class XmlSourceData extends AbstractSourceData
             throw DataMapperException::Error('Invalid XML element');
         }
 
-        $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
+        $elementObjectResolver = new ElementObjectResolver();
 
-        $object = (new ElementObjectResolver())->resolve($this->dataConfig, $elementObject);
-        if ($object === null) {
+        $object = $this->resolveObject($elementObjectResolver, $xmlElement);
+        if ($object instanceof $this->object) {
+            /** @var T $object */
+            return $object;
+        }
+
+        $objects = [];
+        foreach ($xmlElement->children() as $child) {
+            $object = $this->resolveObject($elementObjectResolver, $child);
+            if ($object instanceof $this->object) {
+                $objects[] = $object;
+            }
+        }
+
+        if ($objects === []) {
             throw DataMapperException::Error('Invalid object from XmlResolver');
         }
 
+        /** @var T[] $objects */
+        return $objects;
+    }
+
+    /**
+     * @return null|T
+     * @throws DataMapperException|ReflectionException
+     */
+    private function resolveObject(
+        ElementObjectResolver $elementObjectResolver,
+        SimpleXMLElement $xmlElement,
+    ): ?object {
+        $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
+        $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
+
+        if (! is_object($object)) {
+            return null;
+        }
+
+        /** @var T $object */
         return $object;
     }
 }

@@ -9,6 +9,7 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 
 ## Features
 - Mapping source data into objects
+- Mapping source data with a list of elements into a list of objects
 - Initialize object via constructor, properties or methods
 - Map nested objects, arrays of objects
 - Class mapping for interfaces or other classes
