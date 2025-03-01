@@ -11,6 +11,10 @@ use Wundii\DataMapper\Interface\SourceDataInterface;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
+/**
+ * @template T of object
+ * @implements SourceDataInterface<T>
+ */
 abstract class AbstractSourceData implements SourceDataInterface
 {
     /**
@@ -19,6 +23,7 @@ abstract class AbstractSourceData implements SourceDataInterface
     protected static array $objectReflections = [];
 
     /**
+     * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      */
     public function __construct(
