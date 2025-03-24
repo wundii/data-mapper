@@ -7,6 +7,7 @@ namespace Wundii\DataMapper\Resolver;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionParameter;
 use ReflectionProperty;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
@@ -87,7 +88,53 @@ final readonly class ElementObjectResolver
             return $reflectionClass->newInstance();
         }
 
-        return $reflectionClass->newInstanceWithoutConstructor();
+        $newInstance = $reflectionClass->newInstanceWithoutConstructor();
+
+        if (
+            $approach === ApproachEnum::SETTER
+            && $constructor instanceof ReflectionMethod
+            && $constructor->getNumberOfRequiredParameters() > 0
+        ) {
+            $setter = [];
+
+            foreach ($reflectionClass->getMethods() as $method) {
+                if ($method->isStatic()) {
+                    continue;
+                }
+
+                if (!str_starts_with($method->getName(), 'set')) {
+                    continue;
+                }
+
+                $key = strtolower(str_replace('set', '', $method->getName()));
+
+                $setter[$key] = $method->getName();
+            }
+
+            foreach ($constructor->getParameters() as $instanceParameter) {
+                if (!$instanceParameter instanceof ReflectionParameter) {
+                    continue;
+                }
+
+                if (!$instanceParameter->isDefaultValueAvailable()) {
+                    continue;
+                }
+
+                $destination = strtolower($instanceParameter->getName());
+                $destination = $setter[$destination] ?? null;
+                if ($destination === null) {
+                    continue;
+                }
+
+                if (!method_exists($newInstance, $destination)) {
+                    continue;
+                }
+
+                $newInstance->{$destination}($instanceParameter->getDefaultValue());
+            }
+        }
+
+        return $newInstance;
     }
 
     /**
