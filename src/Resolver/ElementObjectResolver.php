@@ -94,38 +94,20 @@ final readonly class ElementObjectResolver
             && $constructor instanceof ReflectionMethod
             && $constructor->getNumberOfRequiredParameters() > 0
         ) {
-            $setter = [];
-
-            foreach ($reflectionClass->getMethods() as $method) {
-                if ($method->isStatic()) {
-                    continue;
-                }
-
-                if (! str_starts_with($method->getName(), 'set')) {
-                    continue;
-                }
-
-                $key = strtolower(str_replace('set', '', $method->getName()));
-
-                $setter[$key] = $method->getName();
-            }
-
             foreach ($constructor->getParameters() as $instanceParameter) {
                 if (! $instanceParameter->isDefaultValueAvailable()) {
                     continue;
                 }
 
-                $destination = strtolower($instanceParameter->getName());
-                $destination = $setter[$destination] ?? null;
-                if ($destination === null) {
-                    continue;
+                $reflection = new ReflectionClass(get_class($newInstance));
+                $property = $reflection->getProperty($instanceParameter->getName());
+                if (! $property->isPublic()) {
+                    $property->setAccessible(true);
                 }
 
-                if (! method_exists($newInstance, $destination)) {
-                    continue;
+                if (! $property->isReadOnly()) {
+                    $property->setValue($newInstance, $instanceParameter->getDefaultValue());
                 }
-
-                $newInstance->{$destination}($instanceParameter->getDefaultValue());
             }
         }
 
