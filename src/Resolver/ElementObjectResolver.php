@@ -7,7 +7,6 @@ namespace Wundii\DataMapper\Resolver;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use ReflectionParameter;
 use ReflectionProperty;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
@@ -102,7 +101,7 @@ final readonly class ElementObjectResolver
                     continue;
                 }
 
-                if (!str_starts_with($method->getName(), 'set')) {
+                if (! str_starts_with($method->getName(), 'set')) {
                     continue;
                 }
 
@@ -112,11 +111,7 @@ final readonly class ElementObjectResolver
             }
 
             foreach ($constructor->getParameters() as $instanceParameter) {
-                if (!$instanceParameter instanceof ReflectionParameter) {
-                    continue;
-                }
-
-                if (!$instanceParameter->isDefaultValueAvailable()) {
+                if (! $instanceParameter->isDefaultValueAvailable()) {
                     continue;
                 }
 
@@ -126,7 +121,7 @@ final readonly class ElementObjectResolver
                     continue;
                 }
 
-                if (!method_exists($newInstance, $destination)) {
+                if (! method_exists($newInstance, $destination)) {
                     continue;
                 }
 
