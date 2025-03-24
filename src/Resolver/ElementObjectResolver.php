@@ -125,6 +125,9 @@ final readonly class ElementObjectResolver
                     continue;
                 }
 
+                /**
+                 * @todo maybe fill via the reflection instead of the setter?!
+                 */
                 $newInstance->{$destination}($instanceParameter->getDefaultValue());
             }
         }
