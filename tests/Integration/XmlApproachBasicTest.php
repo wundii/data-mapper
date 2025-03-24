@@ -8,6 +8,7 @@ use Integration\Objects\ApproachBasic\BaseConstructor;
 use Integration\Objects\ApproachBasic\BaseMix;
 use Integration\Objects\ApproachBasic\BaseProperty;
 use Integration\Objects\ApproachBasic\BaseSetter;
+use Integration\Objects\ApproachBasic\BaseSetterWithConstructor;
 use Integration\Objects\ApproachBasic\PrivateProperty;
 use Integration\Objects\ApproachBasic\PrivateSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
@@ -112,6 +113,27 @@ class XmlApproachBasicTest extends TestCase
 
         $this->assertInstanceOf(BaseSetter::class, $return);
         $this->assertEquals($expected, $return);
+    }
+
+    public function testSetterIncomplete(): void
+    {
+        $file = __DIR__ . '/XmlFiles/ApproachBasicSetterIncomplete.xml';
+
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), BaseSetterWithConstructor::class);
+
+        $expected = new BaseSetterWithConstructor(222.22, 'approach', 1337);
+        $expected->setMyStrings([
+            'hello',
+            'world',
+        ]);
+        $expected->setSubSetter(null);
+        $expected->setSubSetters([]);
+
+        $this->assertInstanceOf(BaseSetterWithConstructor::class, $return);
+        $this->assertEquals($expected, $return);
+        $this->assertSame(null, $return->getSubSetter());
+        $this->assertSame([], $return->getSubSetters());
     }
 
     public function testSetterWithFailSubSetters(): void
