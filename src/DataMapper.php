@@ -37,7 +37,6 @@ class DataMapper
         array $rootElementTree = [],
     ): object|array {
         $json = json_encode($source);
-
         if ($json === false) {
             throw DataMapperException::InvalidArgument('Could not encode the array to JSON');
         }

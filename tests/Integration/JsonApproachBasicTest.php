@@ -8,6 +8,7 @@ use Integration\Objects\ApproachBasic\BaseConstructor;
 use Integration\Objects\ApproachBasic\BaseMix;
 use Integration\Objects\ApproachBasic\BaseProperty;
 use Integration\Objects\ApproachBasic\BaseSetter;
+use Integration\Objects\ApproachBasic\BaseSetterCustomMethod;
 use Integration\Objects\ApproachBasic\BaseSetterWithConstructor;
 use Integration\Objects\ApproachBasic\PrivateProperty;
 use Integration\Objects\ApproachBasic\PrivateSetter;
@@ -138,6 +139,22 @@ class JsonApproachBasicTest extends TestCase
         $this->assertInstanceOf(BaseSetterWithConstructor::class, $return);
         $this->assertEquals($expected, $return);
         $this->assertSame(null, $return->getSubSetter());
+        $this->assertSame([], $return->getSubSetters());
+    }
+
+    public function testSetterCustomMethod(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicSetterIncomplete.json';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), BaseSetterCustomMethod::class);
+
+        $expected = new BaseSetterCustomMethod('approach');
+
+        $this->assertInstanceOf(BaseSetterCustomMethod::class, $return);
+        $this->assertEquals($expected, $return);
         $this->assertSame([], $return->getSubSetters());
     }
 
