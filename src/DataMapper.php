@@ -36,7 +36,7 @@ class DataMapper
         array $source,
         string|object $object,
         array $rootElementTree = [],
-        bool $forceInstance = false, // create a new instance, if no data can be found for the object
+        bool $forceInstance = false,
     ): object|array {
         $json = json_encode($source);
         if ($json === false) {
@@ -49,13 +49,14 @@ class DataMapper
     /**
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
+     * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
     public function json(
         string $source,
         string|object $object,
         array $rootElementTree = [],
-        bool $forceInstance = false, // create a new instance, if no data can be found for the object
+        bool $forceInstance = false,
     ): object|array {
         return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree, $forceInstance);
     }
@@ -63,13 +64,14 @@ class DataMapper
     /**
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
+     * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
     public function xml(
         string $source,
         string|object $object,
         array $rootElementTree = [],
-        bool $forceInstance = false, // create a new instance, if no data can be found for the object
+        bool $forceInstance = false,
     ): object|array {
         return $this->map(SourceTypeEnum::XML, $source, $object, $rootElementTree, $forceInstance);
     }
@@ -77,6 +79,7 @@ class DataMapper
     /**
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
+     * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
     private function map(
@@ -84,7 +87,7 @@ class DataMapper
         string $source,
         string|object $object,
         array $rootElementTree = [],
-        bool $forceInstance = false, // create a new instance, if no data can be found for the object
+        bool $forceInstance = false,
     ): object|array {
         if (! $this->dataConfig instanceof DataConfigInterface) {
             $this->dataConfig = new DataConfig();
