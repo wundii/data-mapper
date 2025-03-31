@@ -71,7 +71,7 @@ final class XmlSourceData extends AbstractSourceData
         SimpleXMLElement $xmlElement,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementObjectInterface {
+    ): ?ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
@@ -79,6 +79,10 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         if ($xmlElement->count() === 0) {
+            if ($destination === null) {
+                return null;
+            }
+
             $value = (string) $xmlElement;
             $dataList[] = new DataString($value, $destination);
 
@@ -180,6 +184,10 @@ final class XmlSourceData extends AbstractSourceData
         SimpleXMLElement $xmlElement,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
+        if (! $elementObject instanceof ElementObjectInterface) {
+            return null;
+        }
+
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {

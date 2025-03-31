@@ -85,7 +85,7 @@ final class JsonSourceData extends AbstractSourceData
         array|string|int $jsonArray,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementObjectInterface {
+    ): ?ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
@@ -93,6 +93,10 @@ final class JsonSourceData extends AbstractSourceData
         }
 
         if (! is_array($jsonArray)) {
+            if ($destination === null) {
+                return null;
+            }
+
             $jsonArray = (array) $jsonArray;
             $value = array_shift($jsonArray);
 
@@ -211,6 +215,10 @@ final class JsonSourceData extends AbstractSourceData
         array|string|int $jsonArray,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
+        if (! $elementObject instanceof ElementObjectInterface) {
+            return null;
+        }
+
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {
