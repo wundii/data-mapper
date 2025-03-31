@@ -38,7 +38,7 @@ final readonly class PropertyReflectionResolver
     /**
      * @param string[] $types
      */
-    public function getTargetType(array $types): ?string
+    public function getTargetType(array $types, string|object $object): ?string
     {
         foreach ($types as $type) {
             if (class_exists($type) || interface_exists($type)) {
@@ -56,6 +56,14 @@ final readonly class PropertyReflectionResolver
                     return $classType->value;
                 }
             }
+
+            if (strtolower($type) === 'self') {
+                if (is_object($object)) {
+                    return get_class($object);
+                }
+
+                return $object;
+            }
         }
 
         return null;
@@ -71,6 +79,10 @@ final readonly class PropertyReflectionResolver
         }
 
         foreach ($targetTypes as $targetType) {
+            if (strtolower($targetType) === 'self') {
+                return DataTypeEnum::OBJECT;
+            }
+
             $targetType = DataTypeEnum::fromString($targetType);
 
             if ($targetType === DataTypeEnum::NULL) {
@@ -138,14 +150,15 @@ final readonly class PropertyReflectionResolver
         string $name,
         array $types,
         AnnotationReflection $annotationReflection,
+        string|object $object,
     ): PropertyReflection {
         $targetTypes = $this->getTargetTypes($name, $types, $annotationReflection);
 
         $oneType = $this->isOneType($targetTypes);
         $nullable = $this->isNullable($targetTypes);
 
-        $targetType = $this->getTargetType($targetTypes);
         $dataType = $this->getDataType($oneType, $targetTypes);
+        $targetType = $this->getTargetType($targetTypes, $object);
 
         return new PropertyReflection(
             $name,
