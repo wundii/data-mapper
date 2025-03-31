@@ -201,6 +201,7 @@ final readonly class ReflectionObjectResolver
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
                         $this->annotation($useStatementsReflection, $reflectionMethod),
+                        $object,
                     );
                 }
             }
@@ -214,6 +215,7 @@ final readonly class ReflectionObjectResolver
                     $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $this->annotation($useStatementsReflection, $reflectionMethod),
+                    $object,
                 );
             }
         }
@@ -238,6 +240,7 @@ final readonly class ReflectionObjectResolver
                     $this->name($reflectionProperty),
                     $this->types($reflectionProperty->getType()),
                     $annotation,
+                    $object,
                 );
             }
 
