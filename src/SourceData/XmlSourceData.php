@@ -51,13 +51,19 @@ final class XmlSourceData extends AbstractSourceData
             $name = $child->getName();
             $value = (string) $child;
 
-            $dataList[] = match ($dataType) {
+            $data = match ($dataType) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $type, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type'),
             };
+
+            if ($data === null) {
+                continue;
+            }
+
+            $dataList[] = $data;
         }
 
         return new DataArray($dataList, $destination);
@@ -71,7 +77,7 @@ final class XmlSourceData extends AbstractSourceData
         SimpleXMLElement $xmlElement,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementObjectInterface {
+    ): ?ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
@@ -79,6 +85,10 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         if ($xmlElement->count() === 0) {
+            if ($destination === null) {
+                return null;
+            }
+
             $value = (string) $xmlElement;
             $dataList[] = new DataString($value, $destination);
 
@@ -102,7 +112,7 @@ final class XmlSourceData extends AbstractSourceData
                 $dataType = DataTypeEnum::NULL;
             }
 
-            $dataList[] = match ($dataType) {
+            $data = match ($dataType) {
                 DataTypeEnum::NULL => new DataNull($name),
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
@@ -112,6 +122,12 @@ final class XmlSourceData extends AbstractSourceData
                 DataTypeEnum::STRING => new DataString($value, $name),
                 default => throw DataMapperException::Error('Element object invalid element data type'),
             };
+
+            if ($data === null) {
+                continue;
+            }
+
+            $dataList[] = $data;
         }
 
         return new DataObject($object ?: '', $dataList, $destination);
@@ -180,6 +196,10 @@ final class XmlSourceData extends AbstractSourceData
         SimpleXMLElement $xmlElement,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
+        if (! $elementObject instanceof ElementObjectInterface) {
+            return null;
+        }
+
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {

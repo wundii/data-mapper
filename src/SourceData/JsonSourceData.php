@@ -60,7 +60,7 @@ final class JsonSourceData extends AbstractSourceData
             $value = $jsonValue;
 
             /** ignore phpstan rules, because $dataType has the correct data type */
-            $dataList[] = match ($dataType) {
+            $data = match ($dataType) {
                 /** @phpstan-ignore argument.type */
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 /** @phpstan-ignore argument.type */
@@ -71,6 +71,12 @@ final class JsonSourceData extends AbstractSourceData
                 DataTypeEnum::STRING => new DataString((string) $value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type'),
             };
+
+            if ($data === null) {
+                continue;
+            }
+
+            $dataList[] = $data;
         }
 
         return new DataArray($dataList, $destination);
@@ -85,7 +91,7 @@ final class JsonSourceData extends AbstractSourceData
         array|string|int $jsonArray,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementObjectInterface {
+    ): ?ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
@@ -93,6 +99,10 @@ final class JsonSourceData extends AbstractSourceData
         }
 
         if (! is_array($jsonArray)) {
+            if ($destination === null) {
+                return null;
+            }
+
             $jsonArray = (array) $jsonArray;
             $value = array_shift($jsonArray);
 
@@ -121,7 +131,7 @@ final class JsonSourceData extends AbstractSourceData
                 $dataType = DataTypeEnum::NULL;
             }
 
-            $dataList[] = match ($dataType) {
+            $data = match ($dataType) {
                 DataTypeEnum::NULL => new DataNull($name),
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
@@ -131,6 +141,12 @@ final class JsonSourceData extends AbstractSourceData
                 DataTypeEnum::STRING => new DataString((string) $value, $name),
                 default => throw DataMapperException::Error('Element object invalid element data type'),
             };
+
+            if ($data === null) {
+                continue;
+            }
+
+            $dataList[] = $data;
         }
 
         return new DataObject($object ?: '', $dataList, $destination);
@@ -211,6 +227,10 @@ final class JsonSourceData extends AbstractSourceData
         array|string|int $jsonArray,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
+        if (! $elementObject instanceof ElementObjectInterface) {
+            return null;
+        }
+
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {
