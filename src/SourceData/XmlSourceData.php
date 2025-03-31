@@ -162,7 +162,7 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         $objects = [];
-        foreach ($xmlElement->children() as $child) {
+        foreach ($xmlElement->children() ?? [] as $child) {
             $object = $this->resolveObject($elementObjectResolver, $child);
             if ($object instanceof $this->object) {
                 $objects[] = $object;
