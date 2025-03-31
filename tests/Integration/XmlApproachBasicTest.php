@@ -116,6 +116,28 @@ class XmlApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
+    public function testSetterWithoutRightDataException(): void
+    {
+        $file = __DIR__ . '/XmlFiles/TypeNull.xml';
+
+        $this->expectExceptionMessage('Invalid object from XmlResolver, could not create an instance of Integration\Objects\ApproachBasic\BaseSetter');
+        $dataMapper = new DataMapper();
+        $dataMapper->xml(file_get_contents($file), BaseSetter::class, ['string']);
+    }
+
+    public function testSetterWithoutRightData(): void
+    {
+        $file = __DIR__ . '/XmlFiles/TypeNull.xml';
+
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->xml(file_get_contents($file), BaseSetter::class, ['string'], forceInstance: true);
+
+        $expected = new BaseSetter();
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
     public function testSetterIncomplete(): void
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicSetterIncomplete.xml';

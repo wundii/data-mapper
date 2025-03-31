@@ -215,7 +215,6 @@ final readonly class ElementObjectResolver
 
         foreach ($elementObject->getValue() as $elementData) {
             $destination = $elementData->getDestination();
-
             if ($destination === null) {
                 throw DataMapperException::Error('Destination is not declared');
             }

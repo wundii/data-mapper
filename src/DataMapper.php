@@ -29,19 +29,21 @@ class DataMapper
      * @param mixed[] $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
+     * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
     public function array(
         array $source,
         string|object $object,
         array $rootElementTree = [],
+        bool $forceInstance = false, // create a new instance, if no data can be found for the object
     ): object|array {
         $json = json_encode($source);
         if ($json === false) {
             throw DataMapperException::InvalidArgument('Could not encode the array to JSON');
         }
 
-        return $this->map(SourceTypeEnum::JSON, $json, $object, $rootElementTree);
+        return $this->map(SourceTypeEnum::JSON, $json, $object, $rootElementTree, $forceInstance);
     }
 
     /**
@@ -53,8 +55,9 @@ class DataMapper
         string $source,
         string|object $object,
         array $rootElementTree = [],
+        bool $forceInstance = false, // create a new instance, if no data can be found for the object
     ): object|array {
-        return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree);
+        return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree, $forceInstance);
     }
 
     /**
@@ -66,8 +69,9 @@ class DataMapper
         string $source,
         string|object $object,
         array $rootElementTree = [],
+        bool $forceInstance = false, // create a new instance, if no data can be found for the object
     ): object|array {
-        return $this->map(SourceTypeEnum::XML, $source, $object, $rootElementTree);
+        return $this->map(SourceTypeEnum::XML, $source, $object, $rootElementTree, $forceInstance);
     }
 
     /**
@@ -80,14 +84,15 @@ class DataMapper
         string $source,
         string|object $object,
         array $rootElementTree = [],
+        bool $forceInstance = false, // create a new instance, if no data can be found for the object
     ): object|array {
         if (! $this->dataConfig instanceof DataConfigInterface) {
             $this->dataConfig = new DataConfig();
         }
 
         $sourceData = match ($sourceTypeEnum) {
-            SourceTypeEnum::JSON => new JsonSourceData($this->dataConfig, $source, $object, $rootElementTree),
-            SourceTypeEnum::XML => new XmlSourceData($this->dataConfig, $source, $object, $rootElementTree),
+            SourceTypeEnum::JSON => new JsonSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
+            SourceTypeEnum::XML => new XmlSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
         };
 
         return $sourceData->resolve();

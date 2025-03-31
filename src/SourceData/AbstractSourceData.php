@@ -31,6 +31,7 @@ abstract class AbstractSourceData implements SourceDataInterface
         protected string $source,
         protected string|object $object,
         protected array $rootElementTree = [],
+        protected bool $forceInstance = false,
     ) {
     }
 

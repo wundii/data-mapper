@@ -170,6 +170,10 @@ final class JsonSourceData extends AbstractSourceData
         $objects = [];
         if (is_iterable($jsonArray)) {
             foreach ($jsonArray ?: [] as $key => $child) {
+                if ($child === null) {
+                    continue;
+                }
+
                 /** @phpstan-ignore argument.type */
                 $object = $this->resolveObject($elementObjectResolver, $child);
 
@@ -179,8 +183,18 @@ final class JsonSourceData extends AbstractSourceData
             }
         }
 
+        if ($this->forceInstance && $objects === []) {
+            $object = $elementObjectResolver->createInstance($this->dataConfig, new DataObject($this->object, []));
+            if ($object instanceof $this->object) {
+                /** @var T $object */
+                return $object;
+            }
+        }
+
         if ($objects === []) {
-            throw DataMapperException::Error('Invalid object from JsonResolver');
+            $classString = is_string($this->object) ? $this->object : get_class($this->object);
+
+            throw DataMapperException::Error('Invalid object from JsonResolver, could not create an instance of ' . $classString);
         }
 
         /** @var T[] $objects */

@@ -119,6 +119,28 @@ class JsonApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
+    public function testSetterWithoutRightDataException(): void
+    {
+        $file = __DIR__ . '/JsonFiles/TypeNull01.json';
+
+        $this->expectExceptionMessage('Invalid object from JsonResolver, could not create an instance of Integration\Objects\ApproachBasic\BaseSetter');
+        $dataMapper = new DataMapper();
+        $dataMapper->json(file_get_contents($file), BaseSetter::class, ['string']);
+    }
+
+    public function testSetterWithoutRightData(): void
+    {
+        $file = __DIR__ . '/JsonFiles/TypeNull01.json';
+
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->json(file_get_contents($file), BaseSetter::class, ['string'], forceInstance: true);
+
+        $expected = new BaseSetter();
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
     public function testSetterIncomplete(): void
     {
         $file = __DIR__ . '/JsonFiles/ApproachBasicSetterIncomplete.json';

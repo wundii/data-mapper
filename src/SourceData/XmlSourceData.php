@@ -153,8 +153,18 @@ final class XmlSourceData extends AbstractSourceData
             }
         }
 
+        if ($this->forceInstance && $objects === []) {
+            $object = $elementObjectResolver->createInstance($this->dataConfig, new DataObject($this->object, []));
+            if ($object instanceof $this->object) {
+                /** @var T $object */
+                return $object;
+            }
+        }
+
         if ($objects === []) {
-            throw DataMapperException::Error('Invalid object from XmlResolver');
+            $classString = is_string($this->object) ? $this->object : get_class($this->object);
+
+            throw DataMapperException::Error('Invalid object from XmlResolver, could not create an instance of ' . $classString);
         }
 
         /** @var T[] $objects */
