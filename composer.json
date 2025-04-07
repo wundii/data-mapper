@@ -1,6 +1,6 @@
 {
   "name": "wundii/data-mapper",
-  "description": "mapping xml, json and arrays into objects",
+  "description": "Modern PHP 8.2+ mapping XML, JSON and Arrays into PHP classes",
   "keywords": ["mapper","xml","json","array","object"],
   "license": "MIT",
   "authors": [

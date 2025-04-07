@@ -2,7 +2,10 @@
 
 [![PHP-Tests](https://github.com/wundii/data-mapper/actions/workflows/code_quality.yml/badge.svg)](https://github.com/wundii/data-mapper/actions/workflows/code_quality.yml)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=flat)](https://phpstan.org/)
-[![PHPStan](https://img.shields.io/badge/PHP-8.2+-blue.svg?style=flat)](https://www.php.net/)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg?style=flat)](https://www.php.net/)
+[![Rector](https://img.shields.io/badge/Rector-8.2-blue.svg?style=flat)](https://getrector.com)
+[![ECS](https://img.shields.io/badge/ECS-check-blue.svg?style=flat)](https://tomasvotruba.com/blog/zen-config-in-ecs)
+[![PHPUnit](https://img.shields.io/badge/PHP--Unit-check-blue.svg?style=flat)](https://phpunit.org)
 [![Downloads](https://img.shields.io/packagist/dt/wundii/data-mapper.svg?style=flat)](https://packagist.org/packages/wundii/data-mapper)
 
 This is a modern php 8.2+ mapper relies on strict data types, dependency capability and convenient processing for mapping xml, json and arrays into objects.
