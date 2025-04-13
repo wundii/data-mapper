@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <root>
-    <myStrings>
-        <string>hello</string>
-        <string>world</string>
-    </myStrings>
-    <amount>222.22</amount>
-    <name>approach</name>
-    <subConstructor>
-        <active>true</active>
-    </subConstructor>
-    <subConstructors>
+    <list>
+        <myStrings>
+            <string>hello</string>
+            <string>world</string>
+        </myStrings>
+        <amount>222.22</amount>
+        <name>approach</name>
         <subConstructor>
-            <active>yes</active>
+            <active>true</active>
         </subConstructor>
+        <subConstructors>
+            <subConstructor>
+                <active>yes</active>
+            </subConstructor>
+            <subConstructor>
+                <active>false</active>
+            </subConstructor>
+        </subConstructors>
+        <id>1337</id>
+    </list>
+    <list>
+        <name>approach</name>
+        <myStrings>
+            <string>hello</string>
+            <string>next</string>
+            <string>world</string>
+        </myStrings>
         <subConstructor>
             <active>false</active>
         </subConstructor>
-    </subConstructors>
-    <id>1337</id>
+        <subConstructors>
+            <subConstructor>
+                <active>yes</active>
+            </subConstructor>
+            <subConstructor>
+                <active>false</active>
+            </subConstructor>
+        </subConstructors>
+        <id>7331</id>
+        <amount>111.11</amount>
+    </list>
 </root>

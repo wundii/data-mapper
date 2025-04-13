@@ -5,20 +5,10 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
-use Integration\Objects\ApproachBasic\BaseMix;
-use Integration\Objects\ApproachBasic\BaseProperty;
-use Integration\Objects\ApproachBasic\BaseSetter;
-use Integration\Objects\ApproachBasic\BaseSetterCustomMethod;
-use Integration\Objects\ApproachBasic\BaseSetterWithConstructor;
-use Integration\Objects\ApproachBasic\PrivateProperty;
-use Integration\Objects\ApproachBasic\PrivateSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
-use Integration\Objects\ApproachBasic\SubProperty;
-use Integration\Objects\ApproachBasic\SubSetter;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
-use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 
 class XmlApproachExtendedTest extends TestCase
@@ -32,7 +22,7 @@ class XmlApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->xml(file_get_contents($file), BaseConstructor::class);
 
-        $expected = new BaseConstructor(
+        $expected01 = new BaseConstructor(
             222.22,
             'approach',
             1337,
@@ -46,8 +36,24 @@ class XmlApproachExtendedTest extends TestCase
                 new SubConstructor(false),
             ],
         );
+        $expected02 = new BaseConstructor(
+            111.11,
+            'approach',
+            7331,
+            [
+                'hello',
+                'next',
+                'world',
+            ],
+            new SubConstructor(false),
+            [
+                new SubConstructor(true),
+                new SubConstructor(false),
+            ],
+        );
 
-        $this->assertInstanceOf(BaseConstructor::class, $return);
-        $this->assertEquals($expected, $return);
+        $this->assertIsArray($return);
+        $this->assertInstanceOf(BaseConstructor::class, $return[0]);
+        $this->assertEquals([$expected01,$expected02], $return);
     }
 }
