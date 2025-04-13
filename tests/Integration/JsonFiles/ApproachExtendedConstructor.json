@@ -1,0 +1,20 @@
+{
+    "myStrings": [
+        "hello",
+        "world"
+    ],
+    "amount": 222.22,
+    "name": "approach",
+    "subConstructor": {
+        "active": true
+    },
+    "subConstructors": [
+        {
+            "active": true
+        },
+        {
+            "active": false
+        }
+    ],
+    "id": 1337
+}

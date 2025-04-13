@@ -8,6 +8,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use stdClass;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
@@ -46,7 +47,7 @@ final readonly class ElementObjectResolver
                  * $reflectionEnum = new ReflectionEnum(Enum::class);
                  * (string) $reflectionEnum->getBackingType();
                  */
-                $parameter = array_map(static fn (mixed $value): mixed => is_numeric($value) ? (int) $value : $value, $parameter);
+                $parameter = array_map(static fn (mixed $value): mixed => is_numeric($value) ? (int) $value : $value, array_values($parameter));
 
                 $newInstance = $object::from(...$parameter);
 
@@ -65,10 +66,6 @@ final readonly class ElementObjectResolver
             default => [],
         };
 
-        if ($approach === ApproachEnum::CONSTRUCTOR) {
-            return new $object(...$parameter);
-        }
-
         /**
          * @todo template T of object by $elementObject->getObject();
          * after that, remove the following if statement
@@ -79,6 +76,66 @@ final readonly class ElementObjectResolver
 
         $reflectionClass = new ReflectionClass($object);
         $constructor = $reflectionClass->getConstructor();
+
+        if ($approach === ApproachEnum::CONSTRUCTOR) {
+            $newInstance = $reflectionClass->newInstanceWithoutConstructor();
+            $propertyWasSetByName = false;
+            $parameters = [];
+
+            if (! $constructor instanceof ReflectionMethod) {
+                throw DataMapperException::Error('Class does not have a constructor: ' . $object);
+            }
+
+            /**
+             * first level, check how many properties can I set
+             */
+            foreach ($constructor->getParameters() as $instanceParameter) {
+                if (! array_key_exists($instanceParameter->getName(), $parameter)) {
+                    continue;
+                }
+
+                $parameters = $constructor->getParameters();
+                break;
+            }
+
+            /**
+             * second level, to set the values via the properties if level one has released the $parameters
+             */
+            foreach ($parameters as $instanceParameter) {
+                if (
+                    ! array_key_exists($instanceParameter->getName(), $parameter)
+                    && ! $instanceParameter->isDefaultValueAvailable()
+                ) {
+                    continue;
+                }
+
+                $setValue = $parameter[$instanceParameter->getName()] ?? $instanceParameter->getDefaultValue();
+
+                $property = $reflectionClass->getProperty($instanceParameter->getName());
+                if (! $property->isPublic()) {
+                    $property->setAccessible(true);
+                }
+
+                $propertyWasSetByName = true;
+                $property->setValue($newInstance, $setValue);
+            }
+
+            if ($propertyWasSetByName) {
+                return $newInstance;
+            }
+
+            /**
+             * third level, to set the values via the constructor parameters
+             * if more parameters are required than passed, then a standard object is returned to indicate that no object could be created
+             */
+            $requiredParams = $constructor->getNumberOfRequiredParameters();
+            if ($requiredParams > count($parameter)) {
+                return new stdClass();
+                // throw DataMapperException('Not enough parameters to create the object ' . $object);
+            }
+
+            return new $object(...array_values($parameter));
+        }
 
         if (
             $constructor instanceof ReflectionMethod
@@ -160,7 +217,7 @@ final readonly class ElementObjectResolver
         $parameter = [];
 
         foreach ($elementObject->getValue() as $elementData) {
-            $parameter[] = $this->matchValue($dataConfig, $elementData);
+            $parameter[$elementData->getDestination()] = $this->matchValue($dataConfig, $elementData);
         }
 
         return $this->createInstance($dataConfig, $elementObject, $parameter);
