@@ -127,11 +127,11 @@ final readonly class ElementObjectResolver
             /**
              * third level, to set the values via the constructor parameters
              * if more parameters are required than passed, then a standard object is returned to indicate that no object could be created
+             * a exception is not thrown, because the source data could be a list of objects
              */
             $requiredParams = $constructor->getNumberOfRequiredParameters();
             if ($requiredParams > count($parameter)) {
                 return new stdClass();
-                // throw DataMapperException('Not enough parameters to create the object ' . $object);
             }
 
             return new $object(...array_values($parameter));
