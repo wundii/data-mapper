@@ -54,6 +54,6 @@ class XmlApproachExtendedTest extends TestCase
 
         $this->assertIsArray($return);
         $this->assertInstanceOf(BaseConstructor::class, $return[0]);
-        $this->assertEquals([$expected01,$expected02], $return);
+        $this->assertEquals([$expected01, $expected02], $return);
     }
 }
