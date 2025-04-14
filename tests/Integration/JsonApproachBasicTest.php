@@ -207,6 +207,36 @@ class JsonApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
+    public function testSetterWithWrongTypeInSubSettersCreateInstanceWithoutConstructor(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicSetterWithWrongTypeInSubSettersCreateInstanceWithoutConstructor.json';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->json(file_get_contents($file), BaseSetter::class);
+
+        $subSetter01 = new SubSetter();
+        $subSetter01->setActive(true);
+        $subSetter02 = new SubSetter();
+
+        $expected = new BaseSetter();
+        $expected->setAmount(222.22);
+        $expected->setName('approach');
+        $expected->setId(1337);
+        $expected->setMyStrings([
+            'hello',
+            'world',
+        ]);
+        $expected->setSubSetter($subSetter01);
+        $expected->setSubSetters([
+            $subSetter02,
+        ]);
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
     // public function testBenchmark(): void
     // {
     //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetter.json';
