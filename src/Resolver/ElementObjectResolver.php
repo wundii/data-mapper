@@ -83,7 +83,7 @@ final readonly class ElementObjectResolver
             $parameters = [];
 
             if (! $constructor instanceof ReflectionMethod) {
-                throw DataMapperException::Error('Class does not have a constructor: ' . $object);
+                return new $object(...array_values($parameter));
             }
 
             /**
