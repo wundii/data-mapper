@@ -104,6 +104,7 @@ final readonly class ElementObjectResolver
             foreach ($parameters as $instanceParameter) {
                 if (
                     ! array_key_exists($instanceParameter->getName(), $parameter)
+                    && ! $parameter[$instanceParameter->getName()]
                     && ! $instanceParameter->isDefaultValueAvailable()
                 ) {
                     continue;
