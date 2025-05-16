@@ -16,7 +16,7 @@ final readonly class DataFloat implements ElementValueInterface
 
     public function __toString(): string
     {
-        return (string) $this->value;
+        return (string) $this->stringToFloat();
     }
 
     public function getDestination(): ?string
@@ -26,6 +26,24 @@ final readonly class DataFloat implements ElementValueInterface
 
     public function getValue(): float
     {
-        return filter_var($this->value, FILTER_VALIDATE_FLOAT) ?: (float) $this->value;
+        return filter_var($this->value, FILTER_VALIDATE_FLOAT) ?: $this->stringToFloat();
+    }
+
+    public function stringToFloat(): float
+    {
+        $number = (string) $this->value;
+        $number = (string) preg_replace('#[^-0-9,.]#', '', $number);
+
+        if (str_contains($number, ',') && str_contains($number, '.') && strpos($number, ',') < strpos($number, '.')) {
+            $number = str_replace(',', '', $number);
+        } elseif (str_contains($number, ',') && str_contains($number, '.') && strpos($number, ',') > strpos($number, '.')) {
+            $number = str_replace(',', '_', $number);
+            $number = str_replace('.', '', $number);
+            $number = str_replace('_', '.', $number);
+        } else {
+            $number = str_replace(',', '.', $number);
+        }
+
+        return (float) $number;
     }
 }
