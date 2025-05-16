@@ -160,6 +160,24 @@ class JsonTypesTest extends TestCase
 
         $this->assertInstanceOf(TypeFloat::class, $return);
         $this->assertEquals($expected, $return);
+
+        $file = __DIR__ . '/JsonFiles/TypeFloat04.json';
+
+        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+
+        $expected = new TypeFloat(12.34);
+
+        $this->assertInstanceOf(TypeFloat::class, $return);
+        $this->assertEquals($expected, $return);
+
+        $file = __DIR__ . '/JsonFiles/TypeFloat05.json';
+
+        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+
+        $expected = new TypeFloat(1234.56);
+
+        $this->assertInstanceOf(TypeFloat::class, $return);
+        $this->assertEquals($expected, $return);
     }
 
     public function testString(): void

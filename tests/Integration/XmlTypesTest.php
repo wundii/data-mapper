@@ -132,6 +132,24 @@ class XmlTypesTest extends TestCase
 
         $this->assertInstanceOf(TypeFloat::class, $return);
         $this->assertEquals($expected, $return);
+
+        $file = __DIR__ . '/XmlFiles/TypeFloat03.xml';
+
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeFloat::class);
+
+        $expected = new TypeFloat(12.34);
+
+        $this->assertInstanceOf(TypeFloat::class, $return);
+        $this->assertEquals($expected, $return);
+
+        $file = __DIR__ . '/XmlFiles/TypeFloat04.xml';
+
+        $return = $this->dataMapper()->xml(file_get_contents($file), TypeFloat::class);
+
+        $expected = new TypeFloat(1234.56);
+
+        $this->assertInstanceOf(TypeFloat::class, $return);
+        $this->assertEquals($expected, $return);
     }
 
     public function testString(): void
