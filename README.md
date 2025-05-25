@@ -17,7 +17,7 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 - Map nested objects, arrays of objects
 - Class mapping for interfaces or other classes
 - Custom root element for starting with the source data
-- Float auto-casting for `float` types (eu to us decimal separator)
+- Auto-casting for `float` types (eu to us decimal separator)
 
 ## Supported Types
 - `null`
