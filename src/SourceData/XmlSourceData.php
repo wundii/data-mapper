@@ -145,12 +145,19 @@ final class XmlSourceData extends AbstractSourceData
             throw DataMapperException::Error('Invalid XML: ' . $exception->getMessage(), (int) $exception->getCode(), $exception);
         }
 
-        foreach ($this->rootElementTree as $root) {
-            $xmlElement = $xmlElement->{$root};
-        }
+        foreach ($this->rootElementTree as $rootElement) {
+            $found = false;
+            foreach ($xmlElement->children() as $child) {
+                if (strcasecmp($child->getName(), $rootElement) === 0) {
+                    $xmlElement = $child;
+                    $found = true;
+                    break;
+                }
+            }
 
-        if (! $xmlElement instanceof SimpleXMLElement) {
-            throw DataMapperException::Error('Invalid XML element');
+            if (! $found) {
+                throw DataMapperException::Error('Root-Element "' . $rootElement . '" not found in XML source data');
+            }
         }
 
         $elementObjectResolver = new ElementObjectResolver();

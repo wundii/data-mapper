@@ -88,7 +88,7 @@ final class JsonSourceData extends AbstractSourceData
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
-        array|string|int $jsonArray,
+        array|string|int|null $jsonArray,
         null|string|object $object,
         null|string $destination = null,
     ): ?ElementObjectInterface {
@@ -167,10 +167,23 @@ final class JsonSourceData extends AbstractSourceData
             throw DataMapperException::InvalidArgument('Invalid JSON decode return');
         }
 
-        foreach ($this->rootElementTree as $root) {
-            /** json_decode give mixed, but all only processed types are already checked above */
-            /** @phpstan-ignore offsetAccess.nonOffsetAccessible */
-            $jsonArray = $jsonArray[$root] ?? $jsonArray;
+        foreach ($this->rootElementTree as $rootElement) {
+            if (! is_array($jsonArray)) {
+                throw DataMapperException::Error('The JSON source data cannot be processed with the root element tree');
+            }
+
+            $found = false;
+            foreach (array_keys($jsonArray) as $key) {
+                if (strcasecmp($key, $rootElement) === 0) {
+                    $jsonArray = $jsonArray[$key];
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (! $found) {
+                throw DataMapperException::Error('Root-Element "' . $rootElement . '" not found in JSON source data');
+            }
         }
 
         $elementObjectResolver = new ElementObjectResolver();
@@ -224,7 +237,7 @@ final class JsonSourceData extends AbstractSourceData
      */
     private function resolveObject(
         ElementObjectResolver $elementObjectResolver,
-        array|string|int $jsonArray,
+        array|string|int|null $jsonArray,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $jsonArray, $this->object);
         if (! $elementObject instanceof ElementObjectInterface) {

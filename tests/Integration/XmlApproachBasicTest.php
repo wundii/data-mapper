@@ -20,6 +20,7 @@ use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 
 class XmlApproachBasicTest extends TestCase
 {
@@ -243,10 +244,9 @@ class XmlApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-    public function testMixWithCustomRoot(): void
+    public function testMixWithCustomRootElementTree(): void
     {
-        $file = __DIR__ . '/XmlFiles/ApproachBasicMixCustomRoot.xml';
-
+        $file = __DIR__ . '/XmlFiles/ApproachBasicMixCustomRootElementTree.xml';
         $dataMapper = new DataMapper();
         $return = $dataMapper->xml(file_get_contents($file), BaseMix::class, ['result']);
 
@@ -254,6 +254,23 @@ class XmlApproachBasicTest extends TestCase
 
         $this->assertInstanceOf(BaseMix::class, $return);
         $this->assertEquals($expected, $return);
+
+        $return = $dataMapper->xml(file_get_contents($file), BaseMix::class, ['RESULT']);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMixWithIncorrectCustomRootElementTree(): void
+    {
+        $file = __DIR__ . '/XmlFiles/ApproachBasicMixCustomRootElementTree.xml';
+        $dataMapper = new DataMapper();
+
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('Root-Element "incorrect" not found in XML source data');
+        $dataMapper->xml(file_get_contents($file), BaseMix::class, ['incorrect']);
     }
 
     public function testPrivateProperty(): void

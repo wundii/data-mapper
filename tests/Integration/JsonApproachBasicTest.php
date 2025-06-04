@@ -20,6 +20,7 @@ use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 
 class JsonApproachBasicTest extends TestCase
 {
@@ -288,9 +289,9 @@ class JsonApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-    public function testMixWithCustomRoot(): void
+    public function testMixWithCustomRootElementTree(): void
     {
-        $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRoot.json';
+        $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRootElementTree.json';
 
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
         $dataMapper = new DataMapper();
@@ -301,6 +302,26 @@ class JsonApproachBasicTest extends TestCase
 
         $this->assertInstanceOf(BaseMix::class, $return);
         $this->assertEquals($expected, $return);
+
+        $return = $dataMapper->json(file_get_contents($file), BaseMix::class, ['RESULT']);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMixWithIncorrectCustomRootElementTree(): void
+    {
+        $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRootElementTree.json';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('Root-Element "incorrect" not found in JSON source data');
+        $dataMapper->json(file_get_contents($file), BaseMix::class, ['incorrect']);
     }
 
     public function testPrivateProperty(): void
