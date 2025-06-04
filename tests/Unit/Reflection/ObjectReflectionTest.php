@@ -42,6 +42,10 @@ class ObjectReflectionTest extends TestCase
     {
         $object = $this->objectEmpty();
 
+        $this->assertEquals([], $object->getProperties());
+        $this->assertEquals([], $object->getConstructor());
+        $this->assertEquals([], $object->getSetters());
+
         $this->assertNull($object->find(ApproachEnum::PROPERTY, 'nameProperty'));
         $this->assertNull($object->find(ApproachEnum::PROPERTY, 'NAMEPROPERTY'));
         $this->assertNull($object->find(ApproachEnum::CONSTRUCTOR, 'dataConstructor'));
@@ -53,6 +57,27 @@ class ObjectReflectionTest extends TestCase
     public function testFind(): void
     {
         $object = $this->objectComplex();
+
+        $expectedProperties = [
+            new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true),
+            new PropertyReflection('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false),
+            new PropertyReflection('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false),
+        ];
+        $this->assertEquals($expectedProperties, $object->getProperties());
+
+        $expectedConstructors = [
+            new PropertyReflection('nameConstructor', DataTypeEnum::STRING, 'target1', false, true),
+            new PropertyReflection('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false),
+            new PropertyReflection('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false),
+        ];
+        $this->assertEquals($expectedConstructors, $object->getConstructor());
+
+        $expectedSetters = [
+            new PropertyReflection('nameSetter', DataTypeEnum::STRING, 'target1', false, true),
+            new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false),
+            new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false),
+        ];
+        $this->assertEquals($expectedSetters, $object->getSetters());
 
         $this->assertInstanceOf(PropertyReflection::class, $object->find(ApproachEnum::PROPERTY, 'nameProperty'));
         $this->assertSame('nameProperty', $object->find(ApproachEnum::PROPERTY, 'nameProperty')?->getName());

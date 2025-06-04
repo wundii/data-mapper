@@ -20,6 +20,14 @@ class UseStatementsReflectionTest extends TestCase
             ]
         );
 
+        $this->assertSame('MockClasses', $reflection->getNamespaceName());
+
+        $expectedUseStatements = [
+            new UseStatementReflection('Symfony\Contracts\HttpClient\ResponseInterface', 'ResponseInterface'),
+            new UseStatementReflection('MockClasses\ItemConstructor', 'ItemConstructor'),
+        ];
+        $this->assertEquals($expectedUseStatements, $reflection->getUseStatements());
+
         $this->assertSame('Symfony\Contracts\HttpClient\ResponseInterface', $reflection->find('ResponseInterface'));
         $this->assertSame('MockClasses\ItemConstructor', $reflection->find('ItemConstructor'));
         $this->assertSame('MockClasses\ItemConstructor', $reflection->find('ITEMCONSTRUCTOR'));
