@@ -269,7 +269,7 @@ class XmlApproachBasicTest extends TestCase
         $dataMapper = new DataMapper();
 
         $this->expectException(DataMapperException::class);
-        $this->expectExceptionMessage('Root-Element "incorrect" not found in XML source data');
+        $this->expectExceptionMessage('Root-Element "incorrect" not found in XML source data, you can use the forceInstance option to create an empty instance.');
         $dataMapper->xml(file_get_contents($file), BaseMix::class, ['incorrect']);
     }
 

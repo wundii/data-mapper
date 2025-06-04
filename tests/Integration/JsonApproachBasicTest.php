@@ -320,7 +320,7 @@ class JsonApproachBasicTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
 
         $this->expectException(DataMapperException::class);
-        $this->expectExceptionMessage('Root-Element "incorrect" not found in JSON source data');
+        $this->expectExceptionMessage('Root-Element "incorrect" not found in JSON source data, you can use the forceInstance option to create an empty instance.');
         $dataMapper->json(file_get_contents($file), BaseMix::class, ['incorrect']);
     }
 
