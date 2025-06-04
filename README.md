@@ -6,6 +6,7 @@
 [![Rector](https://img.shields.io/badge/Rector-8.2-blue.svg?style=flat)](https://getrector.com)
 [![ECS](https://img.shields.io/badge/ECS-check-blue.svg?style=flat)](https://tomasvotruba.com/blog/zen-config-in-ecs)
 [![PHPUnit](https://img.shields.io/badge/PHP--Unit-check-blue.svg?style=flat)](https://phpunit.org)
+[![codecov](https://codecov.io/github/wundii/data-mapper/branch/main/graph/badge.svg?token=cb7efb4edf7e1a31909c63e5a9fd4b814f000166)](https://app.codecov.io/github/wundii/data-mapper)
 [![Downloads](https://img.shields.io/packagist/dt/wundii/data-mapper.svg?style=flat)](https://packagist.org/packages/wundii/data-mapper)
 
 This is a modern php 8.2+ mapper relies on strict data types, dependency capability and convenient processing for mapping xml, json and arrays into objects.
