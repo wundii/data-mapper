@@ -263,7 +263,7 @@ class XmlApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-    public function testMixWithIncorrectCustomRootElementTree(): void
+    public function testMixWithIncorrectCustomRootElementTreeWithoutForceInstance(): void
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicMixCustomRootElementTree.xml';
         $dataMapper = new DataMapper();
@@ -271,6 +271,16 @@ class XmlApproachBasicTest extends TestCase
         $this->expectException(DataMapperException::class);
         $this->expectExceptionMessage('Root-Element "incorrect" not found in XML source data');
         $dataMapper->xml(file_get_contents($file), BaseMix::class, ['incorrect']);
+    }
+
+    public function testMixWithIncorrectCustomRootElementTreeWithForceInstance(): void
+    {
+        $file = __DIR__ . '/XmlFiles/TypeString.xml';
+        $dataMapper = new DataMapper();
+
+        $return = $dataMapper->xml(file_get_contents($file), BaseMix::class, ['incorrect'], true);
+
+        $this->assertInstanceOf(BaseMix::class, $return);
     }
 
     public function testPrivateProperty(): void

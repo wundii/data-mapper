@@ -155,7 +155,7 @@ final class XmlSourceData extends AbstractSourceData
                 }
             }
 
-            if (! $found) {
+            if (! $found && ! $this->forceInstance) {
                 throw DataMapperException::Error('Root-Element "' . $rootElement . '" not found in XML source data');
             }
         }

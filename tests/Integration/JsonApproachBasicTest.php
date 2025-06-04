@@ -311,7 +311,7 @@ class JsonApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-    public function testMixWithIncorrectCustomRootElementTree(): void
+    public function testMixWithIncorrectCustomRootElementTreeWithoutForceInstance(): void
     {
         $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRootElementTree.json';
 
@@ -322,6 +322,19 @@ class JsonApproachBasicTest extends TestCase
         $this->expectException(DataMapperException::class);
         $this->expectExceptionMessage('Root-Element "incorrect" not found in JSON source data');
         $dataMapper->json(file_get_contents($file), BaseMix::class, ['incorrect']);
+    }
+
+    public function testMixWithIncorrectCustomRootElementTreeWithForceInstance(): void
+    {
+        $file = __DIR__ . '/JsonFiles/TypeString.json';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+
+        $return = $dataMapper->json(file_get_contents($file), BaseMix::class, ['incorrect'], true);
+
+        $this->assertInstanceOf(BaseMix::class, $return);
     }
 
     public function testPrivateProperty(): void

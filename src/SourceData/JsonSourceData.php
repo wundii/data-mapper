@@ -181,7 +181,7 @@ final class JsonSourceData extends AbstractSourceData
                 }
             }
 
-            if (! $found) {
+            if (! $found && ! $this->forceInstance) {
                 throw DataMapperException::Error('Root-Element "' . $rootElement . '" not found in JSON source data');
             }
         }
