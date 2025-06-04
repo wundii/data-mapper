@@ -84,8 +84,20 @@ jobs:
     name: 'PHP Code Coverage'
     runs-on: ubuntu-latest
     steps:
+      - name: PHP-Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Composer install
+        run: |
+          composer install --prefer-dist --no-progress
+
+      - name: Run tests and collect coverage
+        run: vendor/bin/phpunit --coverage-clover coverage.xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
