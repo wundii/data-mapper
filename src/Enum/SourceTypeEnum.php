@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Enum;
 
-enum SourceTypeEnum
+enum SourceTypeEnum: string
 {
-    case JSON;
-    case XML;
+    case JSON = 'json';
+    case XML = 'xml';
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Enum;
 
-enum AccessibleEnum
+enum AccessibleEnum: string
 {
-    case PUBLIC;
-    case PRIVATE;
+    case PUBLIC = 'public';
+    case PRIVATE = 'private';
 }

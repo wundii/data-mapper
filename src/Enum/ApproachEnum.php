@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Enum;
 
-enum ApproachEnum
+enum ApproachEnum: string
 {
-    case CONSTRUCTOR;
-    case PROPERTY;
-    case SETTER;
+    case CONSTRUCTOR = 'constructor';
+    case PROPERTY = 'property';
+    case SETTER = 'setter';
 }
