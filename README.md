@@ -43,7 +43,13 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 ## Installation
 Require the bundle and its dependencies with composer:
 
-> composer require wundii/data-mapper
+```bash
+composer require wundii/data-mapper
+```
+
+### Installations for frameworks
+- Laravel Package is in development
+- [Symfony Bundle](https://github.com/wundii/data-mapper-symfony-bundle)
 
 ## Usage
 ### Minimal usage
