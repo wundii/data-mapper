@@ -142,6 +142,7 @@ final class XmlSourceData extends AbstractSourceData
      */
     public function resolve(): object|array
     {
+        $elementObjectResolver = new ElementObjectResolver();
         $sourceType = self::SOURCE_TYPE;
 
         if (! is_string($this->source) && ! $this->source instanceof SimpleXMLElement) {
@@ -172,8 +173,6 @@ final class XmlSourceData extends AbstractSourceData
                 throw DataMapperException::Error(sprintf('Root-Element "%s" not found in %s source data, you can use the forceInstance option to create an empty instance.', $rootElement, $sourceType->value));
             }
         }
-
-        $elementObjectResolver = new ElementObjectResolver();
 
         $object = $this->resolveObject($elementObjectResolver, $xmlElement);
         if ($object instanceof $this->object) {

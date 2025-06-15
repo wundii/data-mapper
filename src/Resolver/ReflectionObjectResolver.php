@@ -13,6 +13,7 @@ use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
+use Wundii\DataMapper\Enum\VisibilityEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\ObjectReflection;
@@ -25,6 +26,19 @@ final readonly class ReflectionObjectResolver
     public function name(ReflectionProperty|ReflectionParameter|ReflectionMethod $reflection): string
     {
         return $reflection->getName();
+    }
+
+    public function visibilityEnum(ReflectionProperty|ReflectionMethod $reflection): VisibilityEnum
+    {
+        if ($reflection->isPublic()) {
+            return VisibilityEnum::PUBLIC;
+        }
+
+        if ($reflection->isProtected()) {
+            return VisibilityEnum::PROTECTED;
+        }
+
+        return VisibilityEnum::PRIVATE;
     }
 
     public function parseAnnotation(UseStatementsReflection $useStatementsReflection, string $docComment): AnnotationReflection
@@ -177,7 +191,7 @@ final readonly class ReflectionObjectResolver
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(string|object $object): ObjectReflection
+    public function resolve(string|object $object, bool $takeValue = false): ObjectReflection
     {
         if (! is_object($object) && interface_exists($object)) {
             throw DataMapperException::InvalidArgument(sprintf('%s: interfaces are not allowed', $object));
@@ -187,26 +201,50 @@ final readonly class ReflectionObjectResolver
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $object));
         }
 
+        $invokeObject = null;
+        if ($takeValue && is_object($object)) {
+            $invokeObject = $object;
+        }
+
         $constructor = [];
         $properties = [];
+        $getters = [];
         $setters = [];
 
         $reflectionClass = new ReflectionClass($object);
         $useStatementsReflection = (new ReflectionTokenResolver())->resolve($object);
 
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-            if (str_starts_with($reflectionMethod->getName(), '__construct')) {
+            $methodName = strtolower($reflectionMethod->getName());
+
+            if (str_starts_with($methodName, '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
                     $constructor[] = (new PropertyReflectionResolver())->resolve(
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
                         $this->annotation($useStatementsReflection, $reflectionMethod),
                         $object,
+                        $this->visibilityEnum($reflectionMethod),
                     );
                 }
             }
 
-            if (str_starts_with($reflectionMethod->getName(), 'set')) {
+            if (str_starts_with($methodName, 'get')) {
+                if ($reflectionMethod->getParameters() !== []) {
+                    continue;
+                }
+
+                $getters[] = (new PropertyReflectionResolver())->resolve(
+                    substr($methodName, 3),
+                    $this->types($reflectionMethod->getReturnType()),
+                    $this->annotation($useStatementsReflection, $reflectionMethod),
+                    $object,
+                    $this->visibilityEnum($reflectionMethod),
+                    $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
+                );
+            }
+
+            if (str_starts_with($methodName, 'set')) {
                 if (count($reflectionMethod->getParameters()) !== 1) {
                     continue;
                 }
@@ -216,6 +254,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $this->annotation($useStatementsReflection, $reflectionMethod),
                     $object,
+                    $this->visibilityEnum($reflectionMethod),
                 );
             }
         }
@@ -224,7 +263,7 @@ final readonly class ReflectionObjectResolver
             $annotation = $this->annotation($useStatementsReflection, $reflectionProperty);
             $propertyReflection = null;
 
-            if ($annotation->isEmpty()) {
+            if ($annotation->isEmpty() && ! $takeValue) {
                 foreach ($constructor as $property) {
                     if ($property->getName() !== $this->name($reflectionProperty)) {
                         continue;
@@ -241,6 +280,8 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionProperty->getType()),
                     $annotation,
                     $object,
+                    $this->visibilityEnum($reflectionProperty),
+                    $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
                 );
             }
 
@@ -250,6 +291,7 @@ final readonly class ReflectionObjectResolver
         return new ObjectReflection(
             $properties,
             $constructor,
+            $getters,
             $setters,
         );
     }

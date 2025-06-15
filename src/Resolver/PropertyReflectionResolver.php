@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\Resolver;
 
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Enum\VisibilityEnum;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 
@@ -151,6 +152,8 @@ final readonly class PropertyReflectionResolver
         array $types,
         AnnotationReflection $annotationReflection,
         string|object $object,
+        VisibilityEnum $visibilityEnum,
+        mixed $value = null,
     ): PropertyReflection {
         $targetTypes = $this->getTargetTypes($name, $types, $annotationReflection);
 
@@ -166,6 +169,8 @@ final readonly class PropertyReflectionResolver
             $targetType,
             $oneType,
             $nullable,
+            $visibilityEnum,
+            $value,
         );
     }
 }

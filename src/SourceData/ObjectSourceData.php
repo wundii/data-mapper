@@ -18,24 +18,26 @@ use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
+use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
+use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
 /**
  * @template T of object
  * @extends AbstractSourceData<T>
  */
-final class ArraySourceData extends AbstractSourceData
+final class ObjectSourceData extends AbstractSourceData
 {
-    public const SOURCE_TYPE = SourceTypeEnum::ARRAY;
+    public const SOURCE_TYPE = SourceTypeEnum::OBJECT;
 
     /**
-     * @param array<int|string, mixed> $array
+     * @param PropertyReflection[] $availableDataList
      * @throws DataMapperException|ReflectionException
      */
     public function elementArray(
         DataConfigInterface $dataConfig,
-        array $array,
+        array $availableDataList,
         null|string $type,
         null|string $destination = null,
     ): ElementArrayInterface {
@@ -49,26 +51,17 @@ final class ArraySourceData extends AbstractSourceData
             throw DataMapperException::Error('Element array invalid type');
         }
 
-        foreach ($array as $arrayKey => $arrayValue) {
-            $name = (string) $arrayKey;
-            $value = $arrayValue;
+        foreach ($availableDataList as $availableData) {
+            $name = $availableData->getName();
+            $value = $availableData->getStringValue();
 
-            /** ignore phpstan rules, because $dataType has the correct data type */
             $data = match ($dataType) {
-                /** @phpstan-ignore argument.type */
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
-                /** @phpstan-ignore argument.type */
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
-                /** @phpstan-ignore argument.type */
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $arrayValue, $type, $name),
-                /** @phpstan-ignore cast.string */
-                DataTypeEnum::STRING => new DataString((string) $value, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $availableData->getChildrenProperty(), $type, $name),
+                DataTypeEnum::STRING => new DataString($value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type'),
             };
-
-            if ($data === null) {
-                continue;
-            }
 
             $dataList[] = $data;
         }
@@ -77,51 +70,35 @@ final class ArraySourceData extends AbstractSourceData
     }
 
     /**
-     * @param int|string[] $array
+     * @param PropertyReflection[] $availableDataList
      * @throws DataMapperException|ReflectionException
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
-        array|string|int|null $array,
+        array $availableDataList,
         null|string|object $object,
         null|string $destination = null,
-    ): ?ElementObjectInterface {
+    ): ElementObjectInterface {
         $dataList = [];
 
         if (is_string($object)) {
             $object = $dataConfig->mapClassName($object);
         }
 
-        if (! is_array($array)) {
-            if ($destination === null) {
-                return null;
-            }
+        $objectReflectionTarget = $this->reflectionObject($object ?: '');
 
-            $array = (array) $array;
-            $value = array_shift($array);
-
-            $dataList[] = new DataString((string) $value, $destination);
-
-            return new DataObject($object ?: '', $dataList, $destination, true);
-        }
-
-        $objectReflection = $this->reflectionObject($object ?: '');
-
-        foreach ($array as $arrayKey => $arrayValue) {
-            $arrayKey = (string) $arrayKey;
-            $value = $arrayValue;
-
-            $childReflection = $objectReflection->find($dataConfig->getApproach(), $arrayKey);
+        foreach ($availableDataList as $availableData) {
+            $childReflection = $objectReflectionTarget->find($dataConfig->getApproach(), $availableData->getName());
             if (! $childReflection instanceof PropertyReflection) {
                 continue;
             }
 
+            $value = $availableData->getStringValue();
             $name = $childReflection->getName();
             $dataType = $childReflection->getDataType();
             $targetType = $childReflection->getTargetType();
 
-            /** @phpstan-ignore-next-line */
-            if ($childReflection->isNullable() && ($value === null || $value === '')) {
+            if ($childReflection->isNullable() && $value === '') {
                 $dataType = DataTypeEnum::NULL;
             }
 
@@ -130,15 +107,11 @@ final class ArraySourceData extends AbstractSourceData
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),
-                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, (array) $arrayValue, $targetType, $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $arrayValue, $targetType, $name),
-                DataTypeEnum::STRING => new DataString((string) $value, $name),
+                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $availableData->getChildrenProperty(), $targetType, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $availableData->getChildrenProperty(), $targetType, $name),
+                DataTypeEnum::STRING => new DataString($value, $name),
                 default => throw DataMapperException::Error('Element object invalid element data type'),
             };
-
-            if ($data === null) {
-                continue;
-            }
 
             $dataList[] = $data;
         }
@@ -150,50 +123,46 @@ final class ArraySourceData extends AbstractSourceData
      * @return T|T[]
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(?SourceTypeEnum $sourceTypeEnum = null): object|array
+    public function resolve(): object|array
     {
         $elementObjectResolver = new ElementObjectResolver();
-        $sourceTypeEnum = $sourceTypeEnum ?? self::SOURCE_TYPE;
+        $sourceTypeEnum = self::SOURCE_TYPE;
 
-        $array = $this->source;
-
-        if (! is_array($array)) {
-            throw DataMapperException::Error(sprintf('The %s source data cannot be processed with the root element tree', $sourceTypeEnum->value));
+        if (! is_array($this->source) && ! is_object($this->source)) {
+            throw DataMapperException::Error(sprintf('The %s source is not a array or object', $sourceTypeEnum->value));
         }
 
-        foreach ($this->rootElementTree as $rootElement) {
-            $found = false;
-            foreach (array_keys($array) as $key) {
-                if (strcasecmp((string) $key, $rootElement) === 0) {
-                    $array = (array) $array[$key];
-                    $found = true;
-                    break;
-                }
+        if (is_object($this->source)) {
+            $object = $this->toArray($this->source);
+            if ($object instanceof $this->object) {
+                /** @var T $object */
+                return $object;
             }
 
-            if (! $found && ! $this->forceInstance) {
-                throw DataMapperException::Error(sprintf('Root-Element "%s" not found in %s source data, you can use the forceInstance option to create an empty instance.', $rootElement, $sourceTypeEnum->value));
+            $objectResolve = (new ReflectionObjectResolver())->resolve($this->source, true);
+            $object = $this->resolveObject($elementObjectResolver, $objectResolve);
+            if ($object instanceof $this->object) {
+                /** @var T $object */
+                return $object;
             }
-        }
-
-        /** @phpstan-ignore argument.type */
-        $object = $this->resolveObject($elementObjectResolver, $array);
-        if ($object instanceof $this->object) {
-            /** @var T $object */
-            return $object;
         }
 
         $objects = [];
-        foreach ($array ?: [] as $key => $child) {
-            if ($child === null) {
-                continue;
-            }
+        if (is_array($this->source)) {
+            foreach ($this->source as $child) {
+                if (! is_object($child)) {
+                    continue;
+                }
 
-            /** @phpstan-ignore argument.type */
-            $object = $this->resolveObject($elementObjectResolver, $child);
+                $object = $this->toArray($child);
+                if ($object === null) {
+                    $objectResolve = (new ReflectionObjectResolver())->resolve($child, true);
+                    $object = $this->resolveObject($elementObjectResolver, $objectResolve);
+                }
 
-            if ($object instanceof $this->object) {
-                $objects[$key] = $object;
+                if ($object instanceof $this->object) {
+                    $objects[] = $object;
+                }
             }
         }
 
@@ -208,7 +177,7 @@ final class ArraySourceData extends AbstractSourceData
         if ($objects === []) {
             $classString = is_string($this->object) ? $this->object : get_class($this->object);
 
-            throw DataMapperException::Error(sprintf('Invalid object from %sResolver, could not create an instance of %s', $sourceTypeEnum->value, $classString));
+            throw DataMapperException::Error('Invalid object from XmlResolver, could not create an instance of ' . $classString);
         }
 
         /** @var T[] $objects */
@@ -216,19 +185,39 @@ final class ArraySourceData extends AbstractSourceData
     }
 
     /**
-     * @param int|string[] $array
+     * @return null|T|T[]
+     * @throws ReflectionException
+     * @throws DataMapperException
+     */
+    private function toArray(object $object): null|object|array
+    {
+        if (! method_exists($object, 'toArray')) {
+            return null;
+        }
+
+        /** @var array<int|string, mixed> $array */
+        $array = $object->toArray();
+
+        $arraySourceData = new ArraySourceData(
+            $this->dataConfig,
+            $array,
+            $this->object,
+            $this->rootElementTree,
+            $this->forceInstance,
+        );
+
+        return $arraySourceData->resolve(self::SOURCE_TYPE);
+    }
+
+    /**
      * @return null|T
      * @throws DataMapperException|ReflectionException
      */
     private function resolveObject(
         ElementObjectResolver $elementObjectResolver,
-        array|string|int|null $array,
+        ObjectReflection $objectReflection,
     ): ?object {
-        $elementObject = $this->elementObject($this->dataConfig, $array, $this->object);
-        if (! $elementObject instanceof ElementObjectInterface) {
-            return null;
-        }
-
+        $elementObject = $this->elementObject($this->dataConfig, $objectReflection->availableData(), $this->object);
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {

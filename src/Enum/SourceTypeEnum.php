@@ -8,6 +8,6 @@ enum SourceTypeEnum: string
 {
     case ARRAY = 'Array';
     case JSON = 'Json';
-    // case OBJECT = 'Object';
+    case OBJECT = 'Object';
     case XML = 'XML';
 }

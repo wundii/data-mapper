@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\Reflection;
 
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\VisibilityEnum;
 
 final readonly class ObjectReflection
 {
     /**
      * @param PropertyReflection[] $properties
      * @param PropertyReflection[] $constructor
+     * @param PropertyReflection[] $getters
      * @param PropertyReflection[] $setters
      */
     public function __construct(
         private array $properties,
         private array $constructor,
+        private array $getters,
         private array $setters,
     ) {
     }
@@ -39,9 +42,43 @@ final readonly class ObjectReflection
     /**
      * @return PropertyReflection[]
      */
+    public function getGetters(): array
+    {
+        return $this->getters;
+    }
+
+    /**
+     * @return PropertyReflection[]
+     */
     public function getSetters(): array
     {
         return $this->setters;
+    }
+
+    /**
+     * @return PropertyReflection[]
+     */
+    public function availableData(): array
+    {
+        $data = [];
+        foreach ($this->properties as $property) {
+            if ($property->getVisibilityEnum() !== VisibilityEnum::PUBLIC) {
+                continue;
+            }
+
+            $data[$property->getName()] = $property;
+        }
+
+        foreach ($this->getters as $getter) {
+            if ($getter->getVisibilityEnum() !== VisibilityEnum::PUBLIC) {
+                continue;
+            }
+
+            $data[$getter->getName()] = $getter;
+        }
+
+        return $data;
+
     }
 
     public function find(ApproachEnum $approachEnum, string $name): ?PropertyReflection

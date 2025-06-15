@@ -7,6 +7,7 @@ namespace Unit\Reflection;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Enum\VisibilityEnum;
 use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Reflection\PropertyReflection;
 
@@ -14,26 +15,31 @@ class ObjectReflectionTest extends TestCase
 {
     public function objectEmpty(): ObjectReflection
     {
-        return new ObjectReflection([], [], []);
+        return new ObjectReflection([], [], [], []);
     }
 
     public function objectComplex(): ObjectReflection
     {
         return new ObjectReflection(
             [
-                new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true),
-                new PropertyReflection('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false),
-                new PropertyReflection('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false),
+                new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+                new PropertyReflection('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+                new PropertyReflection('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
             ],
             [
-                new PropertyReflection('nameConstructor', DataTypeEnum::STRING, 'target1', false, true),
-                new PropertyReflection('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false),
-                new PropertyReflection('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false),
+                new PropertyReflection('nameConstructor', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+                new PropertyReflection('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+                new PropertyReflection('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
             ],
             [
-                new PropertyReflection('nameSetter', DataTypeEnum::STRING, 'target1', false, true),
-                new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false),
-                new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false),
+                new PropertyReflection('nameGetter', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+                new PropertyReflection('dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+                new PropertyReflection('itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
+            ],
+            [
+                new PropertyReflection('nameSetter', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+                new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+                new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
             ],
         );
     }
@@ -59,25 +65,38 @@ class ObjectReflectionTest extends TestCase
         $object = $this->objectComplex();
 
         $expectedProperties = [
-            new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true),
-            new PropertyReflection('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false),
-            new PropertyReflection('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false),
+            new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            new PropertyReflection('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+            new PropertyReflection('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
         ];
         $this->assertEquals($expectedProperties, $object->getProperties());
 
         $expectedConstructors = [
-            new PropertyReflection('nameConstructor', DataTypeEnum::STRING, 'target1', false, true),
-            new PropertyReflection('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false),
-            new PropertyReflection('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false),
+            new PropertyReflection('nameConstructor', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            new PropertyReflection('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+            new PropertyReflection('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
         ];
         $this->assertEquals($expectedConstructors, $object->getConstructor());
 
+        $expectedGetters = [
+            new PropertyReflection('nameGetter', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            new PropertyReflection('dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+            new PropertyReflection('itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
+        ];
+        $this->assertEquals($expectedGetters, $object->getGetters());
+
         $expectedSetters = [
-            new PropertyReflection('nameSetter', DataTypeEnum::STRING, 'target1', false, true),
-            new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false),
-            new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false),
+            new PropertyReflection('nameSetter', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+            new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
         ];
         $this->assertEquals($expectedSetters, $object->getSetters());
+
+        $expectedSetters = [
+            'nameProperty' => new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            'nameGetter' => new PropertyReflection('nameGetter', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+        ];
+        $this->assertEquals($expectedSetters, $object->availableData());
 
         $this->assertInstanceOf(PropertyReflection::class, $object->find(ApproachEnum::PROPERTY, 'nameProperty'));
         $this->assertSame('nameProperty', $object->find(ApproachEnum::PROPERTY, 'nameProperty')?->getName());

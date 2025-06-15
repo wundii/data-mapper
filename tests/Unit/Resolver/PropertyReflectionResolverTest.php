@@ -6,6 +6,7 @@ namespace Unit\Resolver;
 
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Enum\VisibilityEnum;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
 use Wundii\DataMapper\Reflection\ParameterReflection;
 use Wundii\DataMapper\Resolver\PropertyReflectionResolver;
@@ -130,6 +131,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationSimple(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertNull($property->getTargetType());
@@ -139,6 +141,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationParameter(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertNull($property->getTargetType());
@@ -151,6 +154,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
@@ -160,6 +164,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['DateTimeInterface'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('DateTimeInterface', $property->getTargetType());
@@ -169,6 +174,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
@@ -178,6 +184,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['DateTimeInterface[]'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('DateTimeInterface', $property->getTargetType());
@@ -187,6 +194,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationComplex(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
@@ -196,6 +204,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['array', 'string[]'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('string', $property->getTargetType());
@@ -205,6 +214,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['self', 'null'],
             $this->annotationEmpty(),
             'MockClasses\ItemConstructor',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
@@ -217,6 +227,7 @@ class PropertyReflectionResolverTest extends TestCase
             [],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertFalse($property->isOneType());
@@ -226,6 +237,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string', 'bool'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertFalse($property->isOneType());
@@ -235,6 +247,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationComplex(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertFalse($property->isOneType());
@@ -244,6 +257,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['array', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertFalse($property->isOneType());
@@ -256,6 +270,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertTrue($property->isOneType());
@@ -265,6 +280,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['array', 'MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertTrue($property->isOneType());
@@ -274,6 +290,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationSimple(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertTrue($property->isOneType());
@@ -283,6 +300,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['null', 'string'],
             $this->annotationSimple(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertTrue($property->isOneType());
@@ -295,6 +313,7 @@ class PropertyReflectionResolverTest extends TestCase
             [],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
@@ -304,6 +323,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string', 'bool'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
@@ -313,6 +333,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['array', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
@@ -325,6 +346,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertFalse($property->isNullable());
@@ -334,6 +356,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string', 'null'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertTrue($property->isNullable());
@@ -343,6 +366,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['NULL', 'string'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertTrue($property->isNullable());
@@ -355,6 +379,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
@@ -364,6 +389,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['array', 'MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::ARRAY, $property->getDataType());
@@ -373,6 +399,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['string'],
             $this->annotationSimple(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
@@ -382,6 +409,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['null', 'string'],
             $this->annotationSimple(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
@@ -391,6 +419,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['null', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
             '',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::OBJECT, $property->getDataType());
@@ -400,6 +429,7 @@ class PropertyReflectionResolverTest extends TestCase
             ['self', 'null'],
             $this->annotationEmpty(),
             'MockClasses\ItemConstructor',
+            VisibilityEnum::PRIVATE,
         );
 
         $this->assertSame(DataTypeEnum::OBJECT, $property->getDataType());

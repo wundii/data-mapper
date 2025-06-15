@@ -31,7 +31,7 @@ final class JsonSourceData extends AbstractSourceData
      */
     public function resolve(): object|array
     {
-        $sourceTypeEnum = SourceTypeEnum::JSON;
+        $sourceTypeEnum = self::SOURCE_TYPE;
 
         if (! is_string($this->source)) {
             throw DataMapperException::Error(sprintf('The %s source is not a string', $sourceTypeEnum->value));
