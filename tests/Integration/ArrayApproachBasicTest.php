@@ -178,254 +178,287 @@ class ArrayApproachBasicTest extends TestCase
         $this->assertEquals($expected, $return);
     }
 
-    // public function testSetterWithoutRightDataException(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/TypeNull01.json';
-    //
-    //     $this->expectExceptionMessage('Invalid object from JsonResolver, could not create an instance of Integration\Objects\ApproachBasic\BaseSetter');
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->json(file_get_contents($file), BaseSetter::class, ['string']);
-    // }
-    //
-    // public function testSetterWithoutRightData(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/TypeNull01.json';
-    //
-    //     $dataMapper = new DataMapper();
-    //     $return = $dataMapper->json(file_get_contents($file), BaseSetter::class, ['string'], forceInstance: true);
-    //
-    //     $expected = new BaseSetter();
-    //
-    //     $this->assertInstanceOf(BaseSetter::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
-    //
-    // public function testSetterIncomplete(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetterIncomplete.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), BaseSetterWithConstructor::class);
-    //
-    //     $expected = new BaseSetterWithConstructor(222.22, 'approach', 1337);
-    //     $expected->setMyStrings([
-    //         'hello',
-    //         'world',
-    //     ]);
-    //     $expected->setSubSetter(null);
-    //     $expected->setSubSetters([]);
-    //
-    //     $this->assertInstanceOf(BaseSetterWithConstructor::class, $return);
-    //     $this->assertEquals($expected, $return);
-    //     $this->assertSame(null, $return->getSubSetter());
-    //     $this->assertSame([], $return->getSubSetters());
-    // }
-    //
-    // public function testSetterCustomMethod(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetterIncomplete.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), BaseSetterCustomMethod::class);
-    //
-    //     $expected = new BaseSetterCustomMethod('approach');
-    //
-    //     $this->assertInstanceOf(BaseSetterCustomMethod::class, $return);
-    //     $this->assertEquals($expected, $return);
-    //     $this->assertSame([], $return->getSubSetters());
-    // }
-    //
-    // public function testSetterWithFailSubSetters(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetterFail.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), BaseSetter::class);
-    //
-    //     $subSetter01 = new SubSetter();
-    //     $subSetter01->setActive(true);
-    //
-    //     $expected = new BaseSetter();
-    //     $expected->setAmount(222.22);
-    //     $expected->setName('approach');
-    //     $expected->setId(1337);
-    //     $expected->setMyStrings([
-    //         'hello',
-    //         'world',
-    //     ]);
-    //     $expected->setSubSetter($subSetter01);
-    //     $expected->setSubSetters([]);
-    //
-    //     $this->assertInstanceOf(BaseSetter::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
-    //
-    // public function testSetterWithWrongTypeInSubSettersCreateInstanceWithoutConstructor(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetterWithWrongTypeInSubSettersCreateInstanceWithoutConstructor.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), BaseSetter::class);
-    //
-    //     $subSetter01 = new SubSetter();
-    //     $subSetter01->setActive(true);
-    //     $subSetter02 = new SubSetter();
-    //
-    //     $expected = new BaseSetter();
-    //     $expected->setAmount(222.22);
-    //     $expected->setName('approach');
-    //     $expected->setId(1337);
-    //     $expected->setMyStrings([
-    //         'hello',
-    //         'world',
-    //     ]);
-    //     $expected->setSubSetter($subSetter01);
-    //     $expected->setSubSetters([
-    //         $subSetter02,
-    //     ]);
-    //
-    //     $this->assertInstanceOf(BaseSetter::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
-    //
-    // // public function testBenchmark(): void
-    // // {
-    // //     $file = __DIR__ . '/JsonFiles/ApproachBasicSetter.json';
-    // //
-    // //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    // //     $dataMapper = new DataMapper();
-    // //     $dataMapper->setDataConfig($dataConfig);
-    // //
-    // //     $subSetter01 = new SubSetter();
-    // //     $subSetter01->setActive(true);
-    // //     $subsetter02 = new SubSetter();
-    // //     $subsetter02->setActive(true);
-    // //     $subSetter03 = new SubSetter();
-    // //     $subSetter03->setActive(false);
-    // //
-    // //     $expected = new BaseSetter();
-    // //     $expected->setAmount(222.22);
-    // //     $expected->setName('approach');
-    // //     $expected->setId(1337);
-    // //     $expected->setMyStrings([
-    // //         'hello',
-    // //         'world',
-    // //     ]);
-    // //     $expected->setSubSetter($subSetter01);
-    // //     $expected->setSubSetters([
-    // //         $subsetter02,
-    // //         $subSetter03,
-    // //     ]);
-    // //
-    // //     $fileContent = file_get_contents($file);
-    // //
-    // //     for ($i = 0; $i < 10000; $i++) {
-    // //         $return = $dataMapper->json($fileContent, BaseSetter::class);
-    // //         $this->assertInstanceOf(BaseSetter::class, $return);
-    // //         $this->assertEquals($expected, $return);
-    // //     }
-    // // }
-    //
-    // public function testMix(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
-    //
-    //     $dataMapper = new DataMapper();
-    //     $return = $dataMapper->json(file_get_contents($file), BaseMix::class);
-    //
-    //     $expected = new BaseMix(222.22, 'approach');
-    //
-    //     $this->assertInstanceOf(BaseMix::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
-    //
-    // public function testMixWithCustomRootElementTree(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRootElementTree.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), BaseMix::class, ['result']);
-    //
-    //     $expected = new BaseMix(222.22, 'approach');
-    //
-    //     $this->assertInstanceOf(BaseMix::class, $return);
-    //     $this->assertEquals($expected, $return);
-    //
-    //     $return = $dataMapper->json(file_get_contents($file), BaseMix::class, ['RESULT']);
-    //
-    //     $expected = new BaseMix(222.22, 'approach');
-    //
-    //     $this->assertInstanceOf(BaseMix::class, $return);
-    //     $this->assertEquals($expected, $return);
-    // }
-    //
-    // public function testMixWithIncorrectCustomRootElementTreeWithoutForceInstance(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicMixCustomRootElementTree.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //
-    //     $this->expectException(DataMapperException::class);
-    //     $this->expectExceptionMessage('Root-Element "incorrect" not found in JSON source data, you can use the forceInstance option to create an empty instance.');
-    //     $dataMapper->json(file_get_contents($file), BaseMix::class, ['incorrect']);
-    // }
-    //
-    // public function testMixWithIncorrectCustomRootElementTreeWithForceInstance(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/TypeString.json';
-    //
-    //     $dataConfig = new DataConfig(ApproachEnum::SETTER);
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //
-    //     $return = $dataMapper->json(file_get_contents($file), BaseMix::class, ['incorrect'], true);
-    //
-    //     $this->assertInstanceOf(BaseMix::class, $return);
-    // }
-    //
-    // public function testPrivateProperty(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
-    //
-    //     $dataConfig = new DataConfig(
-    //         ApproachEnum::PROPERTY,
-    //         AccessibleEnum::PRIVATE,
-    //     );
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), PrivateProperty::class);
-    //
-    //     $this->assertInstanceOf(PrivateProperty::class, $return);
-    //     $this->assertEquals(222.22, $return->getAmount());
-    //     $this->assertEquals('approach', $return->getName());
-    // }
-    //
-    // public function testPrivateSetter(): void
-    // {
-    //     $file = __DIR__ . '/JsonFiles/ApproachBasicMix.json';
-    //
-    //     $dataConfig = new DataConfig(
-    //         ApproachEnum::SETTER,
-    //         AccessibleEnum::PRIVATE,
-    //     );
-    //     $dataMapper = new DataMapper();
-    //     $dataMapper->setDataConfig($dataConfig);
-    //     $return = $dataMapper->json(file_get_contents($file), PrivateSetter::class);
-    //
-    //     $this->assertInstanceOf(PrivateSetter::class, $return);
-    //     $this->assertEquals(222.22, $return->getAmount());
-    //     $this->assertEquals('approach', $return->getName());
-    // }
+    public function testSetterWithoutRightDataException(): void
+    {
+        $array = [
+            'string' => null,
+        ];
+
+        $this->expectExceptionMessage('Invalid object from ArrayResolver, could not create an instance of Integration\Objects\ApproachBasic\BaseSetter');
+        $dataMapper = new DataMapper();
+        $dataMapper->array($array, BaseSetter::class, ['string']);
+    }
+
+    public function testSetterWithoutRightData(): void
+    {
+        $array = [
+            'string' => null,
+        ];
+
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->array($array, BaseSetter::class, ['string'], forceInstance: true);
+
+        $expected = new BaseSetter();
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSetterIncomplete(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+            'id' => 1337,
+            'myStrings' => [
+                'hello',
+                'world',
+            ],
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, BaseSetterWithConstructor::class);
+
+        $expected = new BaseSetterWithConstructor(222.22, 'approach', 1337);
+        $expected->setMyStrings([
+            'hello',
+            'world',
+        ]);
+        $expected->setSubSetter(null);
+        $expected->setSubSetters([]);
+
+        $this->assertInstanceOf(BaseSetterWithConstructor::class, $return);
+        $this->assertEquals($expected, $return);
+        $this->assertSame(null, $return->getSubSetter());
+        $this->assertSame([], $return->getSubSetters());
+    }
+
+    public function testSetterCustomMethod(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+            'id' => 1337,
+            'myStrings' => [
+                'hello',
+                'world',
+            ],
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, BaseSetterCustomMethod::class);
+
+        $expected = new BaseSetterCustomMethod('approach');
+
+        $this->assertInstanceOf(BaseSetterCustomMethod::class, $return);
+        $this->assertEquals($expected, $return);
+        $this->assertSame([], $return->getSubSetters());
+    }
+
+    public function testSetterWithFailSubSetters(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+            'id' => 1337,
+            'myStrings' => [
+                'hello',
+                'world',
+            ],
+            'subSetter' => [
+                'active' => true,
+            ],
+            'subSetters' => [
+                [
+                    'fail' => true,
+                ],
+            ],
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, BaseSetter::class);
+
+        $subSetter01 = new SubSetter();
+        $subSetter01->setActive(true);
+
+        $expected = new BaseSetter();
+        $expected->setAmount(222.22);
+        $expected->setName('approach');
+        $expected->setId(1337);
+        $expected->setMyStrings([
+            'hello',
+            'world',
+        ]);
+        $expected->setSubSetter($subSetter01);
+        $expected->setSubSetters([]);
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSetterWithWrongTypeInSubSettersCreateInstanceWithoutConstructor(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+            'id' => 1337,
+            'myStrings' => [
+                'hello',
+                'world',
+            ],
+            'subSetter' => [
+                'active' => true,
+            ],
+            'subSetters' => [
+                'fail',
+            ],
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, BaseSetter::class);
+
+        $subSetter01 = new SubSetter();
+        $subSetter01->setActive(true);
+        $subSetter02 = new SubSetter();
+
+        $expected = new BaseSetter();
+        $expected->setAmount(222.22);
+        $expected->setName('approach');
+        $expected->setId(1337);
+        $expected->setMyStrings([
+            'hello',
+            'world',
+        ]);
+        $expected->setSubSetter($subSetter01);
+        $expected->setSubSetters([
+            $subSetter02,
+        ]);
+
+        $this->assertInstanceOf(BaseSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMix(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+        ];
+
+        $dataMapper = new DataMapper();
+        $return = $dataMapper->array($array, BaseMix::class);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMixWithCustomRootElementTree(): void
+    {
+        $array = [
+            'result' => [
+                'amount' => 222.22,
+                'name' => 'approach',
+            ],
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, BaseMix::class, ['result']);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+        $this->assertEquals($expected, $return);
+
+        $return = $dataMapper->array($array, BaseMix::class, ['RESULT']);
+
+        $expected = new BaseMix(222.22, 'approach');
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testMixWithIncorrectCustomRootElementTreeWithoutForceInstance(): void
+    {
+        $array = [
+            'result' => [
+                'amount' => 222.22,
+                'name' => 'approach',
+            ],
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('Root-Element "incorrect" not found in Array source data, you can use the forceInstance option to create an empty instance.');
+        $dataMapper->array($array, BaseMix::class, ['incorrect']);
+    }
+
+    public function testMixWithIncorrectCustomRootElementTreeWithForceInstance(): void
+    {
+        $array = [
+            'string' => 'Nostromo',
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+
+        $return = $dataMapper->array($array, BaseMix::class, ['incorrect'], true);
+
+        $this->assertInstanceOf(BaseMix::class, $return);
+    }
+
+    public function testPrivateProperty(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+        ];
+
+        $dataConfig = new DataConfig(
+            ApproachEnum::PROPERTY,
+            AccessibleEnum::PRIVATE,
+        );
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, PrivateProperty::class);
+
+        $this->assertInstanceOf(PrivateProperty::class, $return);
+        $this->assertEquals(222.22, $return->getAmount());
+        $this->assertEquals('approach', $return->getName());
+    }
+
+    public function testPrivateSetter(): void
+    {
+        $array = [
+            'amount' => 222.22,
+            'name' => 'approach',
+        ];
+
+        $dataConfig = new DataConfig(
+            ApproachEnum::SETTER,
+            AccessibleEnum::PRIVATE,
+        );
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, PrivateSetter::class);
+
+        $this->assertInstanceOf(PrivateSetter::class, $return);
+        $this->assertEquals(222.22, $return->getAmount());
+        $this->assertEquals('approach', $return->getName());
+    }
 }

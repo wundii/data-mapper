@@ -9,7 +9,18 @@ namespace Wundii\DataMapper\Interface;
  */
 interface SourceDataInterface
 {
-    public function __construct(DataConfigInterface $dataConfig, string $source, string|object $object);
+    /**
+     * @param string|array<int|string, mixed>|object $source
+     * @param class-string<T>|T $object
+     * @param string[] $rootElementTree
+     */
+    public function __construct(
+        DataConfigInterface $dataConfig,
+        string|array|object $source,
+        string|object $object,
+        array $rootElementTree = [],
+        bool $forceInstance = false,
+    );
 
     /**
      * @return T|T[]

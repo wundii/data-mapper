@@ -23,12 +23,13 @@ abstract class AbstractSourceData implements SourceDataInterface
     protected static array $objectReflections = [];
 
     /**
+     * @param string|array<int|string, mixed>|object $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      */
     public function __construct(
         protected DataConfigInterface $dataConfig,
-        protected string $source,
+        protected string|array|object $source,
         protected string|object $object,
         protected array $rootElementTree = [],
         protected bool $forceInstance = false,
