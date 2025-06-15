@@ -149,7 +149,7 @@ final class ObjectSourceData extends AbstractSourceData
 
         $objects = [];
         if (is_array($this->source)) {
-            foreach ($this->source as $child) {
+            foreach ($this->source as $key => $child) {
                 if (! is_object($child)) {
                     continue;
                 }
@@ -161,7 +161,7 @@ final class ObjectSourceData extends AbstractSourceData
                 }
 
                 if ($object instanceof $this->object) {
-                    $objects[] = $object;
+                    $objects[$key] = $object;
                 }
             }
         }

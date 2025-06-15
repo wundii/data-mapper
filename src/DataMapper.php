@@ -27,13 +27,14 @@ class DataMapper
     }
 
     /**
+     * @param array<mixed>|object $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree // only possible in conjunction with the method toArray
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
     public function object(
-        object $source,
+        array|object $source,
         string|object $object,
         array $rootElementTree = [],
         bool $forceInstance = false,
