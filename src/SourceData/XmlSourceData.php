@@ -155,7 +155,7 @@ final class XmlSourceData extends AbstractSourceData
             try {
                 $xmlElement = new SimpleXmlElement($this->source);
             } catch (Exception $exception) {
-                throw DataMapperException::Error(sprintf('Invalid %s: ', $sourceType->value) . $exception->getMessage(), (int) $exception->getCode(), $exception);
+                throw DataMapperException::Error(sprintf('Invalid %s: %s', $sourceType->value, $exception->getMessage()), (int) $exception->getCode(), $exception);
             }
         }
 

@@ -22,6 +22,7 @@ use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Exception\DataMapperInvalidArgumentException;
 
 class JsonApproachBasicTest extends TestCase
 {
@@ -31,6 +32,14 @@ class JsonApproachBasicTest extends TestCase
         $this->expectException(DataMapperException::class);
         $this->expectExceptionMessage('The Json source is not a string');
         $dataMapper->map(SourceTypeEnum::JSON, [], BaseSetter::class);
+    }
+
+    public function testExceptionInvalidSourceData(): void
+    {
+        $dataMapper = new DataMapper();
+        $this->expectException(DataMapperInvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid Json string');
+        $dataMapper->map(SourceTypeEnum::JSON, '/', BaseSetter::class);
     }
 
     public function testConstructorDefault(): void

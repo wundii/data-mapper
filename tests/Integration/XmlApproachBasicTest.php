@@ -33,6 +33,14 @@ class XmlApproachBasicTest extends TestCase
         $dataMapper->map(SourceTypeEnum::XML, [], BaseSetter::class);
     }
 
+    public function testExceptionInvalidSourceData(): void
+    {
+        $dataMapper = new DataMapper();
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('Invalid XML: String could not be parsed as XML');
+        $dataMapper->map(SourceTypeEnum::XML, '', BaseSetter::class);
+    }
+
     public function testConstructorDefault(): void
     {
         $file = __DIR__ . '/XmlFiles/ApproachBasicConstructor.xml';
