@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Integration\Objects\Serialize;
 
 use Integration\Objects\Types\TypeString;
+use MockClasses\ObjectAttribute;
 use Wundii\DataMapper\Attribute\SourceData;
 
 final readonly class Attribute
@@ -29,6 +30,7 @@ final readonly class Attribute
     }
 
     #[SourceData('name')]
+    #[ObjectAttribute]
     public function getLabel(): string
     {
         return $this->label;
