@@ -13,6 +13,7 @@ use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
+use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Enum\VisibilityEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Reflection\AnnotationReflection;
@@ -210,12 +211,14 @@ final readonly class ReflectionObjectResolver
         $properties = [];
         $getters = [];
         $setters = [];
+        $attributes = [];
 
         $reflectionClass = new ReflectionClass($object);
         $useStatementsReflection = (new ReflectionTokenResolver())->resolve($object);
 
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
             $methodName = strtolower($reflectionMethod->getName());
+            $sourceDataAttributeName = null;
 
             if (str_starts_with($methodName, '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
@@ -227,6 +230,34 @@ final readonly class ReflectionObjectResolver
                         $this->visibilityEnum($reflectionMethod),
                     );
                 }
+            }
+
+            foreach ($reflectionMethod->getAttributes() as $attribute) {
+                if ($attribute->getName() !== SourceData::class) {
+                    continue;
+                }
+
+                $instance = $attribute->newInstance();
+                if (! $instance instanceof SourceData) {
+                    continue;
+                }
+
+                $sourceDataAttributeName = $instance->getTarget();
+            }
+
+            if ($sourceDataAttributeName) {
+                if ($reflectionMethod->getParameters() !== []) {
+                    continue;
+                }
+
+                $attributes[] = (new PropertyReflectionResolver())->resolve(
+                    $sourceDataAttributeName,
+                    $this->types($reflectionMethod->getReturnType()),
+                    $this->annotation($useStatementsReflection, $reflectionMethod),
+                    $object,
+                    $this->visibilityEnum($reflectionMethod),
+                    $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
+                );
             }
 
             if (str_starts_with($methodName, 'get')) {
@@ -277,6 +308,7 @@ final readonly class ReflectionObjectResolver
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $annotation = $this->annotation($useStatementsReflection, $reflectionProperty);
             $propertyReflection = null;
+            $sourceDataAttributeName = null;
 
             if ($annotation->isEmpty() && ! $takeValue) {
                 foreach ($constructor as $property) {
@@ -287,6 +319,30 @@ final readonly class ReflectionObjectResolver
                     $propertyReflection = $property;
                     break;
                 }
+            }
+
+            foreach ($reflectionProperty->getAttributes() as $attribute) {
+                if ($attribute->getName() !== SourceData::class) {
+                    continue;
+                }
+
+                $instance = $attribute->newInstance();
+                if (! $instance instanceof SourceData) {
+                    continue;
+                }
+
+                $sourceDataAttributeName = $instance->getTarget();
+            }
+
+            if ($sourceDataAttributeName && $sourceDataAttributeName !== $this->name($reflectionProperty)) {
+                $attributes[] = (new PropertyReflectionResolver())->resolve(
+                    $sourceDataAttributeName,
+                    $this->types($reflectionProperty->getType()),
+                    $this->annotation($useStatementsReflection, $reflectionProperty),
+                    $object,
+                    $this->visibilityEnum($reflectionProperty),
+                    $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
+                );
             }
 
             if (! $propertyReflection instanceof PropertyReflection) {
@@ -308,6 +364,7 @@ final readonly class ReflectionObjectResolver
             $constructor,
             $getters,
             $setters,
+            $attributes,
         );
     }
 }

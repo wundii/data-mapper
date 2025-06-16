@@ -14,12 +14,14 @@ final readonly class ObjectReflection
      * @param PropertyReflection[] $constructor
      * @param PropertyReflection[] $getters
      * @param PropertyReflection[] $setters
+     * @param PropertyReflection[] $attributes
      */
     public function __construct(
         private array $properties,
         private array $constructor,
         private array $getters,
         private array $setters,
+        private array $attributes,
     ) {
     }
 
@@ -58,6 +60,14 @@ final readonly class ObjectReflection
     /**
      * @return PropertyReflection[]
      */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @return PropertyReflection[]
+     */
     public function availableData(): array
     {
         $data = [];
@@ -75,6 +85,14 @@ final readonly class ObjectReflection
             }
 
             $data[$getter->getName()] = $getter;
+        }
+
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->getVisibilityEnum() !== VisibilityEnum::PUBLIC) {
+                continue;
+            }
+
+            $data[$attribute->getName()] = $attribute;
         }
 
         return $data;

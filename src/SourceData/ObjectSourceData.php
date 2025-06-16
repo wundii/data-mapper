@@ -208,7 +208,7 @@ final class ObjectSourceData extends AbstractSourceData
         if ($objects === []) {
             $classString = is_string($this->object) ? $this->object : get_class($this->object);
 
-            throw DataMapperException::Error('Invalid object from XmlResolver, could not create an instance of ' . $classString);
+            throw DataMapperException::Error('Invalid object from ObjectResolver, could not create an instance of ' . $classString);
         }
 
         /** @var T[] $objects */

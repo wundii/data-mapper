@@ -6,6 +6,7 @@ namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
 use Integration\Objects\ApproachBasic\SubConstructor;
+use Integration\Objects\Serialize\Attribute;
 use Integration\Objects\Serialize\Getter;
 use Integration\Objects\Serialize\Properties;
 use Integration\Objects\Serialize\SubConstructorProperty;
@@ -76,6 +77,45 @@ class ObjectBasicTest extends TestCase
     public function testPropertiesBasic(): void
     {
         $object = new Properties(
+            1.23,
+            'test',
+            new TypeString('Nostromo'),
+            [
+                'tag1',
+                'tag2',
+            ],
+            [
+                new SubConstructorProperty(true),
+                new SubConstructorProperty(false),
+            ],
+        );
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+
+        $return = $dataMapper->object($object, BaseConstructor::class);
+
+        $expected = new BaseConstructor(
+            1.23,
+            'test',
+            myStrings: [
+                'tag1',
+                'tag2',
+            ],
+            subConstructors: [
+                new SubConstructor(true),
+                new SubConstructor(false),
+            ],
+        );
+
+        $this->assertInstanceOf(BaseConstructor::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testAttributeSourceDataBasic(): void
+    {
+        $object = new Attribute(
             1.23,
             'test',
             new TypeString('Nostromo'),

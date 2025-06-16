@@ -78,6 +78,38 @@ class Vehicle
 }
 ```
 
+## Source Data with attribute target and public properties and public 
+```php
+<?php
+
+use Wundii\DataMapper\Attribute\SourceData;
+
+class Vehicle
+{
+    public function __construct(
+        #[SourceData('brand')]
+        public string $manufacturer,
+        #[SourceData('model')]
+        public string $vehicleModel,
+        private int $time,
+        private float $fare,
+    ) {
+    }
+    
+    #[SourceData('year')]
+    public function getTime(): int
+    {
+        return $this->time;
+    }
+    
+    #[SourceData('price')]
+    public function getFare(): float
+    {
+        return $this->fare;
+    }
+}
+```
+
 ## Target Class with Constructor
 ```php
 <?php

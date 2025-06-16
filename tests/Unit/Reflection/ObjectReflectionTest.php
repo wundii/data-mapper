@@ -15,7 +15,7 @@ class ObjectReflectionTest extends TestCase
 {
     public function objectEmpty(): ObjectReflection
     {
-        return new ObjectReflection([], [], [], []);
+        return new ObjectReflection([], [], [], [], []);
     }
 
     public function objectComplex(): ObjectReflection
@@ -41,6 +41,11 @@ class ObjectReflectionTest extends TestCase
                 new PropertyReflection('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
                 new PropertyReflection('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
             ],
+            [
+                new PropertyReflection('nameAttribute', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+                new PropertyReflection('dataAttribute', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+                new PropertyReflection('itemAttribute', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
+            ]
         );
     }
 
@@ -92,11 +97,19 @@ class ObjectReflectionTest extends TestCase
         ];
         $this->assertEquals($expectedSetters, $object->getSetters());
 
-        $expectedSetters = [
+        $expectedAttribute = [
+            new PropertyReflection('nameAttribute', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            new PropertyReflection('dataAttribute', DataTypeEnum::ARRAY, 'target2', true, false, VisibilityEnum::PROTECTED),
+            new PropertyReflection('itemAttribute', 'MockClasses\ItemConstructor', 'target3', true, false, VisibilityEnum::PRIVATE),
+        ];
+        $this->assertEquals($expectedAttribute, $object->getAttributes());
+
+        $expectedAvailableData = [
             'nameProperty' => new PropertyReflection('nameProperty', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
             'nameGetter' => new PropertyReflection('nameGetter', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
+            'nameAttribute' => new PropertyReflection('nameAttribute', DataTypeEnum::STRING, 'target1', false, true, VisibilityEnum::PUBLIC),
         ];
-        $this->assertEquals($expectedSetters, $object->availableData());
+        $this->assertEquals($expectedAvailableData, $object->availableData());
 
         $this->assertInstanceOf(PropertyReflection::class, $object->find(ApproachEnum::PROPERTY, 'nameProperty'));
         $this->assertSame('nameProperty', $object->find(ApproachEnum::PROPERTY, 'nameProperty')?->getName());
