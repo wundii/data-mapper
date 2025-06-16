@@ -47,7 +47,7 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         if (! $dataType instanceof DataTypeEnum) {
-            throw DataMapperException::Error('Element array invalid type');
+            throw DataMapperException::Error(sprintf('Element array invalid element data type %s for the target %s', $type, $destination));
         }
 
         foreach ($xmlElement->children() as $child) {
@@ -59,7 +59,7 @@ final class XmlSourceData extends AbstractSourceData
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $type, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
-                default => throw DataMapperException::Error('Element array invalid element data type'),
+                default => throw DataMapperException::Error('Element array invalid element data type for the target ' . $name),
             };
 
             if ($data === null) {
@@ -123,7 +123,7 @@ final class XmlSourceData extends AbstractSourceData
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $child, $targetType, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $targetType, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
-                default => throw DataMapperException::Error('Element object invalid element data type'),
+                default => throw DataMapperException::Error('Element object invalid element data type for the target ' . $name),
             };
 
             if ($data === null) {

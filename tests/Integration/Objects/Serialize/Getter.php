@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Integration\Objects\Serialize;
 
-use Integration\Objects\Types\TypeInt;
 use Integration\Objects\Types\TypeString;
 
 final readonly class Getter
 {
     /**
-     * @param TypeInt[] $array
+     * @param SubConstructorProperty[] $subConstructors
      */
     public function __construct(
         private float $amount,
         private string $name,
         private TypeString $typeString,
-        private array $array = [],
+        private array $myStrings = [],
+        private array $subConstructors = [],
     ) {
     }
 
@@ -36,10 +36,18 @@ final readonly class Getter
     }
 
     /**
-     * @return TypeInt[]
+     * @return string[]
      */
-    public function getArray(): array
+    public function getMyStrings(): array
     {
-        return $this->array;
+        return $this->myStrings;
+    }
+
+    /**
+     * @return SubConstructorProperty[]
+     */
+    public function getSubConstructors(): array
+    {
+        return $this->subConstructors;
     }
 }

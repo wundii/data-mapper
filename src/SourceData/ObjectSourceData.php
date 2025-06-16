@@ -48,20 +48,37 @@ final class ObjectSourceData extends AbstractSourceData
         }
 
         if (! $dataType instanceof DataTypeEnum) {
-            throw DataMapperException::Error('Element array invalid type');
+            throw DataMapperException::Error(sprintf('Element array invalid element data type %s for the target %s', $type, $destination));
         }
 
         foreach ($availableDataList as $availableData) {
             $name = $availableData->getName();
             $value = $availableData->getStringValue();
+            $objectResolve = null;
+
+            if ($dataType === DataTypeEnum::OBJECT) {
+                $object = $availableData->getValue();
+                if (! is_object($object)) {
+                    throw DataMapperException::Error(sprintf('Element array invalid object type for %s', $name));
+                }
+
+                $objectResolve = (new ReflectionObjectResolver())->resolve($object, true);
+            }
 
             $data = match ($dataType) {
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $availableData->getChildrenProperty(), $type, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $objectResolve, $type, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
-                default => throw DataMapperException::Error('Element array invalid element data type'),
+                default => throw DataMapperException::Error(sprintf('Element array invalid element data type %s for the target %s', $type, $name)),
             };
+
+            /**
+             * Skip objects with empty data in the array.
+             */
+            if ($dataType === DataTypeEnum::OBJECT && $data->getValue() === []) {
+                continue;
+            }
 
             $dataList[] = $data;
         }
@@ -70,12 +87,11 @@ final class ObjectSourceData extends AbstractSourceData
     }
 
     /**
-     * @param PropertyReflection[] $availableDataList
      * @throws DataMapperException|ReflectionException
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
-        array $availableDataList,
+        ObjectReflection $objectReflection,
         null|string|object $object,
         null|string $destination = null,
     ): ElementObjectInterface {
@@ -87,7 +103,7 @@ final class ObjectSourceData extends AbstractSourceData
 
         $objectReflectionTarget = $this->reflectionObject($object ?: '');
 
-        foreach ($availableDataList as $availableData) {
+        foreach ($objectReflection->availableData() as $availableData) {
             $childReflection = $objectReflectionTarget->find($dataConfig->getApproach(), $availableData->getName());
             if (! $childReflection instanceof PropertyReflection) {
                 continue;
@@ -97,9 +113,24 @@ final class ObjectSourceData extends AbstractSourceData
             $name = $childReflection->getName();
             $dataType = $childReflection->getDataType();
             $targetType = $childReflection->getTargetType();
+            $arrayData = [];
+            $objectResolve = null;
 
             if ($childReflection->isNullable() && $value === '') {
                 $dataType = DataTypeEnum::NULL;
+            }
+
+            if ($dataType === DataTypeEnum::ARRAY) {
+                $arrayData = $this->arrayToPropertyReflectionList($availableData);
+            }
+
+            if ($dataType === DataTypeEnum::OBJECT) {
+                $objectTarget = $availableData->getValue();
+                if (! is_object($objectTarget)) {
+                    throw DataMapperException::Error(sprintf('Element array invalid object type for %s', $name));
+                }
+
+                $objectResolve = (new ReflectionObjectResolver())->resolve($objectTarget, true);
             }
 
             $data = match ($dataType) {
@@ -107,10 +138,10 @@ final class ObjectSourceData extends AbstractSourceData
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),
-                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $availableData->getChildrenProperty(), $targetType, $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $availableData->getChildrenProperty(), $targetType, $name),
+                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $arrayData, $targetType, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $objectResolve, $targetType, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
-                default => throw DataMapperException::Error('Element object invalid element data type'),
+                default => throw DataMapperException::Error(sprintf('Element object invalid element data type for the target %s', $name)),
             };
 
             $dataList[] = $data;
@@ -210,6 +241,31 @@ final class ObjectSourceData extends AbstractSourceData
     }
 
     /**
+     * @return PropertyReflection[]
+     */
+    private function arrayToPropertyReflectionList(PropertyReflection $propertyReflection): array
+    {
+        $propertyReflections = [];
+
+        $array = $propertyReflection->getValue();
+        if (is_iterable($array)) {
+            foreach ($array as $key => $value) {
+                $propertyReflections[$key] = new PropertyReflection(
+                    $propertyReflection->getName(),
+                    $propertyReflection->getDataType(),
+                    $propertyReflection->getTargetType(),
+                    $propertyReflection->isOneType(),
+                    $propertyReflection->isNullable(),
+                    $propertyReflection->getVisibilityEnum(),
+                    $value,
+                );
+            }
+        }
+
+        return $propertyReflections;
+    }
+
+    /**
      * @return null|T
      * @throws DataMapperException|ReflectionException
      */
@@ -217,7 +273,7 @@ final class ObjectSourceData extends AbstractSourceData
         ElementObjectResolver $elementObjectResolver,
         ObjectReflection $objectReflection,
     ): ?object {
-        $elementObject = $this->elementObject($this->dataConfig, $objectReflection->availableData(), $this->object);
+        $elementObject = $this->elementObject($this->dataConfig, $objectReflection, $this->object);
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {

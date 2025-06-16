@@ -46,7 +46,7 @@ final class ArraySourceData extends AbstractSourceData
         }
 
         if (! $dataType instanceof DataTypeEnum) {
-            throw DataMapperException::Error('Element array invalid type');
+            throw DataMapperException::Error(sprintf('Element array invalid element data type %s for the target %s', $type, $destination));
         }
 
         foreach ($array as $arrayKey => $arrayValue) {
@@ -63,7 +63,7 @@ final class ArraySourceData extends AbstractSourceData
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $arrayValue, $type, $name),
                 /** @phpstan-ignore cast.string */
                 DataTypeEnum::STRING => new DataString((string) $value, $name),
-                default => throw DataMapperException::Error('Element array invalid element data type'),
+                default => throw DataMapperException::Error('Element array invalid element data type for the target ' . $name),
             };
 
             if ($data === null) {
@@ -133,7 +133,7 @@ final class ArraySourceData extends AbstractSourceData
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, (array) $arrayValue, $targetType, $name),
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $arrayValue, $targetType, $name),
                 DataTypeEnum::STRING => new DataString((string) $value, $name),
-                default => throw DataMapperException::Error('Element object invalid element data type'),
+                default => throw DataMapperException::Error('Element object invalid element data type for the target ' . $name),
             };
 
             if ($data === null) {

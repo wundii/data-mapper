@@ -70,12 +70,4 @@ final readonly class PropertyReflection
 
         return '';
     }
-
-    /**
-     * @return PropertyReflection[]
-     */
-    public function getChildrenProperty(): array
-    {
-        return [];
-    }
 }
