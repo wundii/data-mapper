@@ -14,6 +14,7 @@ final readonly class Attribute
      * @param SubConstructorProperty[] $constructors
      */
     public function __construct(
+        #[ObjectAttribute]
         #[SourceData('amount')]
         public float $total,
         private string $label,
