@@ -38,11 +38,12 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 ## Supported Formats
 - `array`
 - `json`
-- `objects` *in development*
+- `object` *in development*
   - `public property`
   - `public getters`
   - `method toArray()`
 - `xml`
+- `yaml`
 
 ## Installation
 Require the bundle and its dependencies with composer:
@@ -72,6 +73,7 @@ $dataMapper = new DataMapper();
 $testClass = $dataMapper->array($array, TestClass::class);
 $testClass = $dataMapper->json($json, TestClass::class);
 $testClass = $dataMapper->xml($xml, TestClass::class);
+$testClass = $dataMapper->yaml($yaml, TestClass::class);
 ```
 
 ### Usage with custom configuration
@@ -91,4 +93,5 @@ $dataMapper = new DataMapper($dataConfig);
 $testClass = $dataMapper->array($array, TestClass::class);
 $testClass = $dataMapper->json($json, TestClass::class);
 $testClass = $dataMapper->xml($xml, TestClass::class);
+$testClass = $dataMapper->yaml($yaml, TestClass::class);
 ```

@@ -10,6 +10,7 @@ use Wundii\DataMapper\SourceData\ArraySourceData;
 use Wundii\DataMapper\SourceData\JsonSourceData;
 use Wundii\DataMapper\SourceData\ObjectSourceData;
 use Wundii\DataMapper\SourceData\XmlSourceData;
+use Wundii\DataMapper\SourceData\YamlSourceData;
 
 /**
  * @template T of object
@@ -89,6 +90,21 @@ class DataMapper
     }
 
     /**
+     * @param class-string<T>|T $object
+     * @param string[] $rootElementTree
+     * @param bool $forceInstance // create a new instance, if no data can be found for the object
+     * @return ($object is class-string ? T : T[])
+     */
+    public function yaml(
+        string $source,
+        string|object $object,
+        array $rootElementTree = [],
+        bool $forceInstance = false,
+    ): object|array {
+        return $this->map(SourceTypeEnum::YAML, $source, $object, $rootElementTree, $forceInstance);
+    }
+
+    /**
      * @param string|array<mixed>|object $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
@@ -111,6 +127,7 @@ class DataMapper
             SourceTypeEnum::JSON => new JsonSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
             SourceTypeEnum::OBJECT => new ObjectSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
             SourceTypeEnum::XML => new XmlSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
+            SourceTypeEnum::YAML => new YamlSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
         };
 
         return $sourceData->resolve();

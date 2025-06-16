@@ -180,8 +180,10 @@ $dataConfig = new DataConfig(
 $dataMapper = new DataMapper();
 $dataMapper->setDataConfig($dataConfig);
 
+$user = $dataMapper->array($array, User::class);
 $user = $dataMapper->json($json, User::class);
 $user = $dataMapper->xml($xml, User::class);
+$user = $dataMapper->yaml($yaml, User::class);
 ```
 
 ## Usage with custom configuration and custom source root element
@@ -200,6 +202,8 @@ $dataConfig = new DataConfig(
 $dataMapper = new DataMapper();
 $dataMapper->setDataConfig($dataConfig);
 
+$car = $dataMapper->array($array, Car::class, ['currentCar']);
 $car = $dataMapper->json($json, Car::class, ['currentCar']);
 $car = $dataMapper->xml($xml, Car::class, ['currentCar']);
+$car = $dataMapper->yaml($yaml, Car::class, ['currentCar']);
 ```

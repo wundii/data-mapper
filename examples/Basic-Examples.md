@@ -147,6 +147,8 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
+$car = $dataMapper->array($array, Car::class);
 $car = $dataMapper->json($json, Car::class);
 $car = $dataMapper->xml($xml, Car::class);
+$car = $dataMapper->yaml($yaml, Car::class);
 ```

@@ -10,4 +10,5 @@ enum SourceTypeEnum: string
     case JSON = 'Json';
     case OBJECT = 'Object';
     case XML = 'XML';
+    case YAML = 'Yaml';
 }
