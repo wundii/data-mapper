@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
+use Integration\Objects\ApproachBasic\BaseSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
 use Integration\Objects\Serialize\Attribute;
 use Integration\Objects\Serialize\Getter;
@@ -16,9 +17,19 @@ use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\SourceTypeEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 
 class ObjectBasicTest extends TestCase
 {
+    public function testExceptionWrongSourceData(): void
+    {
+        $dataMapper = new DataMapper();
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('The Object source is not a array or object');
+        $dataMapper->map(SourceTypeEnum::OBJECT, 'string', BaseSetter::class);
+    }
+
     public function testToArrayBasic(): void
     {
         $object = new ToArray('Nostromo');

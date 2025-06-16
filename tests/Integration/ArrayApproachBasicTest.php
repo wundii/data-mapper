@@ -20,10 +20,19 @@ use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 
 class ArrayApproachBasicTest extends TestCase
 {
+    public function testExceptionWrongSourceData(): void
+    {
+        $dataMapper = new DataMapper();
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('The Array source is not a Array');
+        $dataMapper->map(SourceTypeEnum::ARRAY, 'string', BaseSetter::class);
+    }
+
     public function testConstructorDefault(): void
     {
         $array = [

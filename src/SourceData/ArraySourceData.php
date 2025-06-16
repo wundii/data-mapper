@@ -158,7 +158,7 @@ final class ArraySourceData extends AbstractSourceData
         $array = $this->source;
 
         if (! is_array($array)) {
-            throw DataMapperException::Error(sprintf('The %s source data cannot be processed with the root element tree', $sourceTypeEnum->value));
+            throw DataMapperException::Error(sprintf('The %s source is not a %s', $sourceTypeEnum->value, $sourceTypeEnum->value));
         }
 
         foreach ($this->rootElementTree as $rootElement) {

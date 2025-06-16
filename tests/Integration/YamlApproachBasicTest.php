@@ -20,10 +20,19 @@ use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 
 class YamlApproachBasicTest extends TestCase
 {
+    public function testExceptionWrongSourceData(): void
+    {
+        $dataMapper = new DataMapper();
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('The Yaml source is not a string');
+        $dataMapper->map(SourceTypeEnum::YAML, [], BaseSetter::class);
+    }
+
     public function testConstructorDefault(): void
     {
         $file = __DIR__ . '/YamlFiles/ApproachBasicConstructor.yaml';

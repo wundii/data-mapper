@@ -111,7 +111,7 @@ class DataMapper
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
-    private function map(
+    public function map(
         SourceTypeEnum $sourceTypeEnum,
         string|array|object $source,
         string|object $object,
