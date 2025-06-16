@@ -244,6 +244,21 @@ final readonly class ReflectionObjectResolver
                 );
             }
 
+            if (str_starts_with($methodName, 'is')) {
+                if ($reflectionMethod->getParameters() !== []) {
+                    continue;
+                }
+
+                $getters[] = (new PropertyReflectionResolver())->resolve(
+                    substr($methodName, 2),
+                    $this->types($reflectionMethod->getReturnType()),
+                    $this->annotation($useStatementsReflection, $reflectionMethod),
+                    $object,
+                    $this->visibilityEnum($reflectionMethod),
+                    $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
+                );
+            }
+
             if (str_starts_with($methodName, 'set')) {
                 if (count($reflectionMethod->getParameters()) !== 1) {
                     continue;

@@ -7,7 +7,12 @@ namespace Integration\Objects\Serialize;
 final class SubConstructorProperty
 {
     public function __construct(
-        public bool $active
+        private bool $active
     ) {
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
     }
 }
