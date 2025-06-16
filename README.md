@@ -38,10 +38,11 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 ## Supported Formats
 - `array`
 - `json`
-- `object` *in development*
+- `object`
   - `public property`
   - `public getters`
   - `method toArray()`
+  - `attribute SourceData('...')`
 - `xml`
 - `yaml`
 
