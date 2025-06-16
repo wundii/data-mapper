@@ -46,6 +46,20 @@ final readonly class Attribute
         return $this->myTags;
     }
 
+    public function getMyTagsParameter(bool $foo): array
+    {
+        if ($foo) {
+            return ['foo', 'bar'];
+        }
+
+        return $this->myTags;
+    }
+
+    public function isMyTagsEmpty(bool $foo): bool
+    {
+        return $this->myTags === [] && ! $foo;
+    }
+
     /**
      * @return SubConstructorProperty[]
      */
