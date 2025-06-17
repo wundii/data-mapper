@@ -18,6 +18,17 @@
 ]
 ```
 
+```NEON
+- string: Toyota
+  model: Corolla
+  year: 2021
+  price: 20000.00
+- string: Toyota
+  model: Corolla
+  year: 2022
+  price: 22000.00
+```
+
 ```XML
 <root>
     <car>
@@ -33,6 +44,17 @@
         <price>22000.00</price>
     </car>
 </root>
+```
+
+```YAML
+- string: Toyota
+  model: Corolla
+  year: 2021
+  price: 20000.00
+- string: Toyota
+  model: Corolla
+  year: 2022
+  price: 22000.00
 ```
 
 ## Approaches
@@ -85,8 +107,11 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
+$listOfCars = $dataMapper->array($array, Car::class);
 $listOfCars = $dataMapper->json($json, Car::class);
+$listOfCars = $dataMapper->neon($neon, Car::class);
 $listOfCars = $dataMapper->xml($xml, Car::class);
+$listOfCars = $dataMapper->yaml($yaml, Car::class);
 ```
 
 ### Property
@@ -114,8 +139,11 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
+$listOfCars = $dataMapper->array($array, Car::class);
 $listOfCars = $dataMapper->json($json, Car::class);
+$listOfCars = $dataMapper->neon($neon, Car::class);
 $listOfCars = $dataMapper->xml($xml, Car::class);
+$listOfCars = $dataMapper->yaml($yaml, Car::class);
 ```
 
 ### Setter
@@ -163,6 +191,9 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
+$listOfCars = $dataMapper->array($array, Car::class);
 $listOfCars = $dataMapper->json($json, Car::class);
+$listOfCars = $dataMapper->neon($neon, Car::class);
 $listOfCars = $dataMapper->xml($xml, Car::class);
+$listOfCars = $dataMapper->yaml($yaml, Car::class);
 ```

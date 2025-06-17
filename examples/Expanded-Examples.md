@@ -35,6 +35,30 @@
 }
 ```
 
+```NEON
+name: John
+gender: male
+birthday: '1990-01-01'
+todoList:
+    - Buy milk
+    - Pay bills
+    - Call mom
+currentCar:
+    brand: Toyota
+    model: Corolla
+    year: 2021
+    price: 20000.00
+previousCars:
+    - brand: Toyota
+      model: Corolla
+      year: 2020
+      price: 18000.00
+    - brand: Toyota
+      model: Corolla
+      year: 2019
+      price: 16000.00
+```
+
 ```XML
 <user>
     <name>John Doe</name>
@@ -66,6 +90,30 @@
         </car>
     </previousCars>
 </user>
+```
+
+```YAML
+name: John
+gender: male
+birthday: '1990-01-01'
+todoList:
+    - Buy milk
+    - Pay bills
+    - Call mom
+currentCar:
+    brand: Toyota
+    model: Corolla
+    year: 2021
+    price: 20000.00
+previousCars:
+    - brand: Toyota
+      model: Corolla
+      year: 2020
+      price: 18000.00
+    - brand: Toyota
+      model: Corolla
+      year: 2019
+      price: 16000.00
 ```
 
 ## Objects
@@ -182,6 +230,7 @@ $dataMapper->setDataConfig($dataConfig);
 
 $user = $dataMapper->array($array, User::class);
 $user = $dataMapper->json($json, User::class);
+$user = $dataMapper->neon($neon, User::class);
 $user = $dataMapper->xml($xml, User::class);
 $user = $dataMapper->yaml($yaml, User::class);
 ```
@@ -204,6 +253,7 @@ $dataMapper->setDataConfig($dataConfig);
 
 $car = $dataMapper->array($array, Car::class, ['currentCar']);
 $car = $dataMapper->json($json, Car::class, ['currentCar']);
+$car = $dataMapper->neon($neon, Car::class, ['currentCar']);
 $car = $dataMapper->xml($xml, Car::class, ['currentCar']);
 $car = $dataMapper->yaml($yaml, Car::class, ['currentCar']);
 ```

@@ -10,6 +10,13 @@
 }
 ```
 
+```NEON
+brand: Toyota
+model: Corolla
+year: 2021
+price: 20000.00
+```
+
 ```XML
 <car>
     <brand>Toyota</brand>
@@ -17,6 +24,13 @@
     <year>2021</year>
     <price>20000.00</price>
 </car>
+```
+
+```YAML
+brand: Toyota
+model: Corolla
+year: 2021
+price: 20000.00
 ```
 
 ## Approaches
@@ -98,8 +112,11 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
+$car = $dataMapper->array($array, Car::class);
 $car = $dataMapper->json($json, Car::class);
+$car = $dataMapper->neon($neon, Car::class);
 $car = $dataMapper->xml($xml, Car::class);
+$car = $dataMapper->yaml($yaml, Car::class);
 ```
 
 ### Setter
@@ -149,6 +166,7 @@ $dataConfig = new DataConfig(
 $dataMapper = new DataMapper($dataConfig);
 $car = $dataMapper->array($array, Car::class);
 $car = $dataMapper->json($json, Car::class);
+$car = $dataMapper->neon($neon, Car::class);
 $car = $dataMapper->xml($xml, Car::class);
 $car = $dataMapper->yaml($yaml, Car::class);
 ```

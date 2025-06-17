@@ -8,6 +8,7 @@ enum SourceTypeEnum: string
 {
     case ARRAY = 'Array';
     case JSON = 'Json';
+    case NEON = 'Neon';
     case OBJECT = 'Object';
     case XML = 'XML';
     case YAML = 'Yaml';

@@ -10,7 +10,7 @@
 [![codecov](https://codecov.io/github/wundii/data-mapper/branch/main/graph/badge.svg?token=TNC2MM0MWS)](https://codecov.io/github/wundii/data-mapper)
 [![Downloads](https://img.shields.io/packagist/dt/wundii/data-mapper.svg?style=flat)](https://packagist.org/packages/wundii/data-mapper)
 
-This is a modern php 8.2+ mapper relies on strict data types, dependency capability and convenient processing for mapping xml, objects, json and arrays into objects.
+This is a modern php 8.2+ mapper relies on strict data types, dependency capability and convenient processing for mapping json, neon, objects, xml, yaml and arrays into objects.
 
 ## Features
 - Mapping source data into objects
@@ -36,15 +36,17 @@ This is a modern php 8.2+ mapper relies on strict data types, dependency capabil
 - `enum`|`?enum`
 
 ## Supported Formats
+optional formats are marked with an asterisk `*`
 - `array`
 - `json`
+- `neon`*
 - `object`
   - `public property`
   - `public getters`
   - `method toArray()`
   - `attribute SourceData('...')`
 - `xml`
-- `yaml`
+- `yaml`*
 
 ## Installation
 Require the bundle and its dependencies with composer:
@@ -73,6 +75,7 @@ $dataMapper = new DataMapper();
 
 $testClass = $dataMapper->array($array, TestClass::class);
 $testClass = $dataMapper->json($json, TestClass::class);
+$testClass = $dataMapper->neon($neon, TestClass::class);
 $testClass = $dataMapper->xml($xml, TestClass::class);
 $testClass = $dataMapper->yaml($yaml, TestClass::class);
 ```
@@ -93,6 +96,7 @@ $dataMapper = new DataMapper($dataConfig);
 
 $testClass = $dataMapper->array($array, TestClass::class);
 $testClass = $dataMapper->json($json, TestClass::class);
+$testClass = $dataMapper->neon($neon, TestClass::class);
 $testClass = $dataMapper->xml($xml, TestClass::class);
 $testClass = $dataMapper->yaml($yaml, TestClass::class);
 ```

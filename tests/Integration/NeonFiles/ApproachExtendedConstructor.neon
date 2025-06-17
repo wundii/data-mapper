@@ -1,0 +1,23 @@
+- myStrings:
+    - hello
+    - world
+  amount: 222.22
+  name: approach
+  subConstructor:
+    active: true
+  subConstructors:
+    - active: true
+    - active: false
+  id: 1337
+- name: approach
+  myStrings:
+    - hello
+    - next
+    - world
+  subConstructors:
+    - active: true
+    - active: false
+  subConstructor:
+    active: false
+  id: 7331
+  amount: 111.11

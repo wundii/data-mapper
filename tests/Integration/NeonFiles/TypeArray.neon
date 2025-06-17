@@ -1,0 +1,9 @@
+strings:
+    - one
+    - two
+ints:
+    - 1
+    - 2
+floats:
+    - 3.3
+    - 4.4

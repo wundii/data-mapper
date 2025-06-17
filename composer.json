@@ -1,7 +1,7 @@
 {
   "name": "wundii/data-mapper",
-  "description": "Modern PHP 8.2+ mapping/deserialize of XML, JSON and Arrays into PHP classes",
-  "keywords": ["datamapper","mapper","yaml","xml","json","array","object", "deserialization", "deserialize"],
+  "description": "Modern PHP 8.2+ mapping/deserialize of Json, Neon, Object, XML, Yaml and Arrays into PHP classes",
+  "keywords": ["datamapper","mapper","yaml","xml","object","neon","json","array", "deserialization", "deserialize"],
   "license": "MIT",
   "authors": [
     {
@@ -19,6 +19,7 @@
     "ext-xml": "*"
   },
   "require-dev": {
+    "nette/neon": "^v3.4",
     "phpstan/phpstan": "^2.0",
     "phpstan/phpstan-strict-rules": "^2.0",
     "phpunit/phpunit": "^11.4",
