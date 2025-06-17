@@ -7,6 +7,7 @@ namespace Wundii\DataMapper\Enum;
 enum SourceTypeEnum: string
 {
     case ARRAY = 'Array';
+    case INI = 'Ini';
     case JSON = 'Json';
     case NEON = 'Neon';
     case OBJECT = 'Object';

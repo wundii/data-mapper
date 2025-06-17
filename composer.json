@@ -1,7 +1,7 @@
 {
   "name": "wundii/data-mapper",
-  "description": "Modern PHP 8.2+ mapping/deserialize of Json, Neon, Object, XML, Yaml and Arrays into PHP classes",
-  "keywords": ["datamapper","mapper","yaml","xml","object","neon","json","array", "deserialization", "deserialize"],
+  "description": "Modern PHP 8.2+ mapping/deserialize of Ini, Json, Neon, Object, XML, Yaml and Arrays into PHP classes",
+  "keywords": ["datamapper","mapper","yaml","xml","object","neon","json","ini","array", "deserialization", "deserialize"],
   "license": "MIT",
   "authors": [
     {
@@ -26,7 +26,8 @@
     "rector/rector": "^2.0",
     "symfony/var-dumper": "^7.0",
     "symplify/easy-coding-standard": "^12.3",
-    "wundii/phplint": "^0.3"
+    "wundii/phplint": "^0.3",
+    "yosymfony/toml": "^1.0"
   },
   "autoload": {
     "psr-4": {

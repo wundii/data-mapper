@@ -1,6 +1,20 @@
 # Basic Examples
 
 ## Source Data
+```INI
+[0]
+brand = "Toyota"
+model = "Corolla"
+year = 2021
+price = 20000
+
+[1]
+brand = "Toyota"
+model = "Corolla"
+year = 2022
+price = 22000
+```
+
 ```JSON
 [
   {
@@ -108,6 +122,7 @@ $dataConfig = new DataConfig(
 
 $dataMapper = new DataMapper($dataConfig);
 $listOfCars = $dataMapper->array($array, Car::class);
+$listOfCars = $dataMapper->ini($ini, Car::class);
 $listOfCars = $dataMapper->json($json, Car::class);
 $listOfCars = $dataMapper->neon($neon, Car::class);
 $listOfCars = $dataMapper->xml($xml, Car::class);
@@ -140,6 +155,7 @@ $dataConfig = new DataConfig(
 
 $dataMapper = new DataMapper($dataConfig);
 $listOfCars = $dataMapper->array($array, Car::class);
+$listOfCars = $dataMapper->ini($ini, Car::class);
 $listOfCars = $dataMapper->json($json, Car::class);
 $listOfCars = $dataMapper->neon($neon, Car::class);
 $listOfCars = $dataMapper->xml($xml, Car::class);
@@ -192,6 +208,7 @@ $dataConfig = new DataConfig(
 
 $dataMapper = new DataMapper($dataConfig);
 $listOfCars = $dataMapper->array($array, Car::class);
+$listOfCars = $dataMapper->ini($ini, Car::class);
 $listOfCars = $dataMapper->json($json, Car::class);
 $listOfCars = $dataMapper->neon($neon, Car::class);
 $listOfCars = $dataMapper->xml($xml, Car::class);

@@ -7,6 +7,7 @@ namespace Wundii\DataMapper;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\SourceData\ArraySourceData;
+use Wundii\DataMapper\SourceData\IniSourceData;
 use Wundii\DataMapper\SourceData\JsonSourceData;
 use Wundii\DataMapper\SourceData\NeonSourceData;
 use Wundii\DataMapper\SourceData\ObjectSourceData;
@@ -50,13 +51,13 @@ class DataMapper
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
-    public function neon(
+    public function ini(
         string $source,
         string|object $object,
         array $rootElementTree = [],
         bool $forceInstance = false,
     ): object|array {
-        return $this->map(SourceTypeEnum::NEON, $source, $object, $rootElementTree, $forceInstance);
+        return $this->map(SourceTypeEnum::INI, $source, $object, $rootElementTree, $forceInstance);
     }
 
     /**
@@ -72,6 +73,21 @@ class DataMapper
         bool $forceInstance = false,
     ): object|array {
         return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree, $forceInstance);
+    }
+
+    /**
+     * @param class-string<T>|T $object
+     * @param string[] $rootElementTree
+     * @param bool $forceInstance // create a new instance, if no data can be found for the object
+     * @return ($object is class-string ? T : T[])
+     */
+    public function neon(
+        string $source,
+        string|object $object,
+        array $rootElementTree = [],
+        bool $forceInstance = false,
+    ): object|array {
+        return $this->map(SourceTypeEnum::NEON, $source, $object, $rootElementTree, $forceInstance);
     }
 
     /**
@@ -140,6 +156,7 @@ class DataMapper
 
         $sourceData = match ($sourceTypeEnum) {
             SourceTypeEnum::ARRAY => new ArraySourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
+            SourceTypeEnum::INI => new IniSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
             SourceTypeEnum::JSON => new JsonSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
             SourceTypeEnum::NEON => new NeonSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),
             SourceTypeEnum::OBJECT => new ObjectSourceData($this->dataConfig, $source, $object, $rootElementTree, $forceInstance),

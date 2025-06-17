@@ -1,6 +1,34 @@
 # Expanded Examples
 
 ## Source Data
+```INI
+name = "John Doe"
+gender = "male"
+birthday = "1990-01-01"
+
+todoList[] = "Buy milk"
+todoList[] = "Pay bills"
+todoList[] = "Call mom"
+
+[currentCar]
+brand = "Toyota"
+model = "Corolla"
+year = 2021
+price = 20000
+
+[previousCars.0]
+brand = "Toyota"
+model = "Corolla"
+year = 2020
+price = 18000
+
+[previousCars.1]
+brand = "Toyota"
+model = "Corolla"
+year = 2019
+price = 16000
+```
+
 ```JSON
 {
     "name": "John Doe",
@@ -229,6 +257,7 @@ $dataMapper = new DataMapper();
 $dataMapper->setDataConfig($dataConfig);
 
 $user = $dataMapper->array($array, User::class);
+$user = $dataMapper->ini($ini, User::class);
 $user = $dataMapper->json($json, User::class);
 $user = $dataMapper->neon($neon, User::class);
 $user = $dataMapper->xml($xml, User::class);
@@ -252,6 +281,7 @@ $dataMapper = new DataMapper();
 $dataMapper->setDataConfig($dataConfig);
 
 $car = $dataMapper->array($array, Car::class, ['currentCar']);
+$car = $dataMapper->ini($ini, Car::class, ['currentCar']);
 $car = $dataMapper->json($json, Car::class, ['currentCar']);
 $car = $dataMapper->neon($neon, Car::class, ['currentCar']);
 $car = $dataMapper->xml($xml, Car::class, ['currentCar']);
