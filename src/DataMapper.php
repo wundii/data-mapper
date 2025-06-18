@@ -50,13 +50,13 @@ class DataMapper
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
-    public function neon(
+    public function json(
         string $source,
         string|object $object,
         array $rootElementTree = [],
         bool $forceInstance = false,
     ): object|array {
-        return $this->map(SourceTypeEnum::NEON, $source, $object, $rootElementTree, $forceInstance);
+        return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree, $forceInstance);
     }
 
     /**
@@ -65,13 +65,13 @@ class DataMapper
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
      * @return ($object is class-string ? T : T[])
      */
-    public function json(
+    public function neon(
         string $source,
         string|object $object,
         array $rootElementTree = [],
         bool $forceInstance = false,
     ): object|array {
-        return $this->map(SourceTypeEnum::JSON, $source, $object, $rootElementTree, $forceInstance);
+        return $this->map(SourceTypeEnum::NEON, $source, $object, $rootElementTree, $forceInstance);
     }
 
     /**
