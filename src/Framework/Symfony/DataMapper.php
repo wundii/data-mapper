@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Framework;
+namespace Wundii\DataMapper\Framework\Symfony;
 
 use Symfony\Component\HttpFoundation\Request;
 use Wundii\DataMapper\DataMapper as BaseDataMapper;
