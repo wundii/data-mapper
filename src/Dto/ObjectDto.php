@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Reflection;
+namespace Wundii\DataMapper\Dto;
 
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Enum\VisibilityEnum;
 
-final readonly class ObjectReflection
+final readonly class ObjectDto
 {
     /**
-     * @param PropertyReflection[] $properties
-     * @param PropertyReflection[] $constructor
-     * @param PropertyReflection[] $getters
-     * @param PropertyReflection[] $setters
-     * @param PropertyReflection[] $attributes
+     * @param PropertyDto[] $properties
+     * @param PropertyDto[] $constructor
+     * @param PropertyDto[] $getters
+     * @param PropertyDto[] $setters
+     * @param PropertyDto[] $attributes
      */
     public function __construct(
         private array $properties,
@@ -26,7 +26,7 @@ final readonly class ObjectReflection
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
     public function getProperties(): array
     {
@@ -34,7 +34,7 @@ final readonly class ObjectReflection
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
     public function getConstructor(): array
     {
@@ -42,7 +42,7 @@ final readonly class ObjectReflection
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
     public function getGetters(): array
     {
@@ -50,7 +50,7 @@ final readonly class ObjectReflection
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
     public function getSetters(): array
     {
@@ -58,7 +58,7 @@ final readonly class ObjectReflection
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
     public function getAttributes(): array
     {
@@ -66,7 +66,7 @@ final readonly class ObjectReflection
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
     public function availableData(): array
     {
@@ -99,7 +99,7 @@ final readonly class ObjectReflection
 
     }
 
-    public function find(ApproachEnum $approachEnum, string $name): ?PropertyReflection
+    public function findPropertyDto(ApproachEnum $approachEnum, string $name): ?PropertyDto
     {
         $properties = match ($approachEnum) {
             ApproachEnum::CONSTRUCTOR => $this->constructor,

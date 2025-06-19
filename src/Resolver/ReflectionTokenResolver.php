@@ -6,9 +6,9 @@ namespace Wundii\DataMapper\Resolver;
 
 use ReflectionClass;
 use ReflectionException;
+use Wundii\DataMapper\Dto\UseStatementDto;
+use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Exception\DataMapperException;
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
 
 final readonly class ReflectionTokenResolver
 {
@@ -22,10 +22,10 @@ final readonly class ReflectionTokenResolver
      * @param ReflectionClass<T> $reflectionClass
      * @throws DataMapperException
      */
-    public function parseToken(ReflectionClass $reflectionClass): UseStatementsReflection
+    public function parseToken(ReflectionClass $reflectionClass): UseStatementsDto
     {
         $useStatements = [
-            new UseStatementReflection(
+            new UseStatementDto(
                 $reflectionClass->getName(),
                 $this->basename($reflectionClass->getName())
             ),
@@ -86,7 +86,7 @@ final readonly class ReflectionTokenResolver
                             list($classString, $alias) = explode(' as ', $useStatement);
                         }
 
-                        $useStatements[] = new UseStatementReflection($classString, $alias ?? $this->basename($classString));
+                        $useStatements[] = new UseStatementDto($classString, $alias ?? $this->basename($classString));
                         $useStatement = null;
                     }
 
@@ -94,7 +94,7 @@ final readonly class ReflectionTokenResolver
             }
         }
 
-        return new UseStatementsReflection(
+        return new UseStatementsDto(
             $reflectionClass->getNamespaceName() ?: null,
             $useStatements,
         );
@@ -103,7 +103,7 @@ final readonly class ReflectionTokenResolver
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(string|object $object): UseStatementsReflection
+    public function resolve(string|object $object): UseStatementsDto
     {
         if (! is_object($object) && ! class_exists($object) && ! interface_exists($object)) {
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $object));
@@ -112,7 +112,7 @@ final readonly class ReflectionTokenResolver
         $reflectionClass = new ReflectionClass($object);
 
         if ($reflectionClass->isInternal()) {
-            return new UseStatementsReflection(null, []);
+            return new UseStatementsDto(null, []);
         }
 
         if ($reflectionClass->getFileName() === false) {

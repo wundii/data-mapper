@@ -7,8 +7,8 @@ namespace Unit\Resolver;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Dto\UseStatementDto;
+use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Resolver\ReflectionTokenResolver;
 
 class ReflectionTokenResolverTest extends TestCase
@@ -39,11 +39,11 @@ class ReflectionTokenResolverTest extends TestCase
 
         $reflectionTokenResolver = new ReflectionTokenResolver();
 
-        $expected = new UseStatementsReflection(
+        $expected = new UseStatementsDto(
             null,
             [
-                new UseStatementReflection('MockClasses\RootConstructor', 'RootConstructor'),
-                new UseStatementReflection('MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
+                new UseStatementDto('MockClasses\RootConstructor', 'RootConstructor'),
+                new UseStatementDto('MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
             ],
         );
 
@@ -56,11 +56,11 @@ class ReflectionTokenResolverTest extends TestCase
 
         $reflectionTokenResolver = new ReflectionTokenResolver();
 
-        $expected = new UseStatementsReflection(
+        $expected = new UseStatementsDto(
             'MockClasses',
             [
-                new UseStatementReflection('MockClasses\RootConstructor', 'RootConstructor'),
-                new UseStatementReflection('MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
+                new UseStatementDto('MockClasses\RootConstructor', 'RootConstructor'),
+                new UseStatementDto('MockClasses\Sub\SubItemConstructor', 'SubItemConstructor'),
             ],
         );
 
@@ -92,7 +92,7 @@ class ReflectionTokenResolverTest extends TestCase
         $reflectionTokenResolver = new ReflectionTokenResolver();
         $useStatementsReflection = $reflectionTokenResolver->resolve('DateTime');
 
-        $expected = new UseStatementsReflection(null, []);
+        $expected = new UseStatementsDto(null, []);
 
         $this->assertEquals($expected, $useStatementsReflection);
     }

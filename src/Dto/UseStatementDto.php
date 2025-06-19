@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Reflection;
+namespace Wundii\DataMapper\Dto;
 
-final readonly class UseStatementReflection
+final readonly class UseStatementDto
 {
     public function __construct(
         private string $class,

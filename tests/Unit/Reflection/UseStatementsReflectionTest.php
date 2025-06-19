@@ -5,33 +5,33 @@ declare(strict_types=1);
 namespace Unit\Reflection;
 
 use PHPUnit\Framework\TestCase;
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Dto\UseStatementDto;
+use Wundii\DataMapper\Dto\UseStatementsDto;
 
 class UseStatementsReflectionTest extends TestCase
 {
     public function testFind(): void
     {
-        $reflection = new UseStatementsReflection(
+        $reflection = new UseStatementsDto(
             'MockClasses',
             [
-                new UseStatementReflection('Symfony\Contracts\HttpClient\ResponseInterface', 'ResponseInterface'),
-                new UseStatementReflection('MockClasses\ItemConstructor', 'ItemConstructor'),
+                new UseStatementDto('Symfony\Contracts\HttpClient\ResponseInterface', 'ResponseInterface'),
+                new UseStatementDto('MockClasses\ItemConstructor', 'ItemConstructor'),
             ]
         );
 
         $this->assertSame('MockClasses', $reflection->getNamespaceName());
 
         $expectedUseStatements = [
-            new UseStatementReflection('Symfony\Contracts\HttpClient\ResponseInterface', 'ResponseInterface'),
-            new UseStatementReflection('MockClasses\ItemConstructor', 'ItemConstructor'),
+            new UseStatementDto('Symfony\Contracts\HttpClient\ResponseInterface', 'ResponseInterface'),
+            new UseStatementDto('MockClasses\ItemConstructor', 'ItemConstructor'),
         ];
         $this->assertEquals($expectedUseStatements, $reflection->getUseStatements());
 
-        $this->assertSame('Symfony\Contracts\HttpClient\ResponseInterface', $reflection->find('ResponseInterface'));
-        $this->assertSame('MockClasses\ItemConstructor', $reflection->find('ItemConstructor'));
-        $this->assertSame('MockClasses\ItemConstructor', $reflection->find('ITEMCONSTRUCTOR'));
-        $this->assertSame('MockClasses\TokenResolver', $reflection->find('TokenResolver'));
-        $this->assertNull($reflection->find('NotFound'));
+        $this->assertSame('Symfony\Contracts\HttpClient\ResponseInterface', $reflection->findClassString('ResponseInterface'));
+        $this->assertSame('MockClasses\ItemConstructor', $reflection->findClassString('ItemConstructor'));
+        $this->assertSame('MockClasses\ItemConstructor', $reflection->findClassString('ITEMCONSTRUCTOR'));
+        $this->assertSame('MockClasses\TokenResolver', $reflection->findClassString('TokenResolver'));
+        $this->assertNull($reflection->findClassString('NotFound'));
     }
 }

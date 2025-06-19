@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace MockClasses;
 
-use Wundii\DataMapper\Reflection\ObjectReflection;
+use Wundii\DataMapper\Dto\ObjectDto;
 use Wundii\DataMapper\SourceData\AbstractSourceData;
 
 class AbstractSourceDataTest extends AbstractSourceData
 {
     /**
-     * @return ObjectReflection[]
+     * @return ObjectDto[]
      */
     public function getReflectionObjects(): array
     {
-        return self::$objectReflections;
+        return self::$objectDtos;
     }
 
     public function resolve(): object

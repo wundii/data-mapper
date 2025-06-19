@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Reflection;
+namespace Wundii\DataMapper\Dto;
 
-final readonly class ParameterReflection
+final readonly class ParameterDto
 {
     /**
      * @param string[] $types

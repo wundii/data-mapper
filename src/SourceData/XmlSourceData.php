@@ -7,6 +7,7 @@ namespace Wundii\DataMapper\SourceData;
 use Exception;
 use ReflectionException;
 use SimpleXMLElement;
+use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
 use Wundii\DataMapper\Elements\DataFloat;
@@ -20,7 +21,6 @@ use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
 
 /**
@@ -98,20 +98,20 @@ final class XmlSourceData extends AbstractSourceData
             return new DataObject($object ?: '', $dataList, $destination, true);
         }
 
-        $objectReflection = $this->reflectionObject($object ?: '');
+        $objectDto = $this->resolveObjectDto($object ?: '');
 
         foreach ($xmlElement->children() as $child) {
-            $childReflection = $objectReflection->find($dataConfig->getApproach(), $child->getName());
-            if (! $childReflection instanceof PropertyReflection) {
+            $propertyDto = $objectDto->findPropertyDto($dataConfig->getApproach(), $child->getName());
+            if (! $propertyDto instanceof PropertyDto) {
                 continue;
             }
 
             $value = (string) $child;
-            $name = $childReflection->getName();
-            $dataType = $childReflection->getDataType();
-            $targetType = $childReflection->getTargetType();
+            $name = $propertyDto->getName();
+            $dataType = $propertyDto->getDataType();
+            $targetType = $propertyDto->getTargetType();
 
-            if ($childReflection->isNullable() && $value === '') {
+            if ($propertyDto->isNullable() && $value === '') {
                 $dataType = DataTypeEnum::NULL;
             }
 

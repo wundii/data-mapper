@@ -12,24 +12,24 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionUnionType;
-use Wundii\DataMapper\Reflection\AnnotationReflection;
-use Wundii\DataMapper\Reflection\ParameterReflection;
-use Wundii\DataMapper\Reflection\UseStatementReflection;
-use Wundii\DataMapper\Reflection\UseStatementsReflection;
+use Wundii\DataMapper\Dto\AnnotationDto;
+use Wundii\DataMapper\Dto\ParameterDto;
+use Wundii\DataMapper\Dto\UseStatementDto;
+use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
 class ReflectionObjectResolverTest extends TestCase
 {
     public function testCompleteClassStrings(): void
     {
-        $useStatementsReflection = new UseStatementsReflection(
+        $useStatementsReflection = new UseStatementsDto(
             null,
             [
-                new UseStatementReflection(
+                new UseStatementDto(
                     'MockClasses\ItemConstructor',
                     'ItemConstructor',
                 ),
-                new UseStatementReflection(
+                new UseStatementDto(
                     'MockClasses\RootConstructor',
                     'RootConstructor',
                 ),
@@ -87,12 +87,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection([], []);
+        $expected = new AnnotationDto([], []);
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -103,12 +103,12 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '@param string $name';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection([], []);
+        $expected = new AnnotationDto([], []);
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -119,17 +119,17 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param bool $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['bool']),
+                new ParameterDto('name', ['bool']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -140,17 +140,17 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param int $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['int']),
+                new ParameterDto('name', ['int']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -161,17 +161,17 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param float $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['float']),
+                new ParameterDto('name', ['float']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -182,17 +182,17 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['string']),
+                new ParameterDto('name', ['string']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -203,17 +203,17 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param array $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['array']),
+                new ParameterDto('name', ['array']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -224,39 +224,39 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param ItemConstructor $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['ItemConstructor']),
+                new ParameterDto('name', ['ItemConstructor']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @param ItemConstructor[] $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['ItemConstructor[]']),
+                new ParameterDto('name', ['ItemConstructor[]']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(
+        $useStatementsReflection = new UseStatementsDto(
             null,
             [
-                new UseStatementReflection(
+                new UseStatementDto(
                     'MockClasses\ItemConstructor',
                     'ItemConstructor',
                 ),
@@ -265,14 +265,14 @@ class ReflectionObjectResolverTest extends TestCase
         ;
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['MockClasses\ItemConstructor[]']),
+                new ParameterDto('name', ['MockClasses\ItemConstructor[]']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -283,32 +283,32 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param ?string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['null', 'string']),
+                new ParameterDto('name', ['null', 'string']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @param null|string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['null', 'string']),
+                new ParameterDto('name', ['null', 'string']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -319,17 +319,17 @@ class ReflectionObjectResolverTest extends TestCase
     {
         $annotation = '/** @param null|int|string $name */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['null', 'int', 'string']),
+                new ParameterDto('name', ['null', 'int', 'string']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -347,19 +347,19 @@ class ReflectionObjectResolverTest extends TestCase
 TEXT;
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [
-                new ParameterReflection('name', ['null', 'int', 'string']),
-                new ParameterReflection('price', ['float']),
-                new ParameterReflection('options', ['string[]']),
+                new ParameterDto('name', ['null', 'int', 'string']),
+                new ParameterDto('price', ['float']),
+                new ParameterDto('options', ['string[]']),
             ],
             [],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -370,15 +370,15 @@ TEXT;
     {
         $annotation = '/** @var bool */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['bool'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -389,15 +389,15 @@ TEXT;
     {
         $annotation = '/** @var int */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['int'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -408,15 +408,15 @@ TEXT;
     {
         $annotation = '/** @var float */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['float'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -427,15 +427,15 @@ TEXT;
     {
         $annotation = '/** @var string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['string'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -446,15 +446,15 @@ TEXT;
     {
         $annotation = '/** @var array */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['array'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -465,35 +465,35 @@ TEXT;
     {
         $annotation = '/** @var MockClasses\ItemConstructor */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['MockClasses\ItemConstructor'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @var ItemConstructor[] */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['ItemConstructor[]'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
 
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(
+        $useStatementsReflection = new UseStatementsDto(
             null,
             [
-                new UseStatementReflection(
+                new UseStatementDto(
                     'MockClasses\ItemConstructor',
                     'ItemConstructor',
                 ),
@@ -501,12 +501,12 @@ TEXT;
         );
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['MockClasses\ItemConstructor[]'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -517,28 +517,28 @@ TEXT;
     {
         $annotation = '/** @var ?string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['null', 'string'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @var null|string */';
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['null', 'string'],
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 
@@ -554,15 +554,15 @@ TEXT;
  */
 TEXT;
         $reflectionObjectResolver = new ReflectionObjectResolver();
-        $useStatementsReflection = new UseStatementsReflection(null, []);
+        $useStatementsReflection = new UseStatementsDto(null, []);
         $annotationReflection = $reflectionObjectResolver->parseAnnotation($useStatementsReflection, $annotation);
 
-        $expected = new AnnotationReflection(
+        $expected = new AnnotationDto(
             [],
             ['null', 'int', 'string']
         );
 
-        $this->assertInstanceOf(AnnotationReflection::class, $annotationReflection);
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
         $this->assertEquals($expected, $annotationReflection);
     }
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use Wundii\DataMapper\Dto\AnnotationDto;
+use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Enum\VisibilityEnum;
-use Wundii\DataMapper\Reflection\AnnotationReflection;
-use Wundii\DataMapper\Reflection\PropertyReflection;
 
-final readonly class PropertyReflectionResolver
+final readonly class PropertyDtoResolver
 {
     /**
      * @param string[] $types
@@ -18,17 +18,17 @@ final readonly class PropertyReflectionResolver
     public function getTargetTypes(
         string $name,
         array $types,
-        AnnotationReflection $annotationReflection,
+        AnnotationDto $annotationDto,
     ): array {
         if (str_starts_with($name, 'set')) {
             $name = substr($name, 3);
         }
 
-        $types = array_merge($types, $annotationReflection->getVariables());
+        $types = array_merge($types, $annotationDto->getVariables());
 
-        foreach ($annotationReflection->getParameterReflections() as $parameterReflection) {
-            if (strcasecmp($parameterReflection->getParameter(), $name) === 0) {
-                $types = array_merge($types, $parameterReflection->getTypes());
+        foreach ($annotationDto->getParameterDto() as $parameterDto) {
+            if (strcasecmp($parameterDto->getParameter(), $name) === 0) {
+                $types = array_merge($types, $parameterDto->getTypes());
                 break;
             }
         }
@@ -150,12 +150,12 @@ final readonly class PropertyReflectionResolver
     public function resolve(
         string $name,
         array $types,
-        AnnotationReflection $annotationReflection,
+        AnnotationDto $annotationDto,
         string|object $object,
         VisibilityEnum $visibilityEnum,
         mixed $value = null,
-    ): PropertyReflection {
-        $targetTypes = $this->getTargetTypes($name, $types, $annotationReflection);
+    ): PropertyDto {
+        $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
 
         $oneType = $this->isOneType($targetTypes);
         $nullable = $this->isNullable($targetTypes);
@@ -163,7 +163,7 @@ final readonly class PropertyReflectionResolver
         $dataType = $this->getDataType($oneType, $targetTypes);
         $targetType = $this->getTargetType($targetTypes, $object);
 
-        return new PropertyReflection(
+        return new PropertyDto(
             $name,
             $dataType,
             $targetType,

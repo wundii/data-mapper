@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
+use Wundii\DataMapper\Dto\ObjectDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\SourceDataInterface;
-use Wundii\DataMapper\Reflection\ObjectReflection;
 use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
 /**
@@ -18,9 +18,9 @@ use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 abstract class AbstractSourceData implements SourceDataInterface
 {
     /**
-     * @var ObjectReflection[]
+     * @var ObjectDto[]
      */
-    protected static array $objectReflections = [];
+    protected static array $objectDtos = [];
 
     /**
      * @param string|array<int|string, mixed>|object $source
@@ -39,20 +39,20 @@ abstract class AbstractSourceData implements SourceDataInterface
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function reflectionObject(string|object $object): ObjectReflection
+    public function resolveObjectDto(string|object $object): ObjectDto
     {
-        if (is_string($object) && array_key_exists($object, self::$objectReflections)) {
-            return self::$objectReflections[$object];
+        if (is_string($object) && array_key_exists($object, self::$objectDtos)) {
+            return self::$objectDtos[$object];
         }
 
-        $objectReflection = (new ReflectionObjectResolver())->resolve($object);
+        $objectDto = (new ReflectionObjectResolver())->resolve($object);
 
         if (is_object($object)) {
-            return $objectReflection;
+            return $objectDto;
         }
 
-        self::$objectReflections[$object] = $objectReflection;
+        self::$objectDtos[$object] = $objectDto;
 
-        return $objectReflection;
+        return $objectDto;
     }
 }

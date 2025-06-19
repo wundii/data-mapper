@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Reflection;
+namespace Wundii\DataMapper\Dto;
 
-final readonly class UseStatementsReflection
+final readonly class UseStatementsDto
 {
     /**
-     * @param UseStatementReflection[] $useStatements
+     * @param UseStatementDto[] $useStatements
      */
     public function __construct(
         private ?string $namespaceName,
@@ -21,14 +21,14 @@ final readonly class UseStatementsReflection
     }
 
     /**
-     * @return UseStatementReflection[]
+     * @return UseStatementDto[]
      */
     public function getUseStatements(): array
     {
         return $this->useStatements;
     }
 
-    public function find(string $search): ?string
+    public function findClassString(string $search): ?string
     {
         foreach ($this->useStatements as $useStatement) {
             if (strcasecmp($useStatement->getAs(), $search) === 0) {

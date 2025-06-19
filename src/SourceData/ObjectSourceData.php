@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
+use Wundii\DataMapper\Dto\ObjectDto;
+use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
 use Wundii\DataMapper\Elements\DataFloat;
@@ -18,8 +20,6 @@ use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Wundii\DataMapper\Reflection\ObjectReflection;
-use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
 use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
@@ -32,7 +32,7 @@ final class ObjectSourceData extends AbstractSourceData
     public const SOURCE_TYPE = SourceTypeEnum::OBJECT;
 
     /**
-     * @param PropertyReflection[] $availableDataList
+     * @param PropertyDto[] $availableDataList
      * @throws DataMapperException|ReflectionException
      */
     public function elementArray(
@@ -91,7 +91,7 @@ final class ObjectSourceData extends AbstractSourceData
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
-        ObjectReflection $objectReflection,
+        ObjectDto $objectDto,
         null|string|object $object,
         null|string $destination = null,
     ): ElementObjectInterface {
@@ -101,36 +101,36 @@ final class ObjectSourceData extends AbstractSourceData
             $object = $dataConfig->mapClassName($object);
         }
 
-        $objectReflectionTarget = $this->reflectionObject($object ?: '');
+        $targetObjectDto = $this->resolveObjectDto($object ?: '');
 
-        foreach ($objectReflection->availableData() as $availableData) {
-            $childReflection = $objectReflectionTarget->find($dataConfig->getApproach(), $availableData->getName());
-            if (! $childReflection instanceof PropertyReflection) {
+        foreach ($objectDto->availableData() as $availableData) {
+            $propertyDto = $targetObjectDto->findPropertyDto($dataConfig->getApproach(), $availableData->getName());
+            if (! $propertyDto instanceof PropertyDto) {
                 continue;
             }
 
             $value = $availableData->getStringValue();
-            $name = $childReflection->getName();
-            $dataType = $childReflection->getDataType();
-            $targetType = $childReflection->getTargetType();
-            $arrayData = [];
-            $objectResolve = null;
+            $name = $propertyDto->getName();
+            $dataType = $propertyDto->getDataType();
+            $targetType = $propertyDto->getTargetType();
+            $childPropertyDtos = [];
+            $childObjectDto = null;
 
-            if ($childReflection->isNullable() && $value === '') {
+            if ($propertyDto->isNullable() && $value === '') {
                 $dataType = DataTypeEnum::NULL;
             }
 
             if ($dataType === DataTypeEnum::ARRAY) {
-                $arrayData = $this->arrayToPropertyReflectionList($availableData);
+                $childPropertyDtos = $this->arrayToPropertyDtos($availableData);
             }
 
             if ($dataType === DataTypeEnum::OBJECT) {
-                $objectTarget = $availableData->getValue();
-                if (! is_object($objectTarget)) {
+                $objectDtoValue = $availableData->getValue();
+                if (! is_object($objectDtoValue)) {
                     throw DataMapperException::Error(sprintf('Element array invalid object type for %s', $name));
                 }
 
-                $objectResolve = (new ReflectionObjectResolver())->resolve($objectTarget, true);
+                $childObjectDto = (new ReflectionObjectResolver())->resolve($objectDtoValue, true);
             }
 
             $data = match ($dataType) {
@@ -138,8 +138,8 @@ final class ObjectSourceData extends AbstractSourceData
                 DataTypeEnum::INTEGER => new DataInt($value, $name),
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 DataTypeEnum::BOOLEAN => new DataBool($value, $name),
-                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $arrayData, $targetType, $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $objectResolve, $targetType, $name),
+                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $childPropertyDtos, $targetType, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $childObjectDto, $targetType, $name),
                 DataTypeEnum::STRING => new DataString($value, $name),
                 default => throw DataMapperException::Error(sprintf('Element object invalid element data type for the target %s', $name)),
             };
@@ -170,8 +170,8 @@ final class ObjectSourceData extends AbstractSourceData
                 return $object;
             }
 
-            $objectResolve = (new ReflectionObjectResolver())->resolve($this->source, true);
-            $object = $this->resolveObject($elementObjectResolver, $objectResolve);
+            $objectDto = (new ReflectionObjectResolver())->resolve($this->source, true);
+            $object = $this->resolveObject($elementObjectResolver, $objectDto);
             if ($object instanceof $this->object) {
                 /** @var T $object */
                 return $object;
@@ -187,8 +187,8 @@ final class ObjectSourceData extends AbstractSourceData
 
                 $object = $this->toArray($child);
                 if ($object === null) {
-                    $objectResolve = (new ReflectionObjectResolver())->resolve($child, true);
-                    $object = $this->resolveObject($elementObjectResolver, $objectResolve);
+                    $objectDto = (new ReflectionObjectResolver())->resolve($child, true);
+                    $object = $this->resolveObject($elementObjectResolver, $objectDto);
                 }
 
                 if ($object instanceof $this->object) {
@@ -241,28 +241,28 @@ final class ObjectSourceData extends AbstractSourceData
     }
 
     /**
-     * @return PropertyReflection[]
+     * @return PropertyDto[]
      */
-    private function arrayToPropertyReflectionList(PropertyReflection $propertyReflection): array
+    private function arrayToPropertyDtos(PropertyDto $propertyDto): array
     {
-        $propertyReflections = [];
+        $propertyDtos = [];
 
-        $array = $propertyReflection->getValue();
+        $array = $propertyDto->getValue();
         if (is_iterable($array)) {
             foreach ($array as $key => $value) {
-                $propertyReflections[$key] = new PropertyReflection(
-                    $propertyReflection->getName(),
-                    $propertyReflection->getDataType(),
-                    $propertyReflection->getTargetType(),
-                    $propertyReflection->isOneType(),
-                    $propertyReflection->isNullable(),
-                    $propertyReflection->getVisibilityEnum(),
+                $propertyDtos[$key] = new PropertyDto(
+                    $propertyDto->getName(),
+                    $propertyDto->getDataType(),
+                    $propertyDto->getTargetType(),
+                    $propertyDto->isOneType(),
+                    $propertyDto->isNullable(),
+                    $propertyDto->getVisibilityEnum(),
                     $value,
                 );
             }
         }
 
-        return $propertyReflections;
+        return $propertyDtos;
     }
 
     /**
@@ -271,9 +271,9 @@ final class ObjectSourceData extends AbstractSourceData
      */
     private function resolveObject(
         ElementObjectResolver $elementObjectResolver,
-        ObjectReflection $objectReflection,
+        ObjectDto $objectDto,
     ): ?object {
-        $elementObject = $this->elementObject($this->dataConfig, $objectReflection, $this->object);
+        $elementObject = $this->elementObject($this->dataConfig, $objectDto, $this->object);
         $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {

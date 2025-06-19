@@ -5,70 +5,70 @@ declare(strict_types=1);
 namespace Unit\Resolver;
 
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\Dto\AnnotationDto;
+use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Enum\VisibilityEnum;
-use Wundii\DataMapper\Reflection\AnnotationReflection;
-use Wundii\DataMapper\Reflection\ParameterReflection;
-use Wundii\DataMapper\Resolver\PropertyReflectionResolver;
+use Wundii\DataMapper\Resolver\PropertyDtoResolver;
 
 class PropertyReflectionResolverTest extends TestCase
 {
-    public function annotationEmpty(): AnnotationReflection
+    public function annotationEmpty(): AnnotationDto
     {
-        return new AnnotationReflection([], []);
+        return new AnnotationDto([], []);
     }
 
-    public function annotationSimple(): AnnotationReflection
+    public function annotationSimple(): AnnotationDto
     {
-        return new AnnotationReflection(
-            [new ParameterReflection('name', ['string'])],
+        return new AnnotationDto(
+            [new ParameterDto('name', ['string'])],
             ['string'],
         );
     }
 
-    public function annotationArraySetter(): AnnotationReflection
+    public function annotationArraySetter(): AnnotationDto
     {
-        return new AnnotationReflection(
-            [new ParameterReflection('myStrings', ['string'])],
+        return new AnnotationDto(
+            [new ParameterDto('myStrings', ['string'])],
             [],
         );
     }
 
-    public function annotationComplex(): AnnotationReflection
+    public function annotationComplex(): AnnotationDto
     {
-        return new AnnotationReflection(
+        return new AnnotationDto(
             [
-                new ParameterReflection('name', ['string', 'null', 'float']),
-                new ParameterReflection('data', ['array']),
-                new ParameterReflection('item', ['MockClasses\ItemConstructor']),
+                new ParameterDto('name', ['string', 'null', 'float']),
+                new ParameterDto('data', ['array']),
+                new ParameterDto('item', ['MockClasses\ItemConstructor']),
             ],
             ['bool', 'string', 'MockClasses\ItemConstructor[]', 'MockClasses\RootConstructor'],
         );
     }
 
-    public function annotationParameter(): AnnotationReflection
+    public function annotationParameter(): AnnotationDto
     {
-        return new AnnotationReflection(
+        return new AnnotationDto(
             [
-                new ParameterReflection('name', ['string', 'null', 'float']),
-                new ParameterReflection('data', ['array']),
-                new ParameterReflection('item', ['MockClasses\ItemConstructor']),
+                new ParameterDto('name', ['string', 'null', 'float']),
+                new ParameterDto('data', ['array']),
+                new ParameterDto('item', ['MockClasses\ItemConstructor']),
             ],
             [],
         );
     }
 
-    public function annotationSelf(): AnnotationReflection
+    public function annotationSelf(): AnnotationDto
     {
-        return new AnnotationReflection(
-            [new ParameterReflection('name', ['string'])],
+        return new AnnotationDto(
+            [new ParameterDto('name', ['string'])],
             ['string'],
         );
     }
 
     public function testTypesEmpty(): void
     {
-        $targetTypes = (new PropertyReflectionResolver())->getTargetTypes(
+        $targetTypes = (new PropertyDtoResolver())->getTargetTypes(
             'name',
             ['string'],
             $this->annotationEmpty(),
@@ -79,7 +79,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testTypesSimple(): void
     {
-        $targetTypes = (new PropertyReflectionResolver())->getTargetTypes(
+        $targetTypes = (new PropertyDtoResolver())->getTargetTypes(
             'name',
             ['string'],
             $this->annotationSimple(),
@@ -90,7 +90,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testTypesComplex(): void
     {
-        $targetTypes = (new PropertyReflectionResolver())->getTargetTypes(
+        $targetTypes = (new PropertyDtoResolver())->getTargetTypes(
             'name',
             ['string'],
             $this->annotationComplex(),
@@ -110,7 +110,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testTypesArraySetter(): void
     {
-        $targetTypes = (new PropertyReflectionResolver())->getTargetTypes(
+        $targetTypes = (new PropertyDtoResolver())->getTargetTypes(
             'setMyStrings',
             ['array'],
             $this->annotationArraySetter(),
@@ -126,7 +126,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testTargetTypeNull(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationSimple(),
@@ -136,7 +136,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertNull($property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'findMeIfYouCan',
             ['string'],
             $this->annotationParameter(),
@@ -149,7 +149,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testTargetTypeExists(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
@@ -159,7 +159,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['DateTimeInterface'],
             $this->annotationEmpty(),
@@ -169,7 +169,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame('DateTimeInterface', $property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
@@ -179,7 +179,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['DateTimeInterface[]'],
             $this->annotationEmpty(),
@@ -189,7 +189,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame('DateTimeInterface', $property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationComplex(),
@@ -199,7 +199,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['array', 'string[]'],
             $this->annotationEmpty(),
@@ -209,7 +209,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame('string', $property->getTargetType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['self', 'null'],
             $this->annotationEmpty(),
@@ -222,7 +222,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testIsOneTypeFalse(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             [],
             $this->annotationEmpty(),
@@ -232,7 +232,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertFalse($property->isOneType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string', 'bool'],
             $this->annotationEmpty(),
@@ -242,7 +242,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertFalse($property->isOneType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationComplex(),
@@ -252,7 +252,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertFalse($property->isOneType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['array', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
@@ -265,7 +265,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testIsOneTypeTrue(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationEmpty(),
@@ -275,7 +275,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertTrue($property->isOneType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['array', 'MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
@@ -285,7 +285,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertTrue($property->isOneType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationSimple(),
@@ -295,7 +295,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertTrue($property->isOneType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['null', 'string'],
             $this->annotationSimple(),
@@ -308,7 +308,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testGetTypeNull(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             [],
             $this->annotationEmpty(),
@@ -318,7 +318,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string', 'bool'],
             $this->annotationEmpty(),
@@ -328,7 +328,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['array', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
@@ -341,7 +341,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testIsNullable(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationEmpty(),
@@ -351,7 +351,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertFalse($property->isNullable());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string', 'null'],
             $this->annotationEmpty(),
@@ -361,7 +361,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertTrue($property->isNullable());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['NULL', 'string'],
             $this->annotationEmpty(),
@@ -374,7 +374,7 @@ class PropertyReflectionResolverTest extends TestCase
 
     public function testGetType(): void
     {
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationEmpty(),
@@ -384,7 +384,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['array', 'MockClasses\ItemConstructor[]'],
             $this->annotationEmpty(),
@@ -394,7 +394,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::ARRAY, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['string'],
             $this->annotationSimple(),
@@ -404,7 +404,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['null', 'string'],
             $this->annotationSimple(),
@@ -414,7 +414,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['null', 'MockClasses\ItemConstructor'],
             $this->annotationEmpty(),
@@ -424,7 +424,7 @@ class PropertyReflectionResolverTest extends TestCase
 
         $this->assertSame(DataTypeEnum::OBJECT, $property->getDataType());
 
-        $property = (new PropertyReflectionResolver())->resolve(
+        $property = (new PropertyDtoResolver())->resolve(
             'name',
             ['self', 'null'],
             $this->annotationEmpty(),

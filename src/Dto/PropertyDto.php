@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Reflection;
+namespace Wundii\DataMapper\Dto;
 
 use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Enum\VisibilityEnum;
 
-final readonly class PropertyReflection
+final readonly class PropertyDto
 {
     public function __construct(
         private string $name,

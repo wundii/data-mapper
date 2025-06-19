@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
+use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Elements\DataArray;
 use Wundii\DataMapper\Elements\DataBool;
 use Wundii\DataMapper\Elements\DataFloat;
@@ -18,7 +19,6 @@ use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementArrayInterface;
 use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Wundii\DataMapper\Reflection\PropertyReflection;
 use Wundii\DataMapper\Resolver\ElementObjectResolver;
 
 /**
@@ -60,7 +60,7 @@ final class ArraySourceData extends AbstractSourceData
                 /** @phpstan-ignore argument.type */
                 DataTypeEnum::FLOAT => new DataFloat($value, $name),
                 /** @phpstan-ignore argument.type */
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $arrayValue, $type, $name),
+                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $value, $type, $name),
                 /** @phpstan-ignore cast.string */
                 DataTypeEnum::STRING => new DataString((string) $value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type for the target ' . $name),
@@ -105,23 +105,23 @@ final class ArraySourceData extends AbstractSourceData
             return new DataObject($object ?: '', $dataList, $destination, true);
         }
 
-        $objectReflection = $this->reflectionObject($object ?: '');
+        $objectDto = $this->resolveObjectDto($object ?: '');
 
         foreach ($array as $arrayKey => $arrayValue) {
             $arrayKey = (string) $arrayKey;
             $value = $arrayValue;
 
-            $childReflection = $objectReflection->find($dataConfig->getApproach(), $arrayKey);
-            if (! $childReflection instanceof PropertyReflection) {
+            $propertyDto = $objectDto->findPropertyDto($dataConfig->getApproach(), $arrayKey);
+            if (! $propertyDto instanceof PropertyDto) {
                 continue;
             }
 
-            $name = $childReflection->getName();
-            $dataType = $childReflection->getDataType();
-            $targetType = $childReflection->getTargetType();
+            $name = $propertyDto->getName();
+            $dataType = $propertyDto->getDataType();
+            $targetType = $propertyDto->getTargetType();
 
             /** @phpstan-ignore-next-line */
-            if ($childReflection->isNullable() && ($value === null || $value === '')) {
+            if ($propertyDto->isNullable() && ($value === null || $value === '')) {
                 $dataType = DataTypeEnum::NULL;
             }
 

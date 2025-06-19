@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Unit\Reflection;
 
 use PHPUnit\Framework\TestCase;
-use Wundii\DataMapper\Reflection\AnnotationReflection;
-use Wundii\DataMapper\Reflection\ParameterReflection;
+use Wundii\DataMapper\Dto\AnnotationDto;
+use Wundii\DataMapper\Dto\ParameterDto;
 
 class AnnotationReflectionTest extends TestCase
 {
     public function testIsEmpty(): void
     {
-        $annotationReflection = new AnnotationReflection([], []);
+        $annotationReflection = new AnnotationDto([], []);
 
         $this->assertTrue($annotationReflection->isEmpty());
     }
 
     public function testIsNotEmpty(): void
     {
-        $annotationReflection = new AnnotationReflection(
+        $annotationReflection = new AnnotationDto(
             [
-                new ParameterReflection('name', ['string']),
+                new ParameterDto('name', ['string']),
             ],
             [
                 'string',
@@ -30,16 +30,16 @@ class AnnotationReflectionTest extends TestCase
 
         $this->assertFalse($annotationReflection->isEmpty());
 
-        $annotationReflection = new AnnotationReflection(
+        $annotationReflection = new AnnotationDto(
             [
-                new ParameterReflection('name', ['string']),
+                new ParameterDto('name', ['string']),
             ],
             []
         );
 
         $this->assertFalse($annotationReflection->isEmpty());
 
-        $annotationReflection = new AnnotationReflection(
+        $annotationReflection = new AnnotationDto(
             [],
             [
                 'string',

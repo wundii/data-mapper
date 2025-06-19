@@ -27,8 +27,8 @@ class AbstractSourceDataTest extends TestCase
             'object'
         );
 
-        $abstractSourceData->reflectionObject('MockClasses\RootConstructor');
-        $abstractSourceData->reflectionObject('MockClasses\RootSetters');
+        $abstractSourceData->resolveObjectDto('MockClasses\RootConstructor');
+        $abstractSourceData->resolveObjectDto('MockClasses\RootSetters');
     }
 
     /**
@@ -45,8 +45,8 @@ class AbstractSourceDataTest extends TestCase
             'object'
         );
 
-        $abstractSourceData->reflectionObject('MockClasses\RootConstructor');
-        $abstractSourceData->reflectionObject('MockClasses\ItemConstructor');
+        $abstractSourceData->resolveObjectDto('MockClasses\RootConstructor');
+        $abstractSourceData->resolveObjectDto('MockClasses\ItemConstructor');
     }
 
     /**
@@ -86,6 +86,6 @@ class AbstractSourceDataTest extends TestCase
             'object'
         );
 
-        $abstractSourceData->reflectionObject(new RootProperties());
+        $abstractSourceData->resolveObjectDto(new RootProperties());
     }
 }
