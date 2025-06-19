@@ -6,8 +6,8 @@ namespace Wundii\DataMapper\Resolver;
 
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\PropertyDto;
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
-use Wundii\DataMapper\Enum\VisibilityEnum;
 
 final readonly class PropertyDtoResolver
 {
@@ -152,7 +152,7 @@ final readonly class PropertyDtoResolver
         array $types,
         AnnotationDto $annotationDto,
         string|object $object,
-        VisibilityEnum $visibilityEnum,
+        AccessibleEnum $accessibleEnum,
         mixed $value = null,
     ): PropertyDto {
         $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
@@ -169,7 +169,7 @@ final readonly class PropertyDtoResolver
             $targetType,
             $oneType,
             $nullable,
-            $visibilityEnum,
+            $accessibleEnum,
             $value,
         );
     }

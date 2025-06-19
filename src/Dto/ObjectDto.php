@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Enum\VisibilityEnum;
 
 final readonly class ObjectDto
 {
@@ -72,7 +72,7 @@ final readonly class ObjectDto
     {
         $data = [];
         foreach ($this->properties as $property) {
-            if ($property->getVisibilityEnum() !== VisibilityEnum::PUBLIC) {
+            if ($property->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
                 continue;
             }
 
@@ -80,7 +80,7 @@ final readonly class ObjectDto
         }
 
         foreach ($this->getters as $getter) {
-            if ($getter->getVisibilityEnum() !== VisibilityEnum::PUBLIC) {
+            if ($getter->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
                 continue;
             }
 
@@ -88,7 +88,7 @@ final readonly class ObjectDto
         }
 
         foreach ($this->attributes as $attribute) {
-            if ($attribute->getVisibilityEnum() !== VisibilityEnum::PUBLIC) {
+            if ($attribute->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
                 continue;
             }
 

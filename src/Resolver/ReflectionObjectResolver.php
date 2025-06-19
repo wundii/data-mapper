@@ -19,7 +19,7 @@ use Wundii\DataMapper\Dto\ObjectDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
-use Wundii\DataMapper\Enum\VisibilityEnum;
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 
 final readonly class ReflectionObjectResolver
@@ -29,17 +29,17 @@ final readonly class ReflectionObjectResolver
         return $reflection->getName();
     }
 
-    public function visibilityEnum(ReflectionProperty|ReflectionMethod $reflection): VisibilityEnum
+    public function accessible(ReflectionProperty|ReflectionMethod $reflection): AccessibleEnum
     {
         if ($reflection->isPublic()) {
-            return VisibilityEnum::PUBLIC;
+            return AccessibleEnum::PUBLIC;
         }
 
         if ($reflection->isProtected()) {
-            return VisibilityEnum::PROTECTED;
+            return AccessibleEnum::PROTECTED;
         }
 
-        return VisibilityEnum::PRIVATE;
+        return AccessibleEnum::PRIVATE;
     }
 
     public function parseAnnotation(UseStatementsDto $useStatementsDto, string $docComment): AnnotationDto
@@ -227,7 +227,7 @@ final readonly class ReflectionObjectResolver
                         $this->types($reflectionParameter->getType()),
                         $this->annotation($useStatementsDto, $reflectionMethod),
                         $object,
-                        $this->visibilityEnum($reflectionMethod),
+                        $this->accessible($reflectionMethod),
                     );
                 }
             }
@@ -255,7 +255,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionMethod->getReturnType()),
                     $this->annotation($useStatementsDto, $reflectionMethod),
                     $object,
-                    $this->visibilityEnum($reflectionMethod),
+                    $this->accessible($reflectionMethod),
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
                 );
             }
@@ -270,7 +270,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionMethod->getReturnType()),
                     $this->annotation($useStatementsDto, $reflectionMethod),
                     $object,
-                    $this->visibilityEnum($reflectionMethod),
+                    $this->accessible($reflectionMethod),
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
                 );
             }
@@ -285,7 +285,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionMethod->getReturnType()),
                     $this->annotation($useStatementsDto, $reflectionMethod),
                     $object,
-                    $this->visibilityEnum($reflectionMethod),
+                    $this->accessible($reflectionMethod),
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
                 );
             }
@@ -300,7 +300,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $this->annotation($useStatementsDto, $reflectionMethod),
                     $object,
-                    $this->visibilityEnum($reflectionMethod),
+                    $this->accessible($reflectionMethod),
                 );
             }
         }
@@ -340,7 +340,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionProperty->getType()),
                     $this->annotation($useStatementsDto, $reflectionProperty),
                     $object,
-                    $this->visibilityEnum($reflectionProperty),
+                    $this->accessible($reflectionProperty),
                     $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
                 );
             }
@@ -351,7 +351,7 @@ final readonly class ReflectionObjectResolver
                     $this->types($reflectionProperty->getType()),
                     $annotation,
                     $object,
-                    $this->visibilityEnum($reflectionProperty),
+                    $this->accessible($reflectionProperty),
                     $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
                 );
             }

@@ -6,7 +6,7 @@ namespace Wundii\DataMapper\Enum;
 
 enum AccessibleEnum: string
 {
-    case PUBLIC = 'public';
-    case PROTECTED = 'protected';
-    case PRIVATE = 'private';
+    case PUBLIC = 'Public';
+    case PROTECTED = 'Protected';
+    case PRIVATE = 'Private';
 }

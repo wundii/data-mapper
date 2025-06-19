@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
-use Wundii\DataMapper\Enum\VisibilityEnum;
 
 final readonly class PropertyDto
 {
@@ -15,7 +15,7 @@ final readonly class PropertyDto
         private ?string $targetType,
         private bool $oneType,
         private bool $nullable,
-        private VisibilityEnum $visibilityEnum,
+        private AccessibleEnum $accessibleEnum,
         private mixed $value = null,
     ) {
     }
@@ -45,9 +45,9 @@ final readonly class PropertyDto
         return $this->name;
     }
 
-    public function getVisibilityEnum(): VisibilityEnum
+    public function getAccessibleEnum(): AccessibleEnum
     {
-        return $this->visibilityEnum;
+        return $this->accessibleEnum;
     }
 
     public function getValue(): mixed

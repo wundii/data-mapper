@@ -256,7 +256,7 @@ final class ObjectSourceData extends AbstractSourceData
                     $propertyDto->getTargetType(),
                     $propertyDto->isOneType(),
                     $propertyDto->isNullable(),
-                    $propertyDto->getVisibilityEnum(),
+                    $propertyDto->getAccessibleEnum(),
                     $value,
                 );
             }
