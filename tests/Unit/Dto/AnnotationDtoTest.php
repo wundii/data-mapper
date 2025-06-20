@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Unit\Reflection;
+namespace Unit\Dto;
 
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 
-class AnnotationReflectionTest extends TestCase
+class AnnotationDtoTest extends TestCase
 {
     public function testIsEmpty(): void
     {

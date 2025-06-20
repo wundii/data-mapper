@@ -125,6 +125,10 @@ final class ArraySourceData extends AbstractSourceData
                 $dataType = DataTypeEnum::NULL;
             }
 
+            if ($dataType === DataTypeEnum::ARRAY) {
+                // dd($propertyDto);
+            }
+
             $data = match ($dataType) {
                 DataTypeEnum::NULL => new DataNull($name),
                 DataTypeEnum::INTEGER => new DataInt($value, $name),

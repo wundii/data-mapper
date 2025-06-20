@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Unit\Reflection;
+namespace Unit\Dto;
 
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Dto\UseStatementDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 
-class UseStatementsReflectionTest extends TestCase
+class UseStatementsDtoTest extends TestCase
 {
     public function testFind(): void
     {

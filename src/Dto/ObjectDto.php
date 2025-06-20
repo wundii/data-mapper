@@ -6,6 +6,7 @@ namespace Wundii\DataMapper\Dto;
 
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 
 final readonly class ObjectDto
 {
@@ -92,23 +93,46 @@ final readonly class ObjectDto
                 continue;
             }
 
+            if ($attribute->getClassElementTypeEnum() !== ClassElementTypeEnum::ATTRIBUTE_SOURCE) {
+                continue;
+            }
+
             $data[$attribute->getName()] = $attribute;
         }
 
         return $data;
+    }
 
+    public function findAttributeTargetPropertyDto(string $name): ?PropertyDto
+    {
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->getClassElementTypeEnum() !== ClassElementTypeEnum::ATTRIBUTE_TARGET) {
+                continue;
+            }
+
+            if (strcasecmp($attribute->getName(), $name) === 0) {
+                return $attribute;
+            }
+        }
+
+        return null;
     }
 
     public function findPropertyDto(ApproachEnum $approachEnum, string $name): ?PropertyDto
     {
-        $properties = match ($approachEnum) {
+        $propertyDtos = match ($approachEnum) {
             ApproachEnum::CONSTRUCTOR => $this->constructor,
             ApproachEnum::PROPERTY => $this->properties,
             ApproachEnum::SETTER => $this->setters,
         };
 
-        foreach ($properties as $property) {
-            $propertyName = $property->getName();
+        $propertyDto = $this->findAttributeTargetPropertyDto($name);
+        if ($propertyDto instanceof PropertyDto) {
+            return $propertyDto;
+        }
+
+        foreach ($propertyDtos as $propertyDto) {
+            $propertyName = $propertyDto->getName();
             if (
                 $approachEnum === ApproachEnum::SETTER
                 && str_starts_with($propertyName, 'set')
@@ -117,7 +141,7 @@ final readonly class ObjectDto
             }
 
             if (strcasecmp($propertyName, $name) === 0) {
-                return $property;
+                return $propertyDto;
             }
         }
 

@@ -14,13 +14,16 @@ use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
 use Wundii\DataMapper\Attribute\SourceData;
+use Wundii\DataMapper\Attribute\TargetData;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ObjectDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Interface\AttributeInterface;
 
 final readonly class ReflectionObjectResolver
 {
@@ -151,7 +154,7 @@ final readonly class ReflectionObjectResolver
         return $types;
     }
 
-    public function annotation(UseStatementsDto $useStatementsDto, ReflectionProperty|ReflectionFunctionAbstract $property): AnnotationDto
+    public function annotationDto(UseStatementsDto $useStatementsDto, ReflectionProperty|ReflectionFunctionAbstract $property): AnnotationDto
     {
         $docComment = $property->getDocComment();
 
@@ -218,14 +221,15 @@ final readonly class ReflectionObjectResolver
 
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
             $methodName = strtolower($reflectionMethod->getName());
-            $sourceDataAttributeName = null;
+            $annotationDto = $this->annotationDto($useStatementsDto, $reflectionMethod);
 
             if (str_starts_with($methodName, '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
                     $constructor[] = (new PropertyDtoResolver())->resolve(
+                        ClassElementTypeEnum::CONSTRUCTOR,
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
-                        $this->annotation($useStatementsDto, $reflectionMethod),
+                        $annotationDto,
                         $object,
                         $this->accessible($reflectionMethod),
                     );
@@ -233,31 +237,42 @@ final readonly class ReflectionObjectResolver
             }
 
             foreach ($reflectionMethod->getAttributes() as $attribute) {
-                if ($attribute->getName() !== SourceData::class) {
-                    continue;
-                }
-
                 $instance = $attribute->newInstance();
-                if (! $instance instanceof SourceData) {
+                if (! $instance instanceof AttributeInterface) {
                     continue;
                 }
 
-                $sourceDataAttributeName = $instance->getTarget();
-            }
-
-            if ($sourceDataAttributeName) {
-                if ($reflectionMethod->getParameters() !== []) {
+                if (
+                    $instance instanceof SourceData
+                    && $instance->getTarget()
+                    && $reflectionMethod->getParameters() === []
+                ) {
+                    $attributes[] = (new PropertyDtoResolver())->resolve(
+                        ClassElementTypeEnum::ATTRIBUTE_SOURCE,
+                        $instance->getTarget(),
+                        $this->types($reflectionMethod->getReturnType()),
+                        $annotationDto,
+                        $object,
+                        $this->accessible($reflectionMethod),
+                        $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
+                    );
                     continue;
                 }
 
-                $attributes[] = (new PropertyDtoResolver())->resolve(
-                    $sourceDataAttributeName,
-                    $this->types($reflectionMethod->getReturnType()),
-                    $this->annotation($useStatementsDto, $reflectionMethod),
-                    $object,
-                    $this->accessible($reflectionMethod),
-                    $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
-                );
+                if (
+                    $instance instanceof TargetData
+                    && $instance->getAlias()
+                    && count($reflectionMethod->getParameters()) !== 1
+                ) {
+                    $attributes[] = (new PropertyDtoResolver())->resolve(
+                        ClassElementTypeEnum::ATTRIBUTE_TARGET,
+                        $instance->getAlias(),
+                        $this->types($reflectionMethod->getReturnType()),
+                        $annotationDto,
+                        $object,
+                        $this->accessible($reflectionMethod),
+                    );
+                }
             }
 
             if (str_starts_with($methodName, 'get')) {
@@ -266,9 +281,10 @@ final readonly class ReflectionObjectResolver
                 }
 
                 $getters[] = (new PropertyDtoResolver())->resolve(
+                    ClassElementTypeEnum::GETTER,
                     substr($methodName, 3),
                     $this->types($reflectionMethod->getReturnType()),
-                    $this->annotation($useStatementsDto, $reflectionMethod),
+                    $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
@@ -281,9 +297,10 @@ final readonly class ReflectionObjectResolver
                 }
 
                 $getters[] = (new PropertyDtoResolver())->resolve(
+                    ClassElementTypeEnum::GETTER,
                     substr($methodName, 2),
                     $this->types($reflectionMethod->getReturnType()),
-                    $this->annotation($useStatementsDto, $reflectionMethod),
+                    $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
@@ -296,9 +313,10 @@ final readonly class ReflectionObjectResolver
                 }
 
                 $setters[] = (new PropertyDtoResolver())->resolve(
+                    ClassElementTypeEnum::SETTER,
                     $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
-                    $this->annotation($useStatementsDto, $reflectionMethod),
+                    $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
                 );
@@ -306,11 +324,10 @@ final readonly class ReflectionObjectResolver
         }
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $annotation = $this->annotation($useStatementsDto, $reflectionProperty);
+            $annotationDto = $this->annotationDto($useStatementsDto, $reflectionProperty);
             $propertyReflection = null;
-            $sourceDataAttributeName = null;
 
-            if ($annotation->isEmpty() && ! $takeValue) {
+            if ($annotationDto->isEmpty() && ! $takeValue) {
                 foreach ($constructor as $property) {
                     if ($property->getName() !== $this->name($reflectionProperty)) {
                         continue;
@@ -322,34 +339,53 @@ final readonly class ReflectionObjectResolver
             }
 
             foreach ($reflectionProperty->getAttributes() as $attribute) {
-                if ($attribute->getName() !== SourceData::class) {
-                    continue;
-                }
-
                 $instance = $attribute->newInstance();
-                if (! $instance instanceof SourceData) {
+                if (! $instance instanceof AttributeInterface) {
                     continue;
                 }
 
-                $sourceDataAttributeName = $instance->getTarget();
-            }
+                if (
+                    $instance instanceof SourceData
+                    && $instance->getTarget()
+                    && $instance->getTarget() !== $this->name($reflectionProperty)
+                ) {
+                    // dump($annotationDto);
+                    $attributes[] = (new PropertyDtoResolver())->resolve(
+                        ClassElementTypeEnum::ATTRIBUTE_SOURCE,
+                        $instance->getTarget(),
+                        $this->types($reflectionProperty->getType()),
+                        $annotationDto,
+                        $object,
+                        $this->accessible($reflectionProperty),
+                        $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
+                    );
+                    continue;
+                }
 
-            if ($sourceDataAttributeName && $sourceDataAttributeName !== $this->name($reflectionProperty)) {
-                $attributes[] = (new PropertyDtoResolver())->resolve(
-                    $sourceDataAttributeName,
-                    $this->types($reflectionProperty->getType()),
-                    $this->annotation($useStatementsDto, $reflectionProperty),
-                    $object,
-                    $this->accessible($reflectionProperty),
-                    $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
-                );
+                if (
+                    $instance instanceof TargetData
+                    && $instance->getAlias()
+                    && $instance->getAlias() !== $this->name($reflectionProperty)
+                ) {
+                    // dump($annotationDto);
+                    $attributes[] = (new PropertyDtoResolver())->resolve(
+                        ClassElementTypeEnum::ATTRIBUTE_TARGET,
+                        $instance->getAlias(),
+                        $this->types($reflectionProperty->getType()),
+                        $annotationDto,
+                        $object,
+                        $this->accessible($reflectionProperty),
+                    );
+                }
             }
 
             if (! $propertyReflection instanceof PropertyDto) {
+                // dump($annotationDto);
                 $propertyReflection = (new PropertyDtoResolver())->resolve(
+                    ClassElementTypeEnum::PROPERTY,
                     $this->name($reflectionProperty),
                     $this->types($reflectionProperty->getType()),
-                    $annotation,
+                    $annotationDto,
                     $object,
                     $this->accessible($reflectionProperty),
                     $takeValue ? $reflectionProperty->getValue($invokeObject) : null,

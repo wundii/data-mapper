@@ -8,15 +8,15 @@ use Attribute;
 use Wundii\DataMapper\Interface\AttributeInterface;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
-class SourceData implements AttributeInterface
+class TargetData implements AttributeInterface
 {
     public function __construct(
-        private string $target
+        private string $alias
     ) {
     }
 
-    public function getTarget(): string
+    public function getAlias(): string
     {
-        return $this->target;
+        return $this->alias;
     }
 }

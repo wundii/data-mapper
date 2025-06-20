@@ -26,6 +26,7 @@ This is a modern PHP 8.2+ high-performance mapper that leverages strict typing, 
 - Class mapping for interfaces or other classes
 - Custom root element for starting with the source data
 - Auto-casting for `float` types (eu to us decimal separator)
+- Target aliases for properties and methods
 
 ## Supported Types
 - `null`

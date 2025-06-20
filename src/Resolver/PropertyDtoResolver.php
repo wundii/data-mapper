@@ -7,6 +7,7 @@ namespace Wundii\DataMapper\Resolver;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 
 final readonly class PropertyDtoResolver
@@ -148,6 +149,7 @@ final readonly class PropertyDtoResolver
      * @param string[] $types
      */
     public function resolve(
+        ClassElementTypeEnum $classElementTypeEnum,
         string $name,
         array $types,
         AnnotationDto $annotationDto,
@@ -164,6 +166,7 @@ final readonly class PropertyDtoResolver
         $targetType = $this->getTargetType($targetTypes, $object);
 
         return new PropertyDto(
+            $classElementTypeEnum,
             $name,
             $dataType,
             $targetType,
