@@ -1,6 +1,6 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assests/data-mapper-dark.png">
-  <img src="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assests/data-mapper-light.png" alt="DataMapper logo">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-dark.png">
+  <img src="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-light.png" alt="DataMapper logo">
 </picture>
 
 [![PHP-Tests](https://img.shields.io/github/actions/workflow/status/wundii/data-mapper/code_quality.yml?branch=main&style=for-the-badge)](https://github.com/wundii/data-mapper/actions/workflows/code_quality.yml)
