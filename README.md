@@ -1,7 +1,10 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-dark.png">
-  <img src="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-light.png" alt="DataMapper logo">
-</picture>
+<div style="text-align:center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-light.png">
+    <img src="https://raw.githubusercontent.com/wundii/data-mapper/refs/heads/main/assets/data-mapper-light.png" alt="wundii/data-mapper" style="width: 100%; max-width: 600px; height: auto;">
+  </picture>
+</div>
 
 [![PHP-Tests](https://img.shields.io/github/actions/workflow/status/wundii/data-mapper/code_quality.yml?branch=main&style=for-the-badge)](https://github.com/wundii/data-mapper/actions/workflows/code_quality.yml)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%2010-brightgreen.svg?style=for-the-badge)](https://phpstan.org/)
