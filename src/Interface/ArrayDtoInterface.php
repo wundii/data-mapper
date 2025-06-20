@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Interface;
 
-interface ElementArrayInterface extends ElementDataInterface
+interface ArrayDtoInterface extends TypeDtoInterface
 {
     /**
-     * @return ElementDataInterface[]
+     * @return TypeDtoInterface[]
      */
     public function getValue(): array;
 }

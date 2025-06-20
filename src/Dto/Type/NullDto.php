@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Elements;
+namespace Wundii\DataMapper\Dto\Type;
 
-use Wundii\DataMapper\Interface\ElementValueInterface;
+use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class DataNull implements ElementValueInterface
+final readonly class NullDto implements ValueDtoInterface
 {
     public function __construct(
         private ?string $destination = null,

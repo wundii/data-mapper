@@ -12,14 +12,14 @@ class AnnotationDtoTest extends TestCase
 {
     public function testIsEmpty(): void
     {
-        $annotationReflection = new AnnotationDto([], []);
+        $annotationDto = new AnnotationDto([], []);
 
-        $this->assertTrue($annotationReflection->isEmpty());
+        $this->assertTrue($annotationDto->isEmpty());
     }
 
     public function testIsNotEmpty(): void
     {
-        $annotationReflection = new AnnotationDto(
+        $annotationDto = new AnnotationDto(
             [
                 new ParameterDto('name', ['string']),
             ],
@@ -28,24 +28,24 @@ class AnnotationDtoTest extends TestCase
             ]
         );
 
-        $this->assertFalse($annotationReflection->isEmpty());
+        $this->assertFalse($annotationDto->isEmpty());
 
-        $annotationReflection = new AnnotationDto(
+        $annotationDto = new AnnotationDto(
             [
                 new ParameterDto('name', ['string']),
             ],
             []
         );
 
-        $this->assertFalse($annotationReflection->isEmpty());
+        $this->assertFalse($annotationDto->isEmpty());
 
-        $annotationReflection = new AnnotationDto(
+        $annotationDto = new AnnotationDto(
             [],
             [
                 'string',
             ]
         );
 
-        $this->assertFalse($annotationReflection->isEmpty());
+        $this->assertFalse($annotationDto->isEmpty());
     }
 }

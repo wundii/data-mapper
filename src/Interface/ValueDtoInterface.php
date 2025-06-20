@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Interface;
 
-interface ElementValueInterface extends ElementDataInterface
+interface ValueDtoInterface extends TypeDtoInterface
 {
     public function getValue(): mixed;
 }

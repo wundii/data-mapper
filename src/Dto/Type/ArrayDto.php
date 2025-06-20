@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Elements;
+namespace Wundii\DataMapper\Dto\Type;
 
-use Wundii\DataMapper\Interface\ElementArrayInterface;
-use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\ArrayDtoInterface;
+use Wundii\DataMapper\Interface\TypeDtoInterface;
 
-final readonly class DataArray implements ElementArrayInterface
+final readonly class ArrayDto implements ArrayDtoInterface
 {
     /**
-     * @param ElementDataInterface[] $value
+     * @param TypeDtoInterface[] $value
      */
     public function __construct(
         private array $value,
@@ -30,7 +30,7 @@ final readonly class DataArray implements ElementArrayInterface
     }
 
     /**
-     * @return ElementDataInterface[]
+     * @return TypeDtoInterface[]
      */
     public function getValue(): array
     {

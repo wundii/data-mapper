@@ -8,7 +8,7 @@ use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 
-final readonly class ObjectDto
+final readonly class ObjectPropertyDto
 {
     /**
      * @param PropertyDto[] $properties

@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
-use Wundii\DataMapper\Dto\ObjectDto;
+use Wundii\DataMapper\Dto\ObjectPropertyDto;
 use Wundii\DataMapper\Dto\PropertyDto;
-use Wundii\DataMapper\Elements\DataArray;
-use Wundii\DataMapper\Elements\DataBool;
-use Wundii\DataMapper\Elements\DataFloat;
-use Wundii\DataMapper\Elements\DataInt;
-use Wundii\DataMapper\Elements\DataNull;
-use Wundii\DataMapper\Elements\DataObject;
-use Wundii\DataMapper\Elements\DataString;
+use Wundii\DataMapper\Dto\Type\ArrayDto;
+use Wundii\DataMapper\Dto\Type\BoolDto;
+use Wundii\DataMapper\Dto\Type\FloatDto;
+use Wundii\DataMapper\Dto\Type\IntDto;
+use Wundii\DataMapper\Dto\Type\NullDto;
+use Wundii\DataMapper\Dto\Type\ObjectDto;
+use Wundii\DataMapper\Dto\Type\StringDto;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
-use Wundii\DataMapper\Interface\ElementArrayInterface;
-use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Wundii\DataMapper\Resolver\ElementObjectResolver;
+use Wundii\DataMapper\Interface\ObjectDtoInterface;
+use Wundii\DataMapper\Resolver\ObjectDtoResolver;
 use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 
 /**
@@ -40,7 +40,7 @@ final class ObjectSourceData extends AbstractSourceData
         array $availableDataList,
         null|string $type,
         null|string $destination = null,
-    ): ElementArrayInterface {
+    ): ArrayDtoInterface {
         $dataList = [];
         $dataType = DataTypeEnum::fromString($type);
         if (class_exists((string) $type)) {
@@ -54,7 +54,7 @@ final class ObjectSourceData extends AbstractSourceData
         foreach ($availableDataList as $availableData) {
             $name = $availableData->getName();
             $value = $availableData->getStringValue();
-            $objectResolve = null;
+            $objectPropertyDto = null;
 
             if ($dataType === DataTypeEnum::OBJECT) {
                 $object = $availableData->getValue();
@@ -62,14 +62,14 @@ final class ObjectSourceData extends AbstractSourceData
                     throw DataMapperException::Error(sprintf('Element array invalid object type for %s', $name));
                 }
 
-                $objectResolve = (new ReflectionObjectResolver())->resolve($object, true);
+                $objectPropertyDto = (new ReflectionObjectResolver())->resolve($object, true);
             }
 
             $data = match ($dataType) {
-                DataTypeEnum::INTEGER => new DataInt($value, $name),
-                DataTypeEnum::FLOAT => new DataFloat($value, $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $objectResolve, $type, $name),
-                DataTypeEnum::STRING => new DataString($value, $name),
+                DataTypeEnum::INTEGER => new IntDto($value, $name),
+                DataTypeEnum::FLOAT => new FloatDto($value, $name),
+                DataTypeEnum::OBJECT => $this->objectDto($dataConfig, $objectPropertyDto, $type, $name),
+                DataTypeEnum::STRING => new StringDto($value, $name),
                 default => throw DataMapperException::Error(sprintf('Element array invalid element data type %s for the target %s', $type, $name)),
             };
 
@@ -83,27 +83,27 @@ final class ObjectSourceData extends AbstractSourceData
             $dataList[] = $data;
         }
 
-        return new DataArray($dataList, $destination);
+        return new ArrayDto($dataList, $destination);
     }
 
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function elementObject(
+    public function objectDto(
         DataConfigInterface $dataConfig,
-        ObjectDto $objectDto,
+        ObjectPropertyDto $objectPropertyDto,
         null|string|object $object,
         null|string $destination = null,
-    ): ElementObjectInterface {
+    ): ObjectDtoInterface {
         $dataList = [];
 
         if (is_string($object)) {
             $object = $dataConfig->mapClassName($object);
         }
 
-        $targetObjectDto = $this->resolveObjectDto($object ?: '');
+        $targetObjectDto = $this->resolveObjectPropertyDto($object ?: '');
 
-        foreach ($objectDto->availableData() as $availableData) {
+        foreach ($objectPropertyDto->availableData() as $availableData) {
             $propertyDto = $targetObjectDto->findPropertyDto($dataConfig->getApproach(), $availableData->getName());
             if (! $propertyDto instanceof PropertyDto) {
                 continue;
@@ -134,20 +134,20 @@ final class ObjectSourceData extends AbstractSourceData
             }
 
             $data = match ($dataType) {
-                DataTypeEnum::NULL => new DataNull($name),
-                DataTypeEnum::INTEGER => new DataInt($value, $name),
-                DataTypeEnum::FLOAT => new DataFloat($value, $name),
-                DataTypeEnum::BOOLEAN => new DataBool($value, $name),
+                DataTypeEnum::NULL => new NullDto($name),
+                DataTypeEnum::INTEGER => new IntDto($value, $name),
+                DataTypeEnum::FLOAT => new FloatDto($value, $name),
+                DataTypeEnum::BOOLEAN => new BoolDto($value, $name),
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $childPropertyDtos, $targetType, $name),
-                DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $childObjectDto, $targetType, $name),
-                DataTypeEnum::STRING => new DataString($value, $name),
+                DataTypeEnum::OBJECT => $this->objectDto($dataConfig, $childObjectDto, $targetType, $name),
+                DataTypeEnum::STRING => new StringDto($value, $name),
                 default => throw DataMapperException::Error(sprintf('Element object invalid element data type for the target %s', $name)),
             };
 
             $dataList[] = $data;
         }
 
-        return new DataObject($object ?: '', $dataList, $destination);
+        return new ObjectDto($object ?: '', $dataList, $destination);
     }
 
     /**
@@ -156,7 +156,7 @@ final class ObjectSourceData extends AbstractSourceData
      */
     public function resolve(): object|array
     {
-        $elementObjectResolver = new ElementObjectResolver();
+        $objectDtoResolver = new ObjectDtoResolver();
         $sourceTypeEnum = self::SOURCE_TYPE;
 
         if (! is_array($this->source) && ! is_object($this->source)) {
@@ -170,8 +170,8 @@ final class ObjectSourceData extends AbstractSourceData
                 return $object;
             }
 
-            $objectDto = (new ReflectionObjectResolver())->resolve($this->source, true);
-            $object = $this->resolveObject($elementObjectResolver, $objectDto);
+            $objectPropertyDto = (new ReflectionObjectResolver())->resolve($this->source, true);
+            $object = $this->resolveObject($objectDtoResolver, $objectPropertyDto);
             if ($object instanceof $this->object) {
                 /** @var T $object */
                 return $object;
@@ -187,8 +187,8 @@ final class ObjectSourceData extends AbstractSourceData
 
                 $object = $this->toArray($child);
                 if ($object === null) {
-                    $objectDto = (new ReflectionObjectResolver())->resolve($child, true);
-                    $object = $this->resolveObject($elementObjectResolver, $objectDto);
+                    $objectPropertyDto = (new ReflectionObjectResolver())->resolve($child, true);
+                    $object = $this->resolveObject($objectDtoResolver, $objectPropertyDto);
                 }
 
                 if ($object instanceof $this->object) {
@@ -198,7 +198,7 @@ final class ObjectSourceData extends AbstractSourceData
         }
 
         if ($this->forceInstance && $objects === []) {
-            $object = $elementObjectResolver->createInstance($this->dataConfig, new DataObject($this->object, []));
+            $object = $objectDtoResolver->createInstance($this->dataConfig, new ObjectDto($this->object, []));
             if ($object instanceof $this->object) {
                 /** @var T $object */
                 return $object;
@@ -271,11 +271,11 @@ final class ObjectSourceData extends AbstractSourceData
      * @throws DataMapperException|ReflectionException
      */
     private function resolveObject(
-        ElementObjectResolver $elementObjectResolver,
-        ObjectDto $objectDto,
+        ObjectDtoResolver $objectDtoResolver,
+        ObjectPropertyDto $objectPropertyDto,
     ): ?object {
-        $elementObject = $this->elementObject($this->dataConfig, $objectDto, $this->object);
-        $object = $elementObjectResolver->resolve($this->dataConfig, $elementObject);
+        $objectDto = $this->objectDto($this->dataConfig, $objectPropertyDto, $this->object);
+        $object = $objectDtoResolver->resolve($this->dataConfig, $objectDto);
 
         if (! is_object($object)) {
             return null;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Elements;
+namespace Wundii\DataMapper\Dto\Type;
 
-use Wundii\DataMapper\Interface\ElementValueInterface;
+use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class DataFloat implements ElementValueInterface
+final readonly class FloatDto implements ValueDtoInterface
 {
     public function __construct(
         private float|string $value,

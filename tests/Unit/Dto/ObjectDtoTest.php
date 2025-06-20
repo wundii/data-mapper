@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unit\Dto;
 
 use PHPUnit\Framework\TestCase;
-use Wundii\DataMapper\Dto\ObjectDto;
+use Wundii\DataMapper\Dto\ObjectPropertyDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
@@ -14,14 +14,14 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 
 class ObjectDtoTest extends TestCase
 {
-    public function objectEmpty(): ObjectDto
+    public function objectEmpty(): ObjectPropertyDto
     {
-        return new ObjectDto([], [], [], [], []);
+        return new ObjectPropertyDto([], [], [], [], []);
     }
 
-    public function objectComplex(): ObjectDto
+    public function objectComplex(): ObjectPropertyDto
     {
-        return new ObjectDto(
+        return new ObjectPropertyDto(
             [
                 new PropertyDto(ClassElementTypeEnum::PROPERTY, 'nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
                 new PropertyDto(ClassElementTypeEnum::PROPERTY, 'dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),

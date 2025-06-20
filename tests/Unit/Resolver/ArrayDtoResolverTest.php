@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Unit\Resolver;
 
 use Exception;
-use MockClasses\ElementData;
 use MockClasses\ItemConstructor;
 use MockClasses\RootProperties;
 use MockClasses\RootSetters;
+use MockClasses\TypeDto;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
-use Wundii\DataMapper\Elements\DataArray;
-use Wundii\DataMapper\Elements\DataBool;
-use Wundii\DataMapper\Elements\DataFloat;
-use Wundii\DataMapper\Elements\DataInt;
-use Wundii\DataMapper\Elements\DataObject;
-use Wundii\DataMapper\Elements\DataString;
+use Wundii\DataMapper\Dto\Type\ArrayDto;
+use Wundii\DataMapper\Dto\Type\BoolDto;
+use Wundii\DataMapper\Dto\Type\FloatDto;
+use Wundii\DataMapper\Dto\Type\IntDto;
+use Wundii\DataMapper\Dto\Type\ObjectDto;
+use Wundii\DataMapper\Dto\Type\StringDto;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Resolver\ElementArrayResolver;
+use Wundii\DataMapper\Resolver\ArrayDtoResolver;
 
-class ElementArrayResolverTest extends TestCase
+class ArrayDtoResolverTest extends TestCase
 {
     /**
      * @throws Exception
@@ -28,13 +28,13 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchExceptionWithoutInterface()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('ElementInterface not implemented: MockClasses\ElementData');
+        $this->expectExceptionMessage('TypeDtoInterface not implemented: MockClasses\TypeDto');
 
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new ElementData();
+        $typeDto = new TypeDto();
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver->matchValue($dataConfig, $typeDto);
     }
 
     /**
@@ -43,17 +43,17 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataBool()
     {
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new DataBool(true, 'destination');
+        $typeDto = new BoolDto(true, 'destination');
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertTrue($result);
 
-        $elementData = new DataBool(false, 'destination');
+        $typeDto = new BoolDto(false, 'destination');
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertFalse($result);
     }
@@ -64,10 +64,10 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataInt()
     {
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new DataInt(11, 'destination');
+        $typeDto = new IntDto(11, 'destination');
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(11, $result);
     }
@@ -78,10 +78,10 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataFloat()
     {
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new DataFloat(22.2, 'destination');
+        $typeDto = new FloatDto(22.2, 'destination');
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(22.2, $result);
     }
@@ -92,10 +92,10 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataString()
     {
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new DataString('Value', 'destination');
+        $typeDto = new StringDto('Value', 'destination');
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame('Value', $result);
     }
@@ -106,13 +106,13 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataArray()
     {
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new DataArray([
-            new DataString('value1', 'destination1'),
-            new DataBool(false, 'destination2'),
+        $typeDto = new ArrayDto([
+            new StringDto('value1', 'destination1'),
+            new BoolDto(false, 'destination2'),
         ], 'destination');
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(['value1', false], $result);
     }
@@ -125,17 +125,17 @@ class ElementArrayResolverTest extends TestCase
         $dataConfig = new DataConfig(
             approachEnum: ApproachEnum::CONSTRUCTOR
         );
-        $elementData = new DataObject(
+        $typeDto = new ObjectDto(
             'MockClasses\ItemConstructor',
             [
-                new DataFloat(4.4, 'price'),
-                new DataBool(false, 'isAvailable'),
+                new FloatDto(4.4, 'price'),
+                new BoolDto(false, 'isAvailable'),
             ],
             'destination',
         );
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertEquals(new ItemConstructor(4.4, false), $result);
     }
@@ -146,17 +146,17 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataObjectProperty()
     {
         $dataConfig = new DataConfig(ApproachEnum::PROPERTY);
-        $elementData = new DataObject(
+        $typeDto = new ObjectDto(
             'MockClasses\RootProperties',
             [
-                new DataInt(4, 'id'),
-                new DataString('test', 'name'),
+                new IntDto(4, 'id'),
+                new StringDto('test', 'name'),
             ],
             'destination',
         );
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $expected = new RootProperties();
         $expected->name = 'test';
@@ -171,17 +171,17 @@ class ElementArrayResolverTest extends TestCase
     public function testMatchDataObjectSetter()
     {
         $dataConfig = new DataConfig(ApproachEnum::SETTER);
-        $elementData = new DataObject(
+        $typeDto = new ObjectDto(
             'MockClasses\RootSetters',
             [
-                new DataInt(4, 'setId'),
-                new DataString('test', 'setName'),
+                new IntDto(4, 'setId'),
+                new StringDto('test', 'setName'),
             ],
             'destination',
         );
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->matchValue($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $expected = new RootSetters();
         $expected->setId(4);
@@ -196,10 +196,10 @@ class ElementArrayResolverTest extends TestCase
     public function testResolveDataArrayEmpty()
     {
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $elementData = new DataArray([]);
+        $typeDto = new ArrayDto([]);
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->resolve($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->resolve($dataConfig, $typeDto);
 
         $this->assertEquals([], $result);
     }
@@ -212,27 +212,27 @@ class ElementArrayResolverTest extends TestCase
         $dataConfig = new DataConfig(
             approachEnum: ApproachEnum::CONSTRUCTOR
         );
-        $elementData = new DataArray([
-            new DataString('value1', 'destination1'),
-            new DataBool(false, 'destination2'),
-            new DataInt(1, 'destination3'),
-            new DataFloat(2.2, 'destination4'),
-            new DataArray([
-                new DataString('value2', 'destination5'),
-                new DataBool(true, 'destination6'),
+        $typeDto = new ArrayDto([
+            new StringDto('value1', 'destination1'),
+            new BoolDto(false, 'destination2'),
+            new IntDto(1, 'destination3'),
+            new FloatDto(2.2, 'destination4'),
+            new ArrayDto([
+                new StringDto('value2', 'destination5'),
+                new BoolDto(true, 'destination6'),
             ], 'destination7'),
-            new DataObject(
+            new ObjectDto(
                 'MockClasses\ItemConstructor',
                 [
-                    new DataFloat(2.2, 'price'),
-                    new DataBool(true, 'isAvailable'),
+                    new FloatDto(2.2, 'price'),
+                    new BoolDto(true, 'isAvailable'),
                 ],
                 'destination5',
             ),
         ]);
 
-        $elementArrayResolver = new ElementArrayResolver();
-        $result = $elementArrayResolver->resolve($dataConfig, $elementData);
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $result = $arrayDtoResolver->resolve($dataConfig, $typeDto);
 
         $expected = [
             'value1',

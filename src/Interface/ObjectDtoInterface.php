@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Interface;
 
-interface ElementObjectInterface extends ElementDataInterface
+interface ObjectDtoInterface extends TypeDtoInterface
 {
     public function getObject(): string|object;
 
     /**
-     * @return ElementDataInterface[]
+     * @return TypeDtoInterface[]
      */
     public function getValue(): array;
 

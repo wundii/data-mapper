@@ -16,7 +16,7 @@ use ReflectionUnionType;
 use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Attribute\TargetData;
 use Wundii\DataMapper\Dto\AnnotationDto;
-use Wundii\DataMapper\Dto\ObjectDto;
+use Wundii\DataMapper\Dto\ObjectPropertyDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
@@ -195,7 +195,7 @@ final readonly class ReflectionObjectResolver
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(string|object $object, bool $takeValue = false): ObjectDto
+    public function resolve(string|object $object, bool $takeValue = false): ObjectPropertyDto
     {
         if (! is_object($object) && interface_exists($object)) {
             throw DataMapperException::InvalidArgument(sprintf('%s: interfaces are not allowed', $object));
@@ -395,7 +395,7 @@ final readonly class ReflectionObjectResolver
             $properties[] = $propertyReflection;
         }
 
-        return new ObjectDto(
+        return new ObjectPropertyDto(
             $properties,
             $constructor,
             $getters,

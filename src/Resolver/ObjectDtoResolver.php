@@ -12,13 +12,13 @@ use stdClass;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
-use Wundii\DataMapper\Interface\ElementArrayInterface;
-use Wundii\DataMapper\Interface\ElementDataInterface;
-use Wundii\DataMapper\Interface\ElementObjectInterface;
-use Wundii\DataMapper\Interface\ElementValueInterface;
+use Wundii\DataMapper\Interface\ObjectDtoInterface;
+use Wundii\DataMapper\Interface\TypeDtoInterface;
+use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class ElementObjectResolver
+final readonly class ObjectDtoResolver
 {
     /**
      * @param mixed[] $parameter
@@ -26,12 +26,12 @@ final readonly class ElementObjectResolver
      */
     public function createInstance(
         DataConfigInterface $dataConfig,
-        ElementObjectInterface $elementObject,
+        ObjectDtoInterface $objectDto,
         array $parameter = [],
     ): object {
-        $object = $elementObject->getObject();
+        $object = $objectDto->getObject();
         $approach = $dataConfig->getApproach();
-        $directValue = $elementObject->directValue();
+        $directValue = $objectDto->directValue();
 
         if (is_object($object)) {
             return $object;
@@ -176,16 +176,16 @@ final readonly class ElementObjectResolver
      */
     public function matchValue(
         DataConfigInterface $dataConfig,
-        ElementDataInterface $elementData,
+        TypeDtoInterface $typeDto,
     ): mixed {
-        $elementArrayResolver = new ElementArrayResolver();
-        $elementValueResolver = new ElementValueResolver();
+        $arrayDtoResolver = new ArrayDtoResolver();
+        $valueDtoResolver = new ValueDtoResolver();
 
         return match (true) {
-            $elementData instanceof ElementArrayInterface => $elementArrayResolver->resolve($dataConfig, $elementData),
-            $elementData instanceof ElementObjectInterface => $this->resolve($dataConfig, $elementData),
-            $elementData instanceof ElementValueInterface => $elementValueResolver->resolve($elementData),
-            default => throw DataMapperException::Error('ElementInterface not implemented: ' . $elementData::class),
+            $typeDto instanceof ArrayDtoInterface => $arrayDtoResolver->resolve($dataConfig, $typeDto),
+            $typeDto instanceof ObjectDtoInterface => $this->resolve($dataConfig, $typeDto),
+            $typeDto instanceof ValueDtoInterface => $valueDtoResolver->resolve($typeDto),
+            default => throw DataMapperException::Error('TypeDtoInterface not implemented: ' . $typeDto::class),
         };
     }
 
@@ -194,12 +194,12 @@ final readonly class ElementObjectResolver
      */
     public function resolve(
         DataConfigInterface $dataConfig,
-        ElementObjectInterface $elementObject,
+        ObjectDtoInterface $objectDto,
     ): ?object {
         return match ($dataConfig->getApproach()) {
-            ApproachEnum::CONSTRUCTOR => $this->constructor($dataConfig, $elementObject),
-            ApproachEnum::PROPERTY => $this->properties($dataConfig, $elementObject),
-            ApproachEnum::SETTER => $this->setters($dataConfig, $elementObject),
+            ApproachEnum::CONSTRUCTOR => $this->constructor($dataConfig, $objectDto),
+            ApproachEnum::PROPERTY => $this->properties($dataConfig, $objectDto),
+            ApproachEnum::SETTER => $this->setters($dataConfig, $objectDto),
         };
     }
 
@@ -208,19 +208,19 @@ final readonly class ElementObjectResolver
      */
     private function constructor(
         DataConfigInterface $dataConfig,
-        ElementObjectInterface $elementObject,
+        ObjectDtoInterface $objectDto,
     ): object {
-        if ($dataConfig->getApproach() === ApproachEnum::CONSTRUCTOR && is_object($elementObject->getObject())) {
+        if ($dataConfig->getApproach() === ApproachEnum::CONSTRUCTOR && is_object($objectDto->getObject())) {
             throw DataMapperException::Error('You can not use constructor approach with an object');
         }
 
         $parameter = [];
 
-        foreach ($elementObject->getValue() as $elementData) {
-            $parameter[$elementData->getDestination()] = $this->matchValue($dataConfig, $elementData);
+        foreach ($objectDto->getValue() as $typeDto) {
+            $parameter[$typeDto->getDestination()] = $this->matchValue($dataConfig, $typeDto);
         }
 
-        return $this->createInstance($dataConfig, $elementObject, $parameter);
+        return $this->createInstance($dataConfig, $objectDto, $parameter);
     }
 
     /**
@@ -228,13 +228,13 @@ final readonly class ElementObjectResolver
      */
     private function properties(
         DataConfigInterface $dataConfig,
-        ElementObjectInterface $elementObject,
+        ObjectDtoInterface $objectDto,
     ): ?object {
-        $setValues = $elementObject->directValue();
-        $instance = $this->constructor($dataConfig, $elementObject);
+        $setValues = $objectDto->directValue();
+        $instance = $this->constructor($dataConfig, $objectDto);
 
-        foreach ($elementObject->getValue() as $elementData) {
-            $destination = $elementData->getDestination();
+        foreach ($objectDto->getValue() as $typeDto) {
+            $destination = $typeDto->getDestination();
 
             if ($destination === null) {
                 throw DataMapperException::Error('Destination is not declared');
@@ -245,7 +245,7 @@ final readonly class ElementObjectResolver
             }
 
             $setValues = true;
-            $value = $this->matchValue($dataConfig, $elementData);
+            $value = $this->matchValue($dataConfig, $typeDto);
 
             if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
                 $reflectionProperty = new ReflectionProperty($instance, $destination);
@@ -265,13 +265,13 @@ final readonly class ElementObjectResolver
      */
     private function setters(
         DataConfigInterface $dataConfig,
-        ElementObjectInterface $elementObject,
+        ObjectDtoInterface $objectDto,
     ): ?object {
-        $setValues = $elementObject->directValue();
-        $instance = $this->constructor($dataConfig, $elementObject);
+        $setValues = $objectDto->directValue();
+        $instance = $this->constructor($dataConfig, $objectDto);
 
-        foreach ($elementObject->getValue() as $elementData) {
-            $destination = $elementData->getDestination();
+        foreach ($objectDto->getValue() as $typeDto) {
+            $destination = $typeDto->getDestination();
             if ($destination === null) {
                 throw DataMapperException::Error('Destination is not declared');
             }
@@ -281,7 +281,7 @@ final readonly class ElementObjectResolver
             }
 
             $setValues = true;
-            $value = $this->matchValue($dataConfig, $elementData);
+            $value = $this->matchValue($dataConfig, $typeDto);
 
             if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
                 $reflectionMethod = new ReflectionMethod($instance, $destination);

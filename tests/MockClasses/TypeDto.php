@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MockClasses;
 
-use Wundii\DataMapper\Interface\ElementDataInterface;
+use Wundii\DataMapper\Interface\TypeDtoInterface;
 
-class ElementData implements ElementDataInterface
+class TypeDto implements TypeDtoInterface
 {
     public function __toString(): string
     {

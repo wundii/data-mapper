@@ -6,7 +6,7 @@ namespace Wundii\DataMapper\Interface;
 
 use Stringable;
 
-interface ElementDataInterface extends Stringable
+interface TypeDtoInterface extends Stringable
 {
     public function getDestination(): ?string;
 }

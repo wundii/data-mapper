@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Unit\Elements;
+namespace Unit\Dto\Type;
 
 use PHPUnit\Framework\TestCase;
-use Wundii\DataMapper\Elements\DataArray;
+use Wundii\DataMapper\Dto\Type\ArrayDto;
 
-class DataArrayTest extends TestCase
+class ArrayDtoTest extends TestCase
 {
     public function testInstanceToString(): void
     {
@@ -19,7 +19,7 @@ class DataArrayTest extends TestCase
             'key5' => 'value5',
         ];
 
-        $dataArray = new DataArray($array);
-        $this->assertSame('value1, value2, value3', (string) $dataArray);
+        $arrayDto = new ArrayDto($array);
+        $this->assertSame('value1, value2, value3', (string) $arrayDto);
     }
 }
