@@ -16,7 +16,9 @@
 [![codecov](https://img.shields.io/codecov/c/github/wundii/data-mapper/main?token=TNC2MM0MWS&style=for-the-badge)](https://codecov.io/github/wundii/data-mapper)
 [![Downloads](https://img.shields.io/packagist/dt/wundii/data-mapper.svg?style=for-the-badge)](https://packagist.org/packages/wundii/data-mapper)
 
-This is a modern PHP 8.2+ high-performance mapper that leverages strict typing, dependency capability, and convenient processing to map json, neon, objects, xml, yaml and arrays into objects.
+This library is an extremely fast and strictly typed object mapper built for modern PHP (8.2+). It seamlessly transforms data from formats like JSON, NEON, XML, YAML, arrays, and standard objects into well-structured PHP objects.
+
+Ideal for developers who need reliable and efficient data mapping without sacrificing code quality or modern best practices.
 
 ## Features
 - Mapping source data into objects
@@ -26,7 +28,7 @@ This is a modern PHP 8.2+ high-performance mapper that leverages strict typing, 
 - Class mapping for interfaces or other classes
 - Custom root element for starting with the source data
 - Auto-casting for `float` types (eu to us decimal separator)
-- Target aliases for properties and methods
+- Target alias via Attribute for properties and methods
 
 ## Supported Types
 - `null`

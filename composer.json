@@ -1,6 +1,6 @@
 {
   "name": "wundii/data-mapper",
-  "description": "Modern PHP 8.2+ high-performance mapping/deserialize of JSON, NEON, Objects, XML, YAML and Arrays into PHP classes",
+  "description": "Modern and fast object mapper for PHP 8.2+. Strict types. Converts JSON, XML, YAML, NEON, arrays, and objects to PHP objects.",
   "keywords": ["datamapper","mapper","yaml","xml","object","neon","json","array", "deserialization", "deserialize"],
   "license": "MIT",
   "authors": [
