@@ -67,7 +67,7 @@ final readonly class ObjectDtoResolver
         };
 
         /**
-         * @todo template T of object by $elementObject->getObject();
+         * @todo template T of object by $objectDto->getObject();
          * after that, remove the following if statement
          */
         if (! class_exists($object)) {
