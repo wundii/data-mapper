@@ -349,7 +349,6 @@ final readonly class ReflectionObjectResolver
                     && $instance->getTarget()
                     && $instance->getTarget() !== $this->name($reflectionProperty)
                 ) {
-                    // dump($annotationDto);
                     $attributes[] = (new PropertyDtoResolver())->resolve(
                         ClassElementTypeEnum::ATTRIBUTE_SOURCE,
                         $instance->getTarget(),
@@ -367,7 +366,6 @@ final readonly class ReflectionObjectResolver
                     && $instance->getAlias()
                     && $instance->getAlias() !== $this->name($reflectionProperty)
                 ) {
-                    // dump($annotationDto);
                     $attributes[] = (new PropertyDtoResolver())->resolve(
                         ClassElementTypeEnum::ATTRIBUTE_TARGET,
                         $instance->getAlias(),
@@ -380,7 +378,6 @@ final readonly class ReflectionObjectResolver
             }
 
             if (! $propertyReflection instanceof PropertyDto) {
-                // dump($annotationDto);
                 $propertyReflection = (new PropertyDtoResolver())->resolve(
                     ClassElementTypeEnum::PROPERTY,
                     $this->name($reflectionProperty),
