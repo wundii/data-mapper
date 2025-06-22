@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MockClasses;
 
+#[ClassAttribute(name: 'RootProperties')]
 final class RootProperties implements RootInterface
 {
     public string $name;

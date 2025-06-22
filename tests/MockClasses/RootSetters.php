@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MockClasses;
 
+#[ClassAttribute]
 final class RootSetters implements RootInterface
 {
     public float $amount;
