@@ -19,4 +19,9 @@ class TargetData implements AttributeInterface
     {
         return $this->alias;
     }
+
+    public function getValue(): string
+    {
+        return $this->getAlias();
+    }
 }

@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Unit\Dto;
 
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\Attribute\SourceData;
+use Wundii\DataMapper\Attribute\TargetData;
 use Wundii\DataMapper\Dto\ObjectPropertyDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 
 class ObjectDtoTest extends TestCase
@@ -23,32 +24,32 @@ class ObjectDtoTest extends TestCase
     {
         return new ObjectPropertyDto(
             [
-                new PropertyDto(ClassElementTypeEnum::PROPERTY, 'nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-                new PropertyDto(ClassElementTypeEnum::PROPERTY, 'dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-                new PropertyDto(ClassElementTypeEnum::PROPERTY, 'itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+                new PropertyDto('nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+                new PropertyDto('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+                new PropertyDto('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
             ],
             [
-                new PropertyDto(ClassElementTypeEnum::CONSTRUCTOR, 'nameConstructor', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-                new PropertyDto(ClassElementTypeEnum::CONSTRUCTOR, 'dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-                new PropertyDto(ClassElementTypeEnum::CONSTRUCTOR, 'itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+                new PropertyDto('nameConstructor', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+                new PropertyDto('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+                new PropertyDto('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
             ],
             [
-                new PropertyDto(ClassElementTypeEnum::GETTER, 'nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-                new PropertyDto(ClassElementTypeEnum::GETTER, 'dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-                new PropertyDto(ClassElementTypeEnum::GETTER, 'itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+                new PropertyDto('nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+                new PropertyDto('dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+                new PropertyDto('itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
             ],
             [
-                new PropertyDto(ClassElementTypeEnum::SETTER, 'nameSetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-                new PropertyDto(ClassElementTypeEnum::SETTER, 'dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-                new PropertyDto(ClassElementTypeEnum::SETTER, 'itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+                new PropertyDto('nameSetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+                new PropertyDto('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+                new PropertyDto('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
             ],
             [
-                new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-                new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'dataAttributeSource', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-                new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'itemAttributeSource', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
-                new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'nameAttributeTarget', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-                new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-                new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'itemAttributeTarget', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+                new PropertyDto('nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC, null, SourceData::class),
+                new PropertyDto('dataAttributeSource', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED, null, SourceData::class),
+                new PropertyDto('itemAttributeSource', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE, null, SourceData::class),
+                new PropertyDto('nameAttributeTarget', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC, null, TargetData::class),
+                new PropertyDto('dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED, null, TargetData::class),
+                new PropertyDto('itemAttributeTarget', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE, null, TargetData::class),
             ]
         );
     }
@@ -74,51 +75,51 @@ class ObjectDtoTest extends TestCase
         $object = $this->objectComplex();
 
         $expectedProperties = [
-            new PropertyDto(ClassElementTypeEnum::PROPERTY, 'nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            new PropertyDto(ClassElementTypeEnum::PROPERTY, 'dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-            new PropertyDto(ClassElementTypeEnum::PROPERTY, 'itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+            new PropertyDto('nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            new PropertyDto('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+            new PropertyDto('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
         $this->assertEquals($expectedProperties, $object->getProperties());
 
         $expectedConstructors = [
-            new PropertyDto(ClassElementTypeEnum::CONSTRUCTOR, 'nameConstructor', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            new PropertyDto(ClassElementTypeEnum::CONSTRUCTOR, 'dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-            new PropertyDto(ClassElementTypeEnum::CONSTRUCTOR, 'itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+            new PropertyDto('nameConstructor', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            new PropertyDto('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+            new PropertyDto('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
         $this->assertEquals($expectedConstructors, $object->getConstructor());
 
         $expectedGetters = [
-            new PropertyDto(ClassElementTypeEnum::GETTER, 'nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            new PropertyDto(ClassElementTypeEnum::GETTER, 'dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-            new PropertyDto(ClassElementTypeEnum::GETTER, 'itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+            new PropertyDto('nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            new PropertyDto('dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+            new PropertyDto('itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
         $this->assertEquals($expectedGetters, $object->getGetters());
 
         $expectedSetters = [
-            new PropertyDto(ClassElementTypeEnum::SETTER, 'nameSetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            new PropertyDto(ClassElementTypeEnum::SETTER, 'dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-            new PropertyDto(ClassElementTypeEnum::SETTER, 'itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+            new PropertyDto('nameSetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            new PropertyDto('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
+            new PropertyDto('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
         $this->assertEquals($expectedSetters, $object->getSetters());
 
         $expectedAttribute = [
-            new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'dataAttributeSource', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-            new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'itemAttributeSource', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
-            new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'nameAttributeTarget', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
-            new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'itemAttributeTarget', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
+            new PropertyDto('nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC, null, SourceData::class),
+            new PropertyDto('dataAttributeSource', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED, null, SourceData::class),
+            new PropertyDto('itemAttributeSource', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE, null, SourceData::class),
+            new PropertyDto('nameAttributeTarget', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC, null, TargetData::class),
+            new PropertyDto('dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED, null, TargetData::class),
+            new PropertyDto('itemAttributeTarget', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE, null, TargetData::class),
         ];
         $this->assertEquals($expectedAttribute, $object->getAttributes());
 
         $expectedAvailableData = [
-            'nameProperty' => new PropertyDto(ClassElementTypeEnum::PROPERTY, 'nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            'nameGetter' => new PropertyDto(ClassElementTypeEnum::GETTER, 'nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
-            'nameAttributeSource' => new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_SOURCE, 'nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            'nameProperty' => new PropertyDto('nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            'nameGetter' => new PropertyDto('nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
+            'nameAttributeSource' => new PropertyDto('nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC, null, SourceData::class),
         ];
         $this->assertEquals($expectedAvailableData, $object->availableData());
 
-        $expectedAttributeTargetType = new PropertyDto(ClassElementTypeEnum::ATTRIBUTE_TARGET, 'dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED);
+        $expectedAttributeTargetType = new PropertyDto('dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED, null, TargetData::class);
         $this->assertEquals($expectedAttributeTargetType, $object->findAttributeTargetPropertyDto('dataAttributeTarget'));
 
         $this->assertInstanceOf(PropertyDto::class, $object->findPropertyDto(ApproachEnum::PROPERTY, 'nameProperty'));

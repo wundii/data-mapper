@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
+use Wundii\DataMapper\Attribute\SourceData;
+use Wundii\DataMapper\Attribute\TargetData;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 
 final readonly class ObjectPropertyDto
 {
@@ -93,7 +94,7 @@ final readonly class ObjectPropertyDto
                 continue;
             }
 
-            if ($attribute->getClassElementTypeEnum() !== ClassElementTypeEnum::ATTRIBUTE_SOURCE) {
+            if ($attribute->getAttributeClassString() !== SourceData::class) {
                 continue;
             }
 
@@ -106,7 +107,7 @@ final readonly class ObjectPropertyDto
     public function findAttributeTargetPropertyDto(string $name): ?PropertyDto
     {
         foreach ($this->attributes as $attribute) {
-            if ($attribute->getClassElementTypeEnum() !== ClassElementTypeEnum::ATTRIBUTE_TARGET) {
+            if ($attribute->getAttributeClassString() !== TargetData::class) {
                 continue;
             }
 

@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\Dto;
 
 use Wundii\DataMapper\Enum\AccessibleEnum;
-use Wundii\DataMapper\Enum\ClassElementTypeEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 
 final readonly class PropertyDto
 {
     public function __construct(
-        private ClassElementTypeEnum $classElementTypeEnum,
         private string $name,
         private string|DataTypeEnum $dataType,
         private ?string $targetType,
@@ -19,12 +17,13 @@ final readonly class PropertyDto
         private bool $nullable,
         private AccessibleEnum $accessibleEnum,
         private mixed $value = null,
+        private ?string $attributeClassString = null,
     ) {
     }
 
-    public function getClassElementTypeEnum(): ClassElementTypeEnum
+    public function getAttributeClassString(): ?string
     {
-        return $this->classElementTypeEnum;
+        return $this->attributeClassString;
     }
 
     public function getDataType(): string|DataTypeEnum

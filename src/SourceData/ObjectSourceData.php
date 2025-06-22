@@ -251,7 +251,6 @@ final class ObjectSourceData extends AbstractSourceData
         if (is_iterable($array)) {
             foreach ($array as $key => $value) {
                 $propertyDtos[$key] = new PropertyDto(
-                    $propertyDto->getClassElementTypeEnum(),
                     $propertyDto->getName(),
                     $propertyDto->getDataType(),
                     $propertyDto->getTargetType(),
@@ -259,6 +258,7 @@ final class ObjectSourceData extends AbstractSourceData
                     $propertyDto->isNullable(),
                     $propertyDto->getAccessibleEnum(),
                     $value,
+                    $propertyDto->getAttributeClassString(),
                 );
             }
         }
