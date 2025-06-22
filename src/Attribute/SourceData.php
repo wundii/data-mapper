@@ -20,8 +20,13 @@ class SourceData implements AttributeInterface
         return $this->target;
     }
 
-    public function getValue(): string
+    public function getName(): string
     {
         return $this->getTarget();
+    }
+
+    public function getValue(): ?string
+    {
+        return null;
     }
 }

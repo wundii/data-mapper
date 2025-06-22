@@ -216,6 +216,23 @@ final readonly class ReflectionObjectResolver
         $reflectionClass = new ReflectionClass($object);
         $useStatementsDto = (new ReflectionTokenResolver())->resolve($object);
 
+        foreach ($reflectionClass->getAttributes() as $attribute) {
+            $instance = $attribute->newInstance();
+            if (! $instance instanceof AttributeInterface) {
+                continue;
+            }
+
+            $attributes[] = (new PropertyDtoResolver())->resolve(
+                $instance->getName() ?? $reflectionClass->getName(),
+                [],
+                new AnnotationDto([], []),
+                $object,
+                AccessibleEnum::PUBLIC,
+                $instance->getValue(),
+                $attribute->getName(),
+            );
+        }
+
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
             $methodName = strtolower($reflectionMethod->getName());
             $annotationDto = $this->annotationDto($useStatementsDto, $reflectionMethod);
@@ -239,12 +256,12 @@ final readonly class ReflectionObjectResolver
                 }
 
                 $attributes[] = (new PropertyDtoResolver())->resolve(
-                    $instance->getValue(),
+                    $instance->getName() ?? $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getReturnType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
-                    $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
+                    $takeValue ? ($instance->getValue() ?: $reflectionMethod->invoke($invokeObject)) : $instance->getValue(),
                     $attribute->getName(),
                 );
             }
@@ -316,12 +333,12 @@ final readonly class ReflectionObjectResolver
                 }
 
                 $attributes[] = (new PropertyDtoResolver())->resolve(
-                    $instance->getValue(),
+                    $instance->getName() ?? $this->name($reflectionProperty),
                     $this->types($reflectionProperty->getType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionProperty),
-                    $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
+                    $takeValue ? ($instance->getValue() ?: $reflectionProperty->getValue($invokeObject)) : $instance->getValue(),
                     $attribute->getName(),
                 );
             }

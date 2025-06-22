@@ -20,8 +20,13 @@ class TargetData implements AttributeInterface
         return $this->alias;
     }
 
-    public function getValue(): string
+    public function getName(): string
     {
         return $this->getAlias();
+    }
+
+    public function getValue(): ?string
+    {
+        return null;
     }
 }

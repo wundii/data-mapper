@@ -6,5 +6,7 @@ namespace Wundii\DataMapper\Interface;
 
 interface AttributeInterface
 {
-    public function getValue(): string;
+    public function getName(): ?string;
+
+    public function getValue(): ?string;
 }
