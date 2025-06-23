@@ -24,6 +24,13 @@ use Wundii\DataMapper\Interface\AttributeInterface;
 
 final readonly class ReflectionObjectResolver
 {
+    private PropertyDtoResolver $propertyDtoResolver;
+
+    public function __construct()
+    {
+        $this->propertyDtoResolver = new PropertyDtoResolver();
+    }
+
     public function name(ReflectionProperty|ReflectionParameter|ReflectionMethod $reflection): string
     {
         return $reflection->getName();
@@ -222,12 +229,14 @@ final readonly class ReflectionObjectResolver
                 continue;
             }
 
-            $attributes[] = (new PropertyDtoResolver())->resolve(
+            $attributes[] = $this->propertyDtoResolver->resolve(
                 $instance->getName() ?? $reflectionClass->getName(),
                 [],
                 new AnnotationDto([], []),
                 $object,
                 AccessibleEnum::PUBLIC,
+                false,
+                null,
                 $instance->getValue(),
                 $attribute->getName(),
             );
@@ -239,12 +248,16 @@ final readonly class ReflectionObjectResolver
 
             if (str_starts_with($methodName, '__construct')) {
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                    $constructor[] = (new PropertyDtoResolver())->resolve(
+                    $constructor[] = $this->propertyDtoResolver->resolve(
                         $this->name($reflectionParameter),
                         $this->types($reflectionParameter->getType()),
                         $annotationDto,
                         $object,
                         $this->accessible($reflectionMethod),
+                        $reflectionParameter->isDefaultValueAvailable(),
+                        $reflectionParameter->isDefaultValueAvailable()
+                            ? $reflectionParameter->getDefaultValue()
+                            : null,
                     );
                 }
             }
@@ -255,12 +268,14 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $attributes[] = (new PropertyDtoResolver())->resolve(
+                $attributes[] = $this->propertyDtoResolver->resolve(
                     $instance->getName() ?? $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getReturnType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
+                    false,
+                    null,
                     $takeValue ? ($instance->getValue() ?: $reflectionMethod->invoke($invokeObject)) : $instance->getValue(),
                     $attribute->getName(),
                 );
@@ -271,12 +286,14 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $getters[] = (new PropertyDtoResolver())->resolve(
+                $getters[] = $this->propertyDtoResolver->resolve(
                     substr($methodName, 3),
                     $this->types($reflectionMethod->getReturnType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
+                    false,
+                    null,
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
                 );
             }
@@ -286,12 +303,14 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $getters[] = (new PropertyDtoResolver())->resolve(
+                $getters[] = $this->propertyDtoResolver->resolve(
                     substr($methodName, 2),
                     $this->types($reflectionMethod->getReturnType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionMethod),
+                    false,
+                    null,
                     $takeValue ? $reflectionMethod->invoke($invokeObject) : null,
                 );
             }
@@ -301,7 +320,7 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $setters[] = (new PropertyDtoResolver())->resolve(
+                $setters[] = $this->propertyDtoResolver->resolve(
                     $this->name($reflectionMethod),
                     $this->types($reflectionMethod->getParameters()[0]->getType()),
                     $annotationDto,
@@ -332,24 +351,28 @@ final readonly class ReflectionObjectResolver
                     continue;
                 }
 
-                $attributes[] = (new PropertyDtoResolver())->resolve(
+                $attributes[] = $this->propertyDtoResolver->resolve(
                     $instance->getName() ?? $this->name($reflectionProperty),
                     $this->types($reflectionProperty->getType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionProperty),
+                    $reflectionProperty->isDefault(),
+                    $reflectionProperty->getDefaultValue(),
                     $takeValue ? ($instance->getValue() ?: $reflectionProperty->getValue($invokeObject)) : $instance->getValue(),
                     $attribute->getName(),
                 );
             }
 
             if (! $propertyReflection instanceof PropertyDto) {
-                $propertyReflection = (new PropertyDtoResolver())->resolve(
+                $propertyReflection = $this->propertyDtoResolver->resolve(
                     $this->name($reflectionProperty),
                     $this->types($reflectionProperty->getType()),
                     $annotationDto,
                     $object,
                     $this->accessible($reflectionProperty),
+                    $reflectionProperty->isDefault(),
+                    $reflectionProperty->getDefaultValue(),
                     $takeValue ? $reflectionProperty->getValue($invokeObject) : null,
                 );
             }

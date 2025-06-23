@@ -16,6 +16,8 @@ final readonly class PropertyDto
         private bool $oneType,
         private bool $nullable,
         private AccessibleEnum $accessibleEnum,
+        private bool $isDefaultValueAvailable = false,
+        private mixed $defaultValue = null,
         private mixed $value = null,
         private ?string $attributeClassString = null,
     ) {
@@ -54,6 +56,16 @@ final readonly class PropertyDto
     public function getAccessibleEnum(): AccessibleEnum
     {
         return $this->accessibleEnum;
+    }
+
+    public function isDefaultValueAvailable(): bool
+    {
+        return $this->isDefaultValueAvailable;
+    }
+
+    public function getDefaultValue(): mixed
+    {
+        return $this->defaultValue;
     }
 
     public function getValue(): mixed

@@ -153,6 +153,8 @@ final readonly class PropertyDtoResolver
         AnnotationDto $annotationDto,
         string|object $object,
         AccessibleEnum $accessibleEnum,
+        bool $isDefaultValueAvailable = false,
+        mixed $defaultValue = null,
         mixed $value = null,
         ?string $attributeClassString = null,
     ): PropertyDto {
@@ -171,6 +173,8 @@ final readonly class PropertyDtoResolver
             $oneType,
             $nullable,
             $accessibleEnum,
+            $isDefaultValueAvailable,
+            $defaultValue,
             $value,
             $attributeClassString,
         );
