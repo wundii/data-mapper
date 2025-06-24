@@ -9,54 +9,58 @@ use Wundii\DataMapper\Attribute\TargetData;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 
-final readonly class ObjectPropertyDto
+final readonly class ReflectionObjectDto
 {
+    private array $test;
+
     /**
-     * @param PropertyDto[] $properties
-     * @param PropertyDto[] $constructor
-     * @param PropertyDto[] $getters
-     * @param PropertyDto[] $setters
      * @param PropertyDto[] $attributes
+     * @param PropertyDto[] $propertiesCLass
+     * @param PropertyDto[] $propertiesConst
+     * @param PropertyDto[] $methodGetters
+     * @param PropertyDto[] $methodSetters
      */
     public function __construct(
-        private array $properties,
-        private array $constructor,
-        private array $getters,
-        private array $setters,
         private array $attributes,
+        private array $propertiesCLass,
+        private array $propertiesConst,
+        private array $methodGetters,
+        private array $methodOthers,
+        private array $methodSetters,
     ) {
+        $this->test = [];
     }
 
     /**
      * @return PropertyDto[]
      */
-    public function getProperties(): array
+    public function getPropertiesCLass(): array
     {
-        return $this->properties;
+        return $this->propertiesCLass;
     }
 
     /**
      * @return PropertyDto[]
      */
-    public function getConstructor(): array
+    public function getPropertiesConst(): array
     {
-        return $this->constructor;
+        return $this->propertiesConst;
     }
 
     /**
      * @return PropertyDto[]
      */
-    public function getGetters(): array
+    public function getMethodGetters(): array
     {
-        return $this->getters;
+        return $this->methodGetters;
     }
 
     /**
      * @return PropertyDto[]
      */
-    public function getSetters(): array
+    public function getMethodSetters(): array
     {
-        return $this->setters;
+        return $this->methodSetters;
     }
 
     /**
@@ -73,7 +77,7 @@ final readonly class ObjectPropertyDto
     public function availableData(): array
     {
         $data = [];
-        foreach ($this->properties as $property) {
+        foreach ($this->propertiesCLass as $property) {
             if ($property->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
                 continue;
             }
@@ -81,7 +85,7 @@ final readonly class ObjectPropertyDto
             $data[$property->getName()] = $property;
         }
 
-        foreach ($this->getters as $getter) {
+        foreach ($this->methodGetters as $getter) {
             if ($getter->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
                 continue;
             }
@@ -122,9 +126,9 @@ final readonly class ObjectPropertyDto
     public function findPropertyDto(ApproachEnum $approachEnum, string $name): ?PropertyDto
     {
         $propertyDtos = match ($approachEnum) {
-            ApproachEnum::CONSTRUCTOR => $this->constructor,
-            ApproachEnum::PROPERTY => $this->properties,
-            ApproachEnum::SETTER => $this->setters,
+            ApproachEnum::CONSTRUCTOR => $this->propertiesConst,
+            ApproachEnum::PROPERTY => $this->propertiesCLass,
+            ApproachEnum::SETTER => $this->methodSetters,
         };
 
         $propertyDto = $this->findAttributeTargetPropertyDto($name);

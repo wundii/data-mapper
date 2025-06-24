@@ -9,23 +9,22 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 
 final readonly class PropertyDto
 {
+    /**
+     * @param AnnotationDto[] $annotations
+     * @param AttributeDto[] $attributes
+     */
     public function __construct(
         private string $name,
         private string|DataTypeEnum $dataType,
         private ?string $targetType,
-        private bool $oneType,
         private bool $nullable,
         private AccessibleEnum $accessibleEnum,
         private bool $isDefaultValueAvailable = false,
         private mixed $defaultValue = null,
         private mixed $value = null,
-        private ?string $attributeClassString = null,
+        private array $annotations = [],
+        private array $attributes = [],
     ) {
-    }
-
-    public function getAttributeClassString(): ?string
-    {
-        return $this->attributeClassString;
     }
 
     public function getDataType(): string|DataTypeEnum
@@ -36,11 +35,6 @@ final readonly class PropertyDto
     public function getTargetType(): ?string
     {
         return $this->targetType;
-    }
-
-    public function isOneType(): bool
-    {
-        return $this->oneType;
     }
 
     public function isNullable(): bool
@@ -87,5 +81,21 @@ final readonly class PropertyDto
         }
 
         return '';
+    }
+
+    /**
+     * @return AnnotationDto[]
+     */
+    public function getAnnotations(): array
+    {
+        return $this->annotations;
+    }
+
+    /**
+     * @return AttributeDto[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
-use Wundii\DataMapper\Dto\ObjectPropertyDto;
+use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\Type\ArrayDto;
 use Wundii\DataMapper\Dto\Type\BoolDto;
@@ -91,7 +91,7 @@ final class ObjectSourceData extends AbstractSourceData
      */
     public function objectDto(
         DataConfigInterface $dataConfig,
-        ObjectPropertyDto $objectPropertyDto,
+        ReflectionObjectDto $objectPropertyDto,
         null|string|object $object,
         null|string $destination = null,
     ): ObjectDtoInterface {
@@ -254,7 +254,6 @@ final class ObjectSourceData extends AbstractSourceData
                     $propertyDto->getName(),
                     $propertyDto->getDataType(),
                     $propertyDto->getTargetType(),
-                    $propertyDto->isOneType(),
                     $propertyDto->isNullable(),
                     $propertyDto->getAccessibleEnum(),
                     $propertyDto->isDefaultValueAvailable(),
@@ -274,7 +273,7 @@ final class ObjectSourceData extends AbstractSourceData
      */
     private function resolveObject(
         ObjectDtoResolver $objectDtoResolver,
-        ObjectPropertyDto $objectPropertyDto,
+        ReflectionObjectDto $objectPropertyDto,
     ): ?object {
         $objectDto = $this->objectDto($this->dataConfig, $objectPropertyDto, $this->object);
         $object = $objectDtoResolver->resolve($this->dataConfig, $objectDto);

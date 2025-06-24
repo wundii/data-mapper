@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
-use Wundii\DataMapper\Dto\ObjectPropertyDto;
+use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\SourceDataInterface;
@@ -18,7 +18,7 @@ use Wundii\DataMapper\Resolver\ReflectionObjectResolver;
 abstract class AbstractSourceData implements SourceDataInterface
 {
     /**
-     * @var ObjectPropertyDto[]
+     * @var ReflectionObjectDto[]
      */
     protected static array $objectPropertyDtos = [];
 
@@ -39,7 +39,7 @@ abstract class AbstractSourceData implements SourceDataInterface
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function resolveObjectPropertyDto(string|object $object): ObjectPropertyDto
+    public function resolveObjectPropertyDto(string|object $object): ReflectionObjectDto
     {
         if (is_string($object) && array_key_exists($object, self::$objectPropertyDtos)) {
             return self::$objectPropertyDtos[$object];

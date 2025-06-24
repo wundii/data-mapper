@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
@@ -18,13 +24,13 @@ final readonly class PropertyDtoResolver
     public function getTargetTypes(
         string $name,
         array $types,
-        AnnotationDto $annotationDto,
+        ?AnnotationDto $annotationDto,
     ): array {
         if (str_starts_with($name, 'set')) {
             $name = substr($name, 3);
         }
 
-        $types = array_merge($types, $annotationDto->getVariables());
+        $types = array_merge($types, $annotationDto?->getVariables() ?? []);
 
         foreach ($annotationDto->getParameterDto() as $parameterDto) {
             if (strcasecmp($parameterDto->getParameter(), $name) === 0) {
@@ -144,20 +150,59 @@ final readonly class PropertyDtoResolver
         return count($tmp) === 1;
     }
 
+    public function accessible(ReflectionProperty|ReflectionMethod $reflection): AccessibleEnum
+    {
+        if ($reflection->isPublic()) {
+            return AccessibleEnum::PUBLIC;
+        }
+
+        if ($reflection->isProtected()) {
+            return AccessibleEnum::PROTECTED;
+        }
+
+        return AccessibleEnum::PRIVATE;
+    }
+
     /**
-     * @param string[] $types
+     * @return string[]
+     */
+    public function types(null|ReflectionType $type): array
+    {
+        $types = [];
+
+        if ($type instanceof ReflectionNamedType) {
+            $types[] = $type->getName();
+            if ($type->allowsNull() && $type->getName() !== 'null') {
+                $types[] = 'null';
+            }
+        }
+
+        if ($type instanceof ReflectionUnionType) {
+            foreach ($type->getTypes() as $unionType) {
+                if (! $unionType instanceof ReflectionNamedType) {
+                    continue;
+                }
+
+                $types[] = $unionType->getName();
+            }
+        }
+
+        return $types;
+    }
+
+    /**
+     * das passt alles noch nicht, attribute, property und method brauchen ihren eigenen Resolver
      */
     public function resolve(
-        string $name,
-        array $types,
-        AnnotationDto $annotationDto,
+        ReflectionProperty|ReflectionMethod $reflectionMethod,
+        ReflectionProperty|ReflectionParameter $reflectionParameter,
         string|object $object,
-        AccessibleEnum $accessibleEnum,
-        bool $isDefaultValueAvailable = false,
-        mixed $defaultValue = null,
-        mixed $value = null,
-        ?string $attributeClassString = null,
+        bool $takeValue,
     ): PropertyDto {
+        $name = $reflectionMethod->getName();
+        $types = $this->types($reflectionParameter->getType());
+        $annotationDto = null;
+
         $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
 
         $oneType = $this->isOneType($targetTypes);
@@ -166,17 +211,34 @@ final readonly class PropertyDtoResolver
         $dataType = $this->getDataType($oneType, $targetTypes);
         $targetType = $this->getTargetType($targetTypes, $object);
 
+        $isDefaultValueAvailable = null;
+
+        if ($reflectionParameter instanceof ReflectionParameter) {
+            /**
+             * eventuell auch isDefault möglich? testen, dann brauchen wir den ganzen if teil nicht
+             */
+            $isDefaultValueAvailable = $reflectionParameter->isDefaultValueAvailable();
+        }
+
+        if ($reflectionMethod instanceof ReflectionProperty) {
+            $isDefaultValueAvailable = $reflectionParameter->isDefault();
+        }
+
+        $defaultValue = $isDefaultValueAvailable
+            ? $reflectionParameter->getDefaultValue()
+            : null;
+
+        $invokeObject = $takeValue && is_object($object) ? $object : null;
+
         return new PropertyDto(
             $name,
             $dataType,
             $targetType,
-            $oneType,
             $nullable,
-            $accessibleEnum,
+            $this->accessible($reflectionMethod),
             $isDefaultValueAvailable,
             $defaultValue,
-            $value,
-            $attributeClassString,
+            $takeValue ? $reflectionMethod->getValue($invokeObject) : null,
         );
     }
 }

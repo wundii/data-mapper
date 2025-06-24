@@ -50,6 +50,7 @@
     ],
     "complete-check": [
       "@cache-clear",
+      "@phplint",
       "@rector-dry",
       "@phpstan",
       "@ecs-dry",

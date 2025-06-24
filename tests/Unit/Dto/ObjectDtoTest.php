@@ -7,7 +7,7 @@ namespace Unit\Dto;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Attribute\TargetData;
-use Wundii\DataMapper\Dto\ObjectPropertyDto;
+use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
@@ -15,14 +15,14 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 
 class ObjectDtoTest extends TestCase
 {
-    public function objectEmpty(): ObjectPropertyDto
+    public function objectEmpty(): ReflectionObjectDto
     {
-        return new ObjectPropertyDto([], [], [], [], []);
+        return new ReflectionObjectDto([], [], [], [], []);
     }
 
-    public function objectComplex(): ObjectPropertyDto
+    public function objectComplex(): ReflectionObjectDto
     {
-        return new ObjectPropertyDto(
+        return new ReflectionObjectDto(
             [
                 new PropertyDto('nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
                 new PropertyDto('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
@@ -58,9 +58,9 @@ class ObjectDtoTest extends TestCase
     {
         $object = $this->objectEmpty();
 
-        $this->assertEquals([], $object->getProperties());
-        $this->assertEquals([], $object->getConstructor());
-        $this->assertEquals([], $object->getSetters());
+        $this->assertEquals([], $object->getPropertiesCLass());
+        $this->assertEquals([], $object->getPropertiesConst());
+        $this->assertEquals([], $object->getMethodSetters());
 
         $this->assertNull($object->findPropertyDto(ApproachEnum::PROPERTY, 'nameProperty'));
         $this->assertNull($object->findPropertyDto(ApproachEnum::PROPERTY, 'NAMEPROPERTY'));
@@ -79,28 +79,28 @@ class ObjectDtoTest extends TestCase
             new PropertyDto('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
             new PropertyDto('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
-        $this->assertEquals($expectedProperties, $object->getProperties());
+        $this->assertEquals($expectedProperties, $object->getPropertiesCLass());
 
         $expectedConstructors = [
             new PropertyDto('nameConstructor', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
             new PropertyDto('dataConstructor', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
             new PropertyDto('itemConstructor', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
-        $this->assertEquals($expectedConstructors, $object->getConstructor());
+        $this->assertEquals($expectedConstructors, $object->getPropertiesConst());
 
         $expectedGetters = [
             new PropertyDto('nameGetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
             new PropertyDto('dataGetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
             new PropertyDto('itemGetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
-        $this->assertEquals($expectedGetters, $object->getGetters());
+        $this->assertEquals($expectedGetters, $object->getMethodGetters());
 
         $expectedSetters = [
             new PropertyDto('nameSetter', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
             new PropertyDto('dataSetter', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
             new PropertyDto('itemSetter', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
-        $this->assertEquals($expectedSetters, $object->getSetters());
+        $this->assertEquals($expectedSetters, $object->getMethodSetters());
 
         $expectedAttribute = [
             new PropertyDto('nameAttributeSource', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC, attributeClassString: SourceData::class),

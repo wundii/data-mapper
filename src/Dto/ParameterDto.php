@@ -12,6 +12,8 @@ final readonly class ParameterDto
     public function __construct(
         private string $parameter,
         private array $types,
+        private bool $isDefaultValueAvailable = false,
+        private mixed $defaultValue = null,
     ) {
     }
 
@@ -26,5 +28,15 @@ final readonly class ParameterDto
     public function getTypes(): array
     {
         return $this->types;
+    }
+
+    public function isDefaultValueAvailable(): bool
+    {
+        return $this->isDefaultValueAvailable;
+    }
+
+    public function getDefaultValue(): mixed
+    {
+        return $this->defaultValue;
     }
 }

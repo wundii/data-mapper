@@ -14,7 +14,7 @@ use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
 use Wundii\DataMapper\Dto\AnnotationDto;
-use Wundii\DataMapper\Dto\ObjectPropertyDto;
+use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
@@ -36,6 +36,115 @@ final readonly class ReflectionObjectResolver
         return $reflection->getName();
     }
 
+    // public function parseAnnotation(UseStatementsDto $useStatementsDto, string $docComment): AnnotationDto
+    // {
+    //     $parameterReflections = [];
+    //     $variables = [];
+    //     $docComment = trim($docComment);
+    //
+    //     if (! str_starts_with($docComment, '/**')) {
+    //         return new AnnotationDto([], []);
+    //     }
+    //
+    //     $docComment = substr($docComment, 3, -2);
+    //
+    //     $pattern = '/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m';
+    //
+    //     if (preg_match_all($pattern, $docComment, $matches)) {
+    //         $parameters = [];
+    //
+    //         /**
+    //          * pre-process for annotation types
+    //          */
+    //         foreach ($matches['name'] as $key => $name) {
+    //             if (strtolower($name) === 'param') {
+    //                 $parameters[] = $matches['value'][$key];
+    //             }
+    //
+    //             if (strtolower($name) === 'var') {
+    //                 $variables[] = $matches['value'][$key];
+    //             }
+    //         }
+    //
+    //         foreach ($parameters as $param) {
+    //             list($parameterType, $parameter) = explode(' ', $param);
+    //
+    //             if (str_starts_with($parameter, '$')) {
+    //                 $parameter = substr($parameter, 1);
+    //             }
+    //
+    //             $parameterTypes = explode('|', $parameterType);
+    //
+    //             foreach ($parameterTypes as $key => $parameterType) {
+    //                 if (str_starts_with($parameterType, '?')) {
+    //                     $parameterTypes[$key] = 'null';
+    //                     $parameterTypes[] = substr($parameterType, 1);
+    //                 }
+    //             }
+    //
+    //             $parameterTypes = $this->completeClassStrings($useStatementsDto, $parameterTypes);
+    //
+    //             $parameterReflections[] = new ParameterDto(
+    //                 $parameter,
+    //                 $parameterTypes,
+    //             );
+    //         }
+    //
+    //         if ($variables !== []) {
+    //             $variables = explode('|', array_pop($variables));
+    //             foreach ($variables as $key => $variable) {
+    //                 if (str_starts_with($variable, '?')) {
+    //                     $variables[$key] = 'null';
+    //                     $variables[] = substr($variable, 1);
+    //                 }
+    //             }
+    //
+    //             $variables = $this->completeClassStrings($useStatementsDto, $variables);
+    //         }
+    //     }
+    //
+    //     return new AnnotationDto(
+    //         $parameterReflections,
+    //         $variables,
+    //     );
+    // }
+    //
+    // /**
+    //  * @param string[] $types
+    //  * @return string[]
+    //  */
+    // public function completeClassStrings(UseStatementsDto $useStatementsDto, array $types): array
+    // {
+    //     foreach ($types as $key => $type) {
+    //         if (class_exists($type)) {
+    //             continue;
+    //         }
+    //
+    //         $classString = $useStatementsDto->findClassString($type);
+    //
+    //         if ($classString !== null) {
+    //             $types[$key] = $classString;
+    //         }
+    //
+    //         if (! str_ends_with($type, '[]')) {
+    //             continue;
+    //         }
+    //
+    //         $classString = substr($type, 0, -2);
+    //         if (class_exists($classString)) {
+    //             continue;
+    //         }
+    //
+    //         $classString = $useStatementsDto->findClassString($classString);
+    //
+    //         if ($classString !== null) {
+    //             $types[$key] = $classString . '[]';
+    //         }
+    //     }
+    //
+    //     return $types;
+    // }
+
     public function accessible(ReflectionProperty|ReflectionMethod $reflection): AccessibleEnum
     {
         if ($reflection->isPublic()) {
@@ -47,115 +156,6 @@ final readonly class ReflectionObjectResolver
         }
 
         return AccessibleEnum::PRIVATE;
-    }
-
-    public function parseAnnotation(UseStatementsDto $useStatementsDto, string $docComment): AnnotationDto
-    {
-        $parameterReflections = [];
-        $variables = [];
-        $docComment = trim($docComment);
-
-        if (! str_starts_with($docComment, '/**')) {
-            return new AnnotationDto([], []);
-        }
-
-        $docComment = substr($docComment, 3, -2);
-
-        $pattern = '/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m';
-
-        if (preg_match_all($pattern, $docComment, $matches)) {
-            $parameters = [];
-
-            /**
-             * pre-process for annotation types
-             */
-            foreach ($matches['name'] as $key => $name) {
-                if (strtolower($name) === 'param') {
-                    $parameters[] = $matches['value'][$key];
-                }
-
-                if (strtolower($name) === 'var') {
-                    $variables[] = $matches['value'][$key];
-                }
-            }
-
-            foreach ($parameters as $param) {
-                list($parameterType, $parameter) = explode(' ', $param);
-
-                if (str_starts_with($parameter, '$')) {
-                    $parameter = substr($parameter, 1);
-                }
-
-                $parameterTypes = explode('|', $parameterType);
-
-                foreach ($parameterTypes as $key => $parameterType) {
-                    if (str_starts_with($parameterType, '?')) {
-                        $parameterTypes[$key] = 'null';
-                        $parameterTypes[] = substr($parameterType, 1);
-                    }
-                }
-
-                $parameterTypes = $this->completeClassStrings($useStatementsDto, $parameterTypes);
-
-                $parameterReflections[] = new ParameterDto(
-                    $parameter,
-                    $parameterTypes,
-                );
-            }
-
-            if ($variables !== []) {
-                $variables = explode('|', array_pop($variables));
-                foreach ($variables as $key => $variable) {
-                    if (str_starts_with($variable, '?')) {
-                        $variables[$key] = 'null';
-                        $variables[] = substr($variable, 1);
-                    }
-                }
-
-                $variables = $this->completeClassStrings($useStatementsDto, $variables);
-            }
-        }
-
-        return new AnnotationDto(
-            $parameterReflections,
-            $variables,
-        );
-    }
-
-    /**
-     * @param string[] $types
-     * @return string[]
-     */
-    public function completeClassStrings(UseStatementsDto $useStatementsDto, array $types): array
-    {
-        foreach ($types as $key => $type) {
-            if (class_exists($type)) {
-                continue;
-            }
-
-            $classString = $useStatementsDto->findClassString($type);
-
-            if ($classString !== null) {
-                $types[$key] = $classString;
-            }
-
-            if (! str_ends_with($type, '[]')) {
-                continue;
-            }
-
-            $classString = substr($type, 0, -2);
-            if (class_exists($classString)) {
-                continue;
-            }
-
-            $classString = $useStatementsDto->findClassString($classString);
-
-            if ($classString !== null) {
-                $types[$key] = $classString . '[]';
-            }
-        }
-
-        return $types;
     }
 
     public function annotationDto(UseStatementsDto $useStatementsDto, ReflectionProperty|ReflectionFunctionAbstract $property): AnnotationDto
@@ -199,7 +199,7 @@ final readonly class ReflectionObjectResolver
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function resolve(string|object $object, bool $takeValue = false): ObjectPropertyDto
+    public function resolve(string|object $object, bool $takeValue = false): ReflectionObjectDto
     {
         if (! is_object($object) && interface_exists($object)) {
             throw DataMapperException::InvalidArgument(sprintf('%s: interfaces are not allowed', $object));
@@ -380,7 +380,7 @@ final readonly class ReflectionObjectResolver
             $properties[] = $propertyReflection;
         }
 
-        return new ObjectPropertyDto(
+        return new ReflectionObjectDto(
             $properties,
             $constructor,
             $getters,
