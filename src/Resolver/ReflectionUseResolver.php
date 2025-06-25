@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\Resolver;
 
 use ReflectionClass;
+use ReflectionException;
 use Wundii\DataMapper\Dto\UseStatementDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 
 
-class ReflectionTokenResolver extends AbstractReflectionClassResolver
+class ReflectionUseResolver extends AbstractReflectionClassResolver
 {
     public function basename(string $classString): string
     {
@@ -109,7 +110,7 @@ class ReflectionTokenResolver extends AbstractReflectionClassResolver
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $object));
         }
 
-        $reflectionClass = $this->getReflectionClass($object);
+        $reflectionClass = $this->reflectionClassCache($object);
 
         if ($reflectionClass->isInternal()) {
             return null;
@@ -121,5 +122,14 @@ class ReflectionTokenResolver extends AbstractReflectionClassResolver
         }
 
         return $this->parseToken($reflectionClass);
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws DataMapperException
+     */
+    public static function resolveObject(object|string $objectOrClass): ?UseStatementsDto
+    {
+        return (new self())->resolve($objectOrClass);
     }
 }

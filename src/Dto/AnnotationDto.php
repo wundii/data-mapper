@@ -11,8 +11,8 @@ final readonly class AnnotationDto
      * @param string[] $variables
      */
     public function __construct(
-        private array $parameterDtos,
-        private array $variables,
+        private array $parameterDtos = [],
+        private array $variables = [],
     ) {
     }
 

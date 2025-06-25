@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
-class AttributeDto
+final readonly class AttributeDto
 {
     /**
      * @param AttributePropertyDto[] $attributeProperties

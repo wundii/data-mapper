@@ -5,22 +5,28 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\Dto;
 
 use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\MethodTypeEnum;
 
-class MethodDto
+final readonly class MethodDto
 {
     /**
      * @param ParameterDto[] $parameters
-     * @param AnnotationDto[] $annotations
      * @param AttributeDto[] $attributes
      */
     public function __construct(
+        private MethodTypeEnum $methodTypeEnum,
         private AccessibleEnum $accessibleEnum,
         private string $name,
         private ?string $returnType = null,
+        private ?AnnotationDto $annotations = null,
         private array $parameters = [],
-        private array $annotations = [],
         private array $attributes = [],
     ) {
+    }
+
+    public function getMethodTypeEnum(): MethodTypeEnum
+    {
+        return $this->methodTypeEnum;
     }
 
     public function getAccessibleEnum(): AccessibleEnum
@@ -38,20 +44,17 @@ class MethodDto
         return $this->returnType;
     }
 
+    public function getAnnotations(): AnnotationDto
+    {
+        return $this->annotations;
+    }
+
     /**
      * @return ParameterDto[]
      */
     public function getParameters(): array
     {
         return $this->parameters;
-    }
-
-    /**
-     * @return AnnotationDto[]
-     */
-    public function getAnnotations(): array
-    {
-        return $this->annotations;
     }
 
     /**

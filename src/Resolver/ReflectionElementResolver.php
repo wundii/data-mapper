@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
@@ -11,11 +12,11 @@ use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
 use Wundii\DataMapper\Dto\AnnotationDto;
-use Wundii\DataMapper\Dto\PropertyDto;
+use Wundii\DataMapper\Dto\ElementDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 
-final readonly class PropertyDtoResolver
+class ReflectionElementResolver
 {
     /**
      * @param string[] $types
@@ -32,7 +33,7 @@ final readonly class PropertyDtoResolver
 
         $types = array_merge($types, $annotationDto?->getVariables() ?? []);
 
-        foreach ($annotationDto->getParameterDto() as $parameterDto) {
+        foreach ($annotationDto?->getParameterDto() ?? [] as $parameterDto) {
             if (strcasecmp($parameterDto->getParameter(), $name) === 0) {
                 $types = array_merge($types, $parameterDto->getTypes());
                 break;
@@ -45,7 +46,7 @@ final readonly class PropertyDtoResolver
     /**
      * @param string[] $types
      */
-    public function getTargetType(array $types, string|object $object): ?string
+    public function getTargetType(array $types, object|string $objectOrClass): ?string
     {
         foreach ($types as $type) {
             if (class_exists($type) || interface_exists($type)) {
@@ -65,11 +66,11 @@ final readonly class PropertyDtoResolver
             }
 
             if (strtolower($type) === 'self') {
-                if (is_object($object)) {
-                    return get_class($object);
+                if (is_object($objectOrClass)) {
+                    return get_class($objectOrClass);
                 }
 
-                return $object;
+                return $objectOrClass;
             }
         }
 
@@ -191,17 +192,16 @@ final readonly class PropertyDtoResolver
     }
 
     /**
-     * das passt alles noch nicht, attribute, property und method brauchen ihren eigenen Resolver
+     * @throws ReflectionException
      */
     public function resolve(
+        object|string $objectOrClass,
         ReflectionProperty|ReflectionMethod $reflectionMethod,
         ReflectionProperty|ReflectionParameter $reflectionParameter,
-        string|object $object,
-        bool $takeValue,
-    ): PropertyDto {
-        $name = $reflectionMethod->getName();
+        ?AnnotationDto $annotationDto
+    ): ElementDto {
+        $name = $reflectionParameter->getName();
         $types = $this->types($reflectionParameter->getType());
-        $annotationDto = null;
 
         $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
 
@@ -209,36 +209,29 @@ final readonly class PropertyDtoResolver
         $nullable = $this->isNullable($targetTypes);
 
         $dataType = $this->getDataType($oneType, $targetTypes);
-        $targetType = $this->getTargetType($targetTypes, $object);
+        $targetType = $this->getTargetType($targetTypes, $objectOrClass);
 
-        $isDefaultValueAvailable = null;
+        /**
+         * Constructor properties are not accessible, this was updated with the survey of class properties
+         */
+        $accessibleEnum = $this->accessible($reflectionMethod);
 
-        if ($reflectionParameter instanceof ReflectionParameter) {
-            /**
-             * eventuell auch isDefault möglich? testen, dann brauchen wir den ganzen if teil nicht
-             */
-            $isDefaultValueAvailable = $reflectionParameter->isDefaultValueAvailable();
-        }
-
-        if ($reflectionMethod instanceof ReflectionProperty) {
-            $isDefaultValueAvailable = $reflectionParameter->isDefault();
-        }
+        $isDefaultValueAvailable = $reflectionParameter instanceof ReflectionProperty
+            ? $reflectionMethod->isDefault()
+            : $reflectionParameter->isDefaultValueAvailable();
 
         $defaultValue = $isDefaultValueAvailable
             ? $reflectionParameter->getDefaultValue()
             : null;
 
-        $invokeObject = $takeValue && is_object($object) ? $object : null;
-
-        return new PropertyDto(
+        return new ElementDto(
             $name,
             $dataType,
             $targetType,
             $nullable,
-            $this->accessible($reflectionMethod),
+            $accessibleEnum,
             $isDefaultValueAvailable,
             $defaultValue,
-            $takeValue ? $reflectionMethod->getValue($invokeObject) : null,
         );
     }
 }

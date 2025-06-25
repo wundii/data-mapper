@@ -18,7 +18,7 @@ use Wundii\DataMapper\Interface\ObjectDtoInterface;
 use Wundii\DataMapper\Interface\TypeDtoInterface;
 use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class ObjectDtoResolver
+final class ObjectDtoResolver extends AbstractReflectionClassResolver
 {
     /**
      * @param mixed[] $parameter
@@ -74,7 +74,7 @@ final readonly class ObjectDtoResolver
             throw DataMapperException::Error('Class does not exist: ' . $object);
         }
 
-        $reflectionClass = new ReflectionClass($object);
+        $reflectionClass = $this->reflectionClassCache($object);
         $constructor = $reflectionClass->getConstructor();
 
         if ($approach === ApproachEnum::CONSTRUCTOR) {
@@ -156,8 +156,8 @@ final readonly class ObjectDtoResolver
                     continue;
                 }
 
-                $reflection = new ReflectionClass(get_class($newInstance));
-                $property = $reflection->getProperty($instanceParameter->getName());
+                $reflectionClass = $this->reflectionClassCache($newInstance);
+                $property = $reflectionClass->getProperty($instanceParameter->getName());
                 if (! $property->isPublic()) {
                     $property->setAccessible(true);
                 }

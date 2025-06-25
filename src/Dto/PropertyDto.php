@@ -10,7 +10,6 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 final readonly class PropertyDto
 {
     /**
-     * @param AnnotationDto[] $annotations
      * @param AttributeDto[] $attributes
      */
     public function __construct(
@@ -22,7 +21,7 @@ final readonly class PropertyDto
         private bool $isDefaultValueAvailable = false,
         private mixed $defaultValue = null,
         private mixed $value = null,
-        private array $annotations = [],
+        private ?AnnotationDto $annotations = null,
         private array $attributes = [],
     ) {
     }
@@ -83,10 +82,7 @@ final readonly class PropertyDto
         return '';
     }
 
-    /**
-     * @return AnnotationDto[]
-     */
-    public function getAnnotations(): array
+    public function getAnnotations(): AnnotationDto
     {
         return $this->annotations;
     }

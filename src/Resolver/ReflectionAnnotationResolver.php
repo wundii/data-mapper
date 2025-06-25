@@ -8,7 +8,7 @@ use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 
-readonly class ReflectionAnnotationResolver
+class ReflectionAnnotationResolver
 {
     public function __construct(
         private UseStatementsDto $useStatementsDto,
@@ -51,8 +51,12 @@ readonly class ReflectionAnnotationResolver
         return $types;
     }
 
-    public function resolve(string $docComment): ?AnnotationDto
+    public function resolve(false|string $docComment): ?AnnotationDto
     {
+        if ($docComment === false || $docComment === '') {
+            return null;
+        }
+
         $parameterReflections = [];
         $variables = [];
         $docComment = trim($docComment);

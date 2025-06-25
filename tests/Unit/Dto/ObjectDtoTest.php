@@ -58,7 +58,7 @@ class ObjectDtoTest extends TestCase
     {
         $object = $this->objectEmpty();
 
-        $this->assertEquals([], $object->getPropertiesCLass());
+        $this->assertEquals([], $object->getPropertiesClass());
         $this->assertEquals([], $object->getPropertiesConst());
         $this->assertEquals([], $object->getMethodSetters());
 
@@ -79,7 +79,7 @@ class ObjectDtoTest extends TestCase
             new PropertyDto('dataProperty', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED),
             new PropertyDto('itemProperty', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE),
         ];
-        $this->assertEquals($expectedProperties, $object->getPropertiesCLass());
+        $this->assertEquals($expectedProperties, $object->getPropertiesClass());
 
         $expectedConstructors = [
             new PropertyDto('nameConstructor', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),
@@ -110,7 +110,7 @@ class ObjectDtoTest extends TestCase
             new PropertyDto('dataAttributeTarget', DataTypeEnum::ARRAY, 'target2', true, false, AccessibleEnum::PROTECTED, attributeClassString: TargetData::class),
             new PropertyDto('itemAttributeTarget', 'MockClasses\ItemConstructor', 'target3', true, false, AccessibleEnum::PRIVATE, attributeClassString: TargetData::class),
         ];
-        $this->assertEquals($expectedAttribute, $object->getAttributes());
+        $this->assertEquals($expectedAttribute, $object->getAttributeClass());
 
         $expectedAvailableData = [
             'nameProperty' => new PropertyDto('nameProperty', DataTypeEnum::STRING, 'target1', false, true, AccessibleEnum::PUBLIC),

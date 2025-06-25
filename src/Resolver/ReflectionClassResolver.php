@@ -4,45 +4,35 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
-use ReflectionNamedType;
 use ReflectionProperty;
-use ReflectionType;
-use ReflectionUnionType;
-use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\AttributeDto;
+use Wundii\DataMapper\Dto\MethodDto;
+use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\MethodTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\AttributeInterface;
 
 class ReflectionClassResolver extends AbstractReflectionClassResolver
 {
-    private PropertyDtoResolver $propertyDtoResolver;
+    private ReflectionAnnotationResolver $reflectionAnnotationResolver;
 
     public function __construct(
-        private UseStatementsDto $useStatementsDto,
+        UseStatementsDto $useStatementsDto,
     ) {
-        $this->propertyDtoResolver = new PropertyDtoResolver();
+        parent::__construct();
+
+        $this->reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsDto);
     }
 
-    public function resolvePropertiesConst(ReflectionMethod $reflectionMethod, object|string $objectOrClass, bool $takeValue): array
-    {
-        $propertiesConst = [];
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $propertiesConst[$reflectionParameter->getName()] = $this->propertyDtoResolver->resolve(
-                $reflectionMethod,
-                $reflectionParameter,
-                $objectOrClass,
-                $takeValue,
-            );
-        }
-
-        return $propertiesConst;
-    }
-
+    /**
+     * @throws ReflectionException
+     */
     public function resolve(object|string $objectOrClass, bool $takeValue = false): ReflectionObjectDto
     {
         if (! is_object($objectOrClass) && interface_exists($objectOrClass)) {
@@ -53,42 +43,38 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
         }
 
-        $reflectionClass = $this->getReflectionClass($objectOrClass);
-
-        $attributesClass = [];
-        $propertiesClass = [];
+        $reflectionClass = $this->reflectionClassCache($objectOrClass);
+        $attributesClass = $this->resolveAttributes($reflectionClass);
+        $propertiesClass = $this->resolvePropertiesClass($reflectionClass, $objectOrClass, $takeValue);
         $propertiesConst = [];
         $methodsGetClass = [];
         $methodsOthClass = [];
         $methodsSetClass = [];
 
-        foreach ($reflectionClass->getAttributes() as $attribute) {
-            $instance = $attribute->newInstance();
-            if (! $instance instanceof AttributeInterface) {
-                continue;
-            }
-
-            /**
-             * ausgabe testen ob dies in AttributePropertyDto übertragen werden kann
-             */
-            $attribute->getArguments();
-
-            $attributesClass[] = new AttributeDto(
-                $attribute->getName(),
-                []
-            );
-        }
-
         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-            $methodName = strtolower($reflectionMethod->getName());
+            $method = $this->resolveMethods(
+                $reflectionMethod,
+                $objectOrClass,
+                $takeValue,
+            );
 
-            if (str_starts_with($methodName, '__construct')) {
-                $propertiesConst = $this->resolvePropertiesConst(
-                    $reflectionMethod,
-                    $objectOrClass,
-                    $takeValue,
-                );
+            switch($method->getMethodTypeEnum()) {
+                case MethodTypeEnum::GETTER:
+                    $methodsGetClass[] = $method;
+                    break;
+                case MethodTypeEnum::SETTER:
+                    $methodsSetClass[] = $method;
+                    break;
+                default:
+                    $methodsOthClass[] = $method;
+                    break;
             }
+
+            $propertiesConst += $this->resolvePropertiesConst(
+                $reflectionMethod,
+                $objectOrClass,
+                $propertiesClass,
+            );
         }
 
         return new ReflectionObjectDto(
@@ -99,5 +85,157 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
             $methodsOthClass,
             $methodsSetClass,
         );
+    }
+
+    /**
+     * @return AttributeDto[]
+     */
+    private function resolveAttributes(ReflectionClass|ReflectionMethod|ReflectionProperty $reflection): array
+    {
+        $attributes = [];
+
+        foreach ($reflection->getAttributes() as $attribute) {
+            $instance = $attribute->newInstance();
+            if (! $instance instanceof AttributeInterface) {
+                continue;
+            }
+
+            $attributeProperties = [];
+            $classProperties = $this->reflectionClassPropertiesCache($instance::class);
+
+            foreach ($attribute->getArguments() as $property => $argument) {
+                if (is_int($property)) {
+                    $property = $classProperties[$property] ?? $property;
+                }
+
+                $attributeProperties[$property] = $argument;
+            }
+
+            $attributes[] = new AttributeDto(
+                $attribute->getName(),
+                $attributeProperties,
+            );
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * @return PropertyDto[]
+     * @throws ReflectionException
+     */
+    private function resolvePropertiesClass(
+        ReflectionClass $reflectionClass,
+        object|string $objectOrClass,
+        bool $takeValue,
+    ): array {
+        $properties = [];
+        $invokeObject = $takeValue && is_object($objectOrClass) ? $objectOrClass : null;
+
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $annotation = $this->reflectionAnnotationResolver->resolve($reflectionProperty->getDocComment());
+            $attributes = $this->resolveAttributes($reflectionProperty);
+            $elementDto = $this->reflectionElementsCache(
+                $objectOrClass,
+                $reflectionProperty,
+                $reflectionProperty,
+                $annotation,
+            );
+
+            $value = $takeValue && is_object($objectOrClass)
+                ? $reflectionProperty->getValue($invokeObject)
+                : null;
+
+            $properties[$reflectionProperty->getName()] = new PropertyDto(
+                $elementDto->getName(),
+                $elementDto->getDataType(),
+                $elementDto->getTargetType(),
+                $elementDto->isNullable(),
+                $elementDto->getAccessibleEnum(),
+                $elementDto->isDefaultValueAvailable(),
+                $elementDto->getDefaultValue(),
+                $value,
+                $annotation,
+                $attributes,
+            );
+        }
+
+        return $properties;
+    }
+
+    private function resolveMethods(
+        ReflectionMethod $reflectionMethod,
+        object|string $objectOrClass,
+        bool $takeValue,
+    ): ?MethodDto {
+        $returnType = $reflectionMethod?->getReturnType()?->getName() ?? null;
+        $methodTypEnum = match(true) {
+            $returnType === 'void' => MethodTypeEnum::SETTER,
+            is_string($returnType) && $returnType !== 'void' => MethodTypeEnum::GETTER,
+            default =>  MethodTypeEnum::OTHER,
+        };
+
+        /**
+         * @todo next step
+         */
+
+        $attributes = $this->resolveAttributes($reflectionMethod);
+        $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
+
+        return new MethodDto(
+            $methodTypEnum,
+            AccessibleEnum::PRIVATE,
+            $reflectionMethod->getName(),
+            $returnType,
+            $annotation,
+            [],
+            $attributes,
+        );
+    }
+
+    /**
+     * @param PropertyDto[] $propertiesClass
+     * @return PropertyDto[]
+     * @throws ReflectionException
+     */
+    private function resolvePropertiesConst(
+        ReflectionMethod $reflectionMethod,
+        object|string $objectOrClass,
+        array $propertiesClass,
+    ): array {
+        if (strcasecmp($reflectionMethod->getName(), '__construct') !== 0) {
+            return [];
+        }
+
+        $properties = [];
+
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (array_key_exists($reflectionParameter->getName(), $propertiesClass)) {
+                $properties[$reflectionParameter->getName()] = $propertiesClass[$reflectionParameter->getName()];
+                continue;
+            }
+
+            $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
+            $elementDto = $this->reflectionElementsCache(
+                $objectOrClass,
+                $reflectionMethod,
+                $reflectionParameter,
+                $annotation,
+            );
+
+            $properties[$reflectionParameter->getName()] =new PropertyDto(
+                $elementDto->getName(),
+                $elementDto->getDataType(),
+                $elementDto->getTargetType(),
+                $elementDto->isNullable(),
+                $elementDto->getAccessibleEnum(),
+                $elementDto->isDefaultValueAvailable(),
+                $elementDto->getDefaultValue(),
+                null,
+                $annotation,
+            );
+        }
+
+        return  $properties;
     }
 }

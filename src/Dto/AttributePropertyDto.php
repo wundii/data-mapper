@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
-class AttributePropertyDto
+final readonly class AttributePropertyDto
 {
     public function __construct(
         private string $name,
