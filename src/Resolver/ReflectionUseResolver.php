@@ -10,7 +10,6 @@ use Wundii\DataMapper\Dto\UseStatementDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 
-
 class ReflectionUseResolver extends AbstractReflectionClassResolver
 {
     public function basename(string $classString): string

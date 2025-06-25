@@ -10,6 +10,7 @@ use Wundii\DataMapper\Enum\MethodTypeEnum;
 final readonly class MethodDto
 {
     /**
+     * @param string[] $returnTypes
      * @param ParameterDto[] $parameters
      * @param AttributeDto[] $attributes
      */
@@ -17,8 +18,9 @@ final readonly class MethodDto
         private MethodTypeEnum $methodTypeEnum,
         private AccessibleEnum $accessibleEnum,
         private string $name,
-        private ?string $returnType = null,
-        private ?AnnotationDto $annotations = null,
+        private mixed $value = null,
+        private array $returnTypes = [],
+        private ?AnnotationDto $annotationDto = null,
         private array $parameters = [],
         private array $attributes = [],
     ) {
@@ -39,14 +41,19 @@ final readonly class MethodDto
         return $this->name;
     }
 
-    public function getReturnType(): ?string
+    public function getValue(): mixed
     {
-        return $this->returnType;
+        return $this->value;
     }
 
-    public function getAnnotations(): AnnotationDto
+    public function getReturnTypes(): array
     {
-        return $this->annotations;
+        return $this->returnTypes;
+    }
+
+    public function getAnnotationDto(): AnnotationDto
+    {
+        return $this->annotationDto;
     }
 
     /**

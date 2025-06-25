@@ -39,7 +39,7 @@ abstract class AbstractSourceData implements SourceDataInterface
     /**
      * @throws DataMapperException|ReflectionException
      */
-    public function resolveObjectPropertyDto(string|object $object): ReflectionObjectDto
+    public function resolveObjectDto(string|object $object): ReflectionObjectDto
     {
         if (is_string($object) && array_key_exists($object, self::$objectPropertyDtos)) {
             return self::$objectPropertyDtos[$object];

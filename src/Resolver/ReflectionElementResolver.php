@@ -151,7 +151,7 @@ class ReflectionElementResolver
         return count($tmp) === 1;
     }
 
-    public function accessible(ReflectionProperty|ReflectionMethod $reflection): AccessibleEnum
+    public static function accessible(ReflectionProperty|ReflectionMethod $reflection): AccessibleEnum
     {
         if ($reflection->isPublic()) {
             return AccessibleEnum::PUBLIC;
@@ -167,7 +167,7 @@ class ReflectionElementResolver
     /**
      * @return string[]
      */
-    public function types(null|ReflectionType $type): array
+    public static function types(null|ReflectionType $type): array
     {
         $types = [];
 
@@ -201,7 +201,7 @@ class ReflectionElementResolver
         ?AnnotationDto $annotationDto
     ): ElementDto {
         $name = $reflectionParameter->getName();
-        $types = $this->types($reflectionParameter->getType());
+        $types = self::types($reflectionParameter->getType());
 
         $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
 
@@ -214,7 +214,7 @@ class ReflectionElementResolver
         /**
          * Constructor properties are not accessible, this was updated with the survey of class properties
          */
-        $accessibleEnum = $this->accessible($reflectionMethod);
+        $accessibleEnum = self::accessible($reflectionMethod);
 
         $isDefaultValueAvailable = $reflectionParameter instanceof ReflectionProperty
             ? $reflectionMethod->isDefault()

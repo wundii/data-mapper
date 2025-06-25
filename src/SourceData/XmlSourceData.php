@@ -98,10 +98,10 @@ final class XmlSourceData extends AbstractSourceData
             return new ObjectDto($object ?: '', $dataList, $destination, true);
         }
 
-        $objectPropertyDto = $this->resolveObjectPropertyDto($object ?: '');
+        $reflectionObjectDto = $this->resolveObjectDto($object ?: '');
 
         foreach ($xmlElement->children() as $child) {
-            $propertyDto = $objectPropertyDto->findPropertyDto($dataConfig->getApproach(), $child->getName());
+            $propertyDto = $reflectionObjectDto->findPropertyDto($dataConfig->getApproach(), $child->getName());
             if (! $propertyDto instanceof PropertyDto) {
                 continue;
             }

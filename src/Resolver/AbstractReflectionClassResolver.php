@@ -15,6 +15,8 @@ use Wundii\DataMapper\Exception\DataMapperException;
 
 abstract class AbstractReflectionClassResolver
 {
+    protected ReflectionElementResolver $reflectionElementResolver;
+
     /**
      * @var array<string, ReflectionClass>
      */
@@ -23,8 +25,6 @@ abstract class AbstractReflectionClassResolver
     private static array $reflectionClassPropertiesCache = [];
 
     private static array $reflectionClassElementCache = [];
-
-    protected ReflectionElementResolver $reflectionElementResolver;
 
     public function __construct(
     ) {
@@ -71,6 +71,7 @@ abstract class AbstractReflectionClassResolver
         foreach ($properties as $property) {
             $reflectionClassProperties[] = $property->getName();
         }
+
         self::$reflectionClassPropertiesCache[$classString] = $reflectionClassProperties;
 
         return $reflectionClassProperties;
@@ -85,8 +86,7 @@ abstract class AbstractReflectionClassResolver
         ReflectionProperty|ReflectionMethod $reflectionMethod,
         ReflectionProperty|ReflectionParameter $reflectionParameter,
         ?AnnotationDto $annotationDto
-    ): ElementDto
-    {
+    ): ElementDto {
         $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
 
         $key = $classString . '::' . $reflectionParameter->getName();

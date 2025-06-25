@@ -7,13 +7,15 @@ namespace Wundii\DataMapper\Resolver;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionUnionType;
 use Wundii\DataMapper\Dto\AttributeDto;
 use Wundii\DataMapper\Dto\MethodDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
-use Wundii\DataMapper\Enum\AccessibleEnum;
+use Wundii\DataMapper\Enum\AttributeOriginEnum;
 use Wundii\DataMapper\Enum\MethodTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\AttributeInterface;
@@ -44,7 +46,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
         }
 
         $reflectionClass = $this->reflectionClassCache($objectOrClass);
-        $attributesClass = $this->resolveAttributes($reflectionClass);
+        $attributesClass = $this->resolveAttributes($reflectionClass, AttributeOriginEnum::TARGET_CLASS);
         $propertiesClass = $this->resolvePropertiesClass($reflectionClass, $objectOrClass, $takeValue);
         $propertiesConst = [];
         $methodsGetClass = [];
@@ -58,7 +60,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
                 $takeValue,
             );
 
-            switch($method->getMethodTypeEnum()) {
+            switch ($method->getMethodTypeEnum()) {
                 case MethodTypeEnum::GETTER:
                     $methodsGetClass[] = $method;
                     break;
@@ -90,8 +92,10 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
     /**
      * @return AttributeDto[]
      */
-    private function resolveAttributes(ReflectionClass|ReflectionMethod|ReflectionProperty $reflection): array
-    {
+    private function resolveAttributes(
+        ReflectionClass|ReflectionMethod|ReflectionProperty $reflection,
+        AttributeOriginEnum $attributeOriginEnum,
+    ): array {
         $attributes = [];
 
         foreach ($reflection->getAttributes() as $attribute) {
@@ -112,6 +116,8 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
             }
 
             $attributes[] = new AttributeDto(
+                $attributeOriginEnum,
+                $reflection->getName(),
                 $attribute->getName(),
                 $attributeProperties,
             );
@@ -134,7 +140,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $annotation = $this->reflectionAnnotationResolver->resolve($reflectionProperty->getDocComment());
-            $attributes = $this->resolveAttributes($reflectionProperty);
+            $attributes = $this->resolveAttributes($reflectionProperty, AttributeOriginEnum::TARGET_PROPERTY);
             $elementDto = $this->reflectionElementsCache(
                 $objectOrClass,
                 $reflectionProperty,
@@ -163,30 +169,40 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
         return $properties;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function resolveMethods(
         ReflectionMethod $reflectionMethod,
         object|string $objectOrClass,
         bool $takeValue,
     ): ?MethodDto {
-        $returnType = $reflectionMethod?->getReturnType()?->getName() ?? null;
-        $methodTypEnum = match(true) {
-            $returnType === 'void' => MethodTypeEnum::SETTER,
-            is_string($returnType) && $returnType !== 'void' => MethodTypeEnum::GETTER,
-            default =>  MethodTypeEnum::OTHER,
+        $returnType = $reflectionMethod?->getReturnType() ?? null;
+        $returnType = match (true) {
+            $returnType instanceof ReflectionNamedType => $returnType->getName(),
+            $returnType instanceof ReflectionUnionType => implode('|', $returnType->getTypes()),
+            default => null,
         };
 
-        /**
-         * @todo next step
-         */
+        $methodTypEnum = match (true) {
+            $returnType === 'void' => MethodTypeEnum::SETTER,
+            is_string($returnType) && $returnType !== 'void' => MethodTypeEnum::GETTER,
+            default => MethodTypeEnum::OTHER,
+        };
 
-        $attributes = $this->resolveAttributes($reflectionMethod);
+        $attributes = $this->resolveAttributes($reflectionMethod, AttributeOriginEnum::TARGET_METHOD);
         $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
+
+        $value = $takeValue && is_object($objectOrClass)
+            ? $reflectionMethod->invoke($objectOrClass)
+            : null;
 
         return new MethodDto(
             $methodTypEnum,
-            AccessibleEnum::PRIVATE,
+            ReflectionElementResolver::accessible($reflectionMethod),
             $reflectionMethod->getName(),
-            $returnType,
+            $value,
+            ReflectionElementResolver::types($reflectionMethod->getReturnType()),
             $annotation,
             [],
             $attributes,
@@ -223,7 +239,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
                 $annotation,
             );
 
-            $properties[$reflectionParameter->getName()] =new PropertyDto(
+            $properties[$reflectionParameter->getName()] = new PropertyDto(
                 $elementDto->getName(),
                 $elementDto->getDataType(),
                 $elementDto->getTargetType(),
@@ -236,6 +252,6 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
             );
         }
 
-        return  $properties;
+        return $properties;
     }
 }

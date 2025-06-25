@@ -22,16 +22,6 @@ class TestClass
     ) {
     }
 
-    #[TargetData('test_name')]
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return void
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -55,5 +45,11 @@ class TestClass
     public function setActive(bool $active): void
     {
         $this->active = $active;
+    }
+
+    #[TargetData('test_name')]
+    private function getName(): string|bool
+    {
+        return $this->name;
     }
 }

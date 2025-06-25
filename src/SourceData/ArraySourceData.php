@@ -105,13 +105,13 @@ final class ArraySourceData extends AbstractSourceData
             return new ObjectDto($object ?: '', $dataList, $destination, true);
         }
 
-        $objectPropertyDto = $this->resolveObjectPropertyDto($object ?: '');
+        $reflectionObjectDto = $this->resolveObjectDto($object ?: '');
 
         foreach ($array as $arrayKey => $arrayValue) {
             $arrayKey = (string) $arrayKey;
             $value = $arrayValue;
 
-            $propertyDto = $objectPropertyDto->findPropertyDto($dataConfig->getApproach(), $arrayKey);
+            $propertyDto = $reflectionObjectDto->findPropertyDto($dataConfig->getApproach(), $arrayKey);
             if (! $propertyDto instanceof PropertyDto) {
                 continue;
             }

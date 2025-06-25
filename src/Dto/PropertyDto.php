@@ -21,7 +21,7 @@ final readonly class PropertyDto
         private bool $isDefaultValueAvailable = false,
         private mixed $defaultValue = null,
         private mixed $value = null,
-        private ?AnnotationDto $annotations = null,
+        private ?AnnotationDto $annotationDto = null,
         private array $attributes = [],
     ) {
     }
@@ -82,9 +82,9 @@ final readonly class PropertyDto
         return '';
     }
 
-    public function getAnnotations(): AnnotationDto
+    public function getAnnotationDto(): AnnotationDto
     {
-        return $this->annotations;
+        return $this->annotationDto;
     }
 
     /**

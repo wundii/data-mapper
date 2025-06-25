@@ -11,8 +11,6 @@ use Wundii\DataMapper\Enum\ApproachEnum;
 
 final readonly class ReflectionObjectDto
 {
-    private array $test;
-
     /**
      * @param AttributeDto[] $attributeClass
      * @param PropertyDto[] $propertiesClass
@@ -29,7 +27,6 @@ final readonly class ReflectionObjectDto
         private array $methodOthers,
         private array $methodSetters,
     ) {
-        $this->test = [];
     }
 
     /**
