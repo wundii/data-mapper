@@ -9,13 +9,13 @@ use Wundii\DataMapper\Enum\AttributeOriginEnum;
 final readonly class AttributeDto
 {
     /**
-     * @param AttributePropertyDto[] $attributeProperties
+     * @param mixed[] $arguments
      */
     public function __construct(
         private AttributeOriginEnum $attributeOriginEnum,
         private string $originName,
         private string $classString,
-        private array $attributeProperties = [],
+        private array $arguments = [],
     ) {
     }
 
@@ -35,10 +35,10 @@ final readonly class AttributeDto
     }
 
     /**
-     * @return AttributePropertyDto[]
+     * @return mixed[]
      */
-    public function getAttributeProperties(): array
+    public function getArguments(): array
     {
-        return $this->attributeProperties;
+        return $this->arguments;
     }
 }

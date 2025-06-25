@@ -12,18 +12,28 @@ use ReflectionProperty;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ElementDto;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Interface\AttributeInterface;
 
-abstract class AbstractReflectionClassResolver
+/**
+ * @template T of object
+ */
+abstract class AbstractReflectionResolver
 {
     protected ReflectionElementResolver $reflectionElementResolver;
 
     /**
-     * @var array<string, ReflectionClass>
+     * @var array<string, ReflectionClass<T>>
      */
     private static array $reflectionClassCache = [];
 
+    /**
+     * @var array<string, string[]>
+     */
     private static array $reflectionClassPropertiesCache = [];
 
+    /**
+     * @var array<string, ElementDto>
+     */
     private static array $reflectionClassElementCache = [];
 
     public function __construct(
@@ -32,7 +42,8 @@ abstract class AbstractReflectionClassResolver
     }
 
     /**
-     * @param object|class-string $objectOrClass
+     * @param class-string<T>|T $objectOrClass
+     * @return ReflectionClass<T>
      */
     public function reflectionClassCache(object|string $objectOrClass): ReflectionClass
     {
@@ -53,14 +64,14 @@ abstract class AbstractReflectionClassResolver
     }
 
     /**
-     * @param object|class-string $objectOrClass
+     * @param class-string<T>|T $objectOrClass
      * @return string[]
      */
     public function reflectionClassPropertiesCache(object|string $objectOrClass): array
     {
         $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
 
-        if (isset(self::$reflectionClassPropertiesCache[$classString])) {
+        if (array_key_exists($classString, self::$reflectionClassPropertiesCache)) {
             return self::$reflectionClassPropertiesCache[$classString];
         }
 
@@ -78,7 +89,7 @@ abstract class AbstractReflectionClassResolver
     }
 
     /**
-     * @param object|class-string $objectOrClass
+     * @param class-string<T>|T $objectOrClass
      * @throws ReflectionException
      */
     public function reflectionElementsCache(

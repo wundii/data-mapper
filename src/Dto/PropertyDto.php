@@ -82,7 +82,7 @@ final readonly class PropertyDto
         return '';
     }
 
-    public function getAnnotationDto(): AnnotationDto
+    public function getAnnotationDto(): ?AnnotationDto
     {
         return $this->annotationDto;
     }

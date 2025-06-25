@@ -20,7 +20,11 @@ use Wundii\DataMapper\Enum\MethodTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\AttributeInterface;
 
-class ReflectionClassResolver extends AbstractReflectionClassResolver
+/**
+ * @template T of object
+ * @extends AbstractReflectionResolver<T>
+ */
+class ReflectionClassResolver extends AbstractReflectionResolver
 {
     private ReflectionAnnotationResolver $reflectionAnnotationResolver;
 
@@ -33,6 +37,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
     }
 
     /**
+     * @param class-string<T>|T $objectOrClass
      * @throws ReflectionException
      */
     public function resolve(object|string $objectOrClass, bool $takeValue = false): ReflectionObjectDto
@@ -90,6 +95,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
     }
 
     /**
+     * @param ReflectionClass<T>|ReflectionMethod|ReflectionProperty $reflection
      * @return AttributeDto[]
      */
     private function resolveAttributes(
@@ -104,7 +110,8 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
                 continue;
             }
 
-            $attributeProperties = [];
+            $arguments = [];
+            /** @phpstan-ignore-next-line */
             $classProperties = $this->reflectionClassPropertiesCache($instance::class);
 
             foreach ($attribute->getArguments() as $property => $argument) {
@@ -112,14 +119,14 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
                     $property = $classProperties[$property] ?? $property;
                 }
 
-                $attributeProperties[$property] = $argument;
+                $arguments[$property] = $argument;
             }
 
             $attributes[] = new AttributeDto(
                 $attributeOriginEnum,
                 $reflection->getName(),
                 $attribute->getName(),
-                $attributeProperties,
+                $arguments,
             );
         }
 
@@ -127,6 +134,8 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
     }
 
     /**
+     * @param ReflectionClass<T> $reflectionClass
+     * @param class-string<T>|T $objectOrClass
      * @return PropertyDto[]
      * @throws ReflectionException
      */
@@ -170,14 +179,15 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
     }
 
     /**
+     * @param class-string<T>|T $objectOrClass
      * @throws ReflectionException
      */
     private function resolveMethods(
         ReflectionMethod $reflectionMethod,
         object|string $objectOrClass,
         bool $takeValue,
-    ): ?MethodDto {
-        $returnType = $reflectionMethod?->getReturnType() ?? null;
+    ): MethodDto {
+        $returnType = $reflectionMethod->getReturnType() ?? null;
         $returnType = match (true) {
             $returnType instanceof ReflectionNamedType => $returnType->getName(),
             $returnType instanceof ReflectionUnionType => implode('|', $returnType->getTypes()),
@@ -210,6 +220,7 @@ class ReflectionClassResolver extends AbstractReflectionClassResolver
     }
 
     /**
+     * @param class-string<T>|T $objectOrClass
      * @param PropertyDto[] $propertiesClass
      * @return PropertyDto[]
      * @throws ReflectionException

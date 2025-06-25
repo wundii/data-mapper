@@ -46,12 +46,15 @@ final readonly class MethodDto
         return $this->value;
     }
 
+    /**
+     * @return string[]
+     */
     public function getReturnTypes(): array
     {
         return $this->returnTypes;
     }
 
-    public function getAnnotationDto(): AnnotationDto
+    public function getAnnotationDto(): ?AnnotationDto
     {
         return $this->annotationDto;
     }
