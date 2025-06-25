@@ -27,7 +27,7 @@ class TestClass
         $this->name = $name;
     }
 
-    public function getAge(): int
+    public function getAge(): ?int
     {
         return $this->age;
     }

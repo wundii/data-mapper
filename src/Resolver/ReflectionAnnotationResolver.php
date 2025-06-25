@@ -11,7 +11,7 @@ use Wundii\DataMapper\Dto\UseStatementsDto;
 class ReflectionAnnotationResolver
 {
     public function __construct(
-        private UseStatementsDto $useStatementsDto,
+        private ?UseStatementsDto $useStatementsDto,
     ) {
     }
 
@@ -21,6 +21,10 @@ class ReflectionAnnotationResolver
      */
     public function completeClassStrings(array $types): array
     {
+        if (! $this->useStatementsDto instanceof UseStatementsDto) {
+            return $types;
+        }
+
         foreach ($types as $key => $type) {
             if (class_exists($type)) {
                 continue;

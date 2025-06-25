@@ -12,7 +12,6 @@ use ReflectionProperty;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ElementDto;
 use Wundii\DataMapper\Exception\DataMapperException;
-use Wundii\DataMapper\Interface\AttributeInterface;
 
 /**
  * @template T of object
@@ -100,7 +99,7 @@ abstract class AbstractReflectionResolver
     ): ElementDto {
         $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
 
-        $key = $classString . '::' . $reflectionParameter->getName();
+        $key = $classString . '::' . $reflectionMethod->getName() . '::' . $reflectionParameter->getName();
 
         if (isset(self::$reflectionClassElementCache[$key])) {
             return self::$reflectionClassElementCache[$key];

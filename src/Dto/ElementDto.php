@@ -9,6 +9,9 @@ use Wundii\DataMapper\Enum\DataTypeEnum;
 
 final readonly class ElementDto
 {
+    /**
+     * @param string[] $types
+     */
     public function __construct(
         private string $name,
         private string|DataTypeEnum $dataType,
@@ -17,6 +20,7 @@ final readonly class ElementDto
         private AccessibleEnum $accessibleEnum = AccessibleEnum::PUBLIC,
         private bool $isDefaultValueAvailable = false,
         private mixed $defaultValue = null,
+        private array $types = [],
     ) {
     }
 
@@ -53,5 +57,13 @@ final readonly class ElementDto
     public function getDefaultValue(): mixed
     {
         return $this->defaultValue;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTypes(): array
+    {
+        return $this->types;
     }
 }

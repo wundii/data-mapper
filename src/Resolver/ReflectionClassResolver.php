@@ -10,11 +10,13 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
+use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\AttributeDto;
+use Wundii\DataMapper\Dto\ElementDto;
 use Wundii\DataMapper\Dto\MethodDto;
+use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
-use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Enum\AttributeOriginEnum;
 use Wundii\DataMapper\Enum\MethodTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
@@ -28,17 +30,10 @@ class ReflectionClassResolver extends AbstractReflectionResolver
 {
     private ReflectionAnnotationResolver $reflectionAnnotationResolver;
 
-    public function __construct(
-        UseStatementsDto $useStatementsDto,
-    ) {
-        parent::__construct();
-
-        $this->reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsDto);
-    }
-
     /**
      * @param class-string<T>|T $objectOrClass
      * @throws ReflectionException
+     * @throws DataMapperException
      */
     public function resolve(object|string $objectOrClass, bool $takeValue = false): ReflectionObjectDto
     {
@@ -49,6 +44,9 @@ class ReflectionClassResolver extends AbstractReflectionResolver
         if (! is_object($objectOrClass) && ! class_exists($objectOrClass)) {
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
         }
+
+        $useStatementsDto = (new ReflectionUseResolver())->resolve($objectOrClass);
+        $this->reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsDto);
 
         $reflectionClass = $this->reflectionClassCache($objectOrClass);
         $attributesClass = $this->resolveAttributes($reflectionClass, AttributeOriginEnum::TARGET_CLASS);
@@ -147,8 +145,18 @@ class ReflectionClassResolver extends AbstractReflectionResolver
         $properties = [];
         $invokeObject = $takeValue && is_object($objectOrClass) ? $objectOrClass : null;
 
+        $constructorAnnotation = null;
+        if ($reflectionClass->hasMethod('__construct')) {
+            $constructorMethod = $reflectionClass->getMethod('__construct');
+            $constructorAnnotation = $this->reflectionAnnotationResolver->resolve($constructorMethod->getDocComment());
+        }
+
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $annotation = $this->reflectionAnnotationResolver->resolve($reflectionProperty->getDocComment());
+            if (! $annotation instanceof AnnotationDto && $constructorAnnotation instanceof AnnotationDto) {
+                $annotation = $constructorAnnotation;
+            }
+
             $attributes = $this->resolveAttributes($reflectionProperty, AttributeOriginEnum::TARGET_PROPERTY);
             $elementDto = $this->reflectionElementsCache(
                 $objectOrClass,
@@ -162,11 +170,11 @@ class ReflectionClassResolver extends AbstractReflectionResolver
                 : null;
 
             $properties[$reflectionProperty->getName()] = new PropertyDto(
+                $elementDto->getAccessibleEnum(),
                 $elementDto->getName(),
                 $elementDto->getDataType(),
                 $elementDto->getTargetType(),
                 $elementDto->isNullable(),
-                $elementDto->getAccessibleEnum(),
                 $elementDto->isDefaultValueAvailable(),
                 $elementDto->getDefaultValue(),
                 $value,
@@ -203,18 +211,57 @@ class ReflectionClassResolver extends AbstractReflectionResolver
         $attributes = $this->resolveAttributes($reflectionMethod, AttributeOriginEnum::TARGET_METHOD);
         $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
 
-        $value = $takeValue && is_object($objectOrClass)
-            ? $reflectionMethod->invoke($objectOrClass)
-            : null;
+        $firstElementDto = null;
+        $parameters = [];
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            $elementDto = $this->reflectionElementsCache(
+                $objectOrClass,
+                $reflectionMethod,
+                $reflectionParameter,
+                $annotation,
+            );
+
+            $firstElementDto = $firstElementDto instanceof ElementDto
+                ? $firstElementDto
+                : $elementDto;
+
+            $parameters[] = new ParameterDto(
+                $elementDto->getName(),
+                $elementDto->getTypes(),
+                $elementDto->isDefaultValueAvailable(),
+                $elementDto->getDefaultValue(),
+            );
+        }
+
+        if ($methodTypEnum === MethodTypeEnum::SETTER && count($parameters) !== 1) {
+            $methodTypEnum = MethodTypeEnum::OTHER;
+        }
+
+        if ($methodTypEnum === MethodTypeEnum::GETTER && $parameters !== []) {
+            $methodTypEnum = MethodTypeEnum::OTHER;
+        }
+
+        $value = null;
+        if (
+            $takeValue
+            && is_object($objectOrClass)
+            && strcasecmp($reflectionMethod->getName(), '__construct') !== 0
+            && $methodTypEnum === MethodTypeEnum::GETTER
+        ) {
+            $value = $reflectionMethod->invoke($objectOrClass);
+        }
 
         return new MethodDto(
             $methodTypEnum,
             ReflectionElementResolver::accessible($reflectionMethod),
             $reflectionMethod->getName(),
+            $firstElementDto?->getDataType() ?? '',
+            $firstElementDto?->getTargetType(),
+            $firstElementDto?->isNullable() ?? false,
             $value,
-            ReflectionElementResolver::types($reflectionMethod->getReturnType()),
+            $firstElementDto?->getTypes() ?? [],
             $annotation,
-            [],
+            $parameters,
             $attributes,
         );
     }
@@ -251,11 +298,11 @@ class ReflectionClassResolver extends AbstractReflectionResolver
             );
 
             $properties[$reflectionParameter->getName()] = new PropertyDto(
+                $elementDto->getAccessibleEnum(),
                 $elementDto->getName(),
                 $elementDto->getDataType(),
                 $elementDto->getTargetType(),
                 $elementDto->isNullable(),
-                $elementDto->getAccessibleEnum(),
                 $elementDto->isDefaultValueAvailable(),
                 $elementDto->getDefaultValue(),
                 null,

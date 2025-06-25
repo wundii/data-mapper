@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
+use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Interface\ElementDtoInterface;
 
-final readonly class PropertyDto
+final readonly class PropertyDto implements ElementDtoInterface
 {
     /**
      * @param AttributeDto[] $attributes
      */
     public function __construct(
+        private AccessibleEnum $accessibleEnum,
         private string $name,
         private string|DataTypeEnum $dataType,
         private ?string $targetType,
         private bool $nullable,
-        private AccessibleEnum $accessibleEnum,
         private bool $isDefaultValueAvailable = false,
         private mixed $defaultValue = null,
         private mixed $value = null,
@@ -44,6 +46,25 @@ final readonly class PropertyDto
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getterName(): string
+    {
+        $sourceName = $this->name;
+
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->getClassString() !== SourceData::class) {
+                continue;
+            }
+
+            if (! is_string($attribute->getArguments()['target'])) {
+                continue;
+            }
+
+            $sourceName = $attribute->getArguments()['target'];
+        }
+
+        return $sourceName;
     }
 
     public function getAccessibleEnum(): AccessibleEnum

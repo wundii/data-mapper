@@ -8,11 +8,12 @@ use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Attribute\TargetData;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Interface\ElementDtoInterface;
 
 final readonly class ReflectionObjectDto
 {
     /**
-     * @param AttributeDto[] $attributeClass
+     * @param AttributeDto[] $attributesClass
      * @param PropertyDto[] $propertiesClass
      * @param PropertyDto[] $propertiesConst
      * @param MethodDto[] $methodGetters
@@ -20,7 +21,7 @@ final readonly class ReflectionObjectDto
      * @param MethodDto[] $methodSetters
      */
     public function __construct(
-        private array $attributeClass,
+        private array $attributesClass,
         private array $propertiesClass,
         private array $propertiesConst,
         private array $methodGetters,
@@ -32,9 +33,9 @@ final readonly class ReflectionObjectDto
     /**
      * @return AttributeDto[]
      */
-    public function getAttributeClass(): array
+    public function getAttributesClass(): array
     {
-        return $this->attributeClass;
+        return $this->attributesClass;
     }
 
     /**
@@ -77,85 +78,83 @@ final readonly class ReflectionObjectDto
         return $this->methodSetters;
     }
 
-    // /**
-    //  * @return PropertyDto[]
-    //  */
-    // public function availableData(): array
-    // {
-    //     $data = [];
-    //     foreach ($this->propertiesClass as $property) {
-    //         if ($property->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
-    //             continue;
-    //         }
-    //
-    //         $data[$property->getName()] = $property;
-    //     }
-    //
-    //     foreach ($this->methodGetters as $getter) {
-    //         if ($getter->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
-    //             continue;
-    //         }
-    //
-    //         $data[$getter->getName()] = $getter;
-    //     }
-    //
-    //     foreach ($this->attributeClass as $attribute) {
-    //         if ($attribute->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
-    //             continue;
-    //         }
-    //
-    //         if ($attribute->getAttributeClassString() !== SourceData::class) {
-    //             continue;
-    //         }
-    //
-    //         $data[$attribute->getName()] = $attribute;
-    //     }
-    //
-    //     return $data;
-    // }
-    //
-    // public function findAttributeTargetPropertyDto(string $name): ?PropertyDto
-    // {
-    //     foreach ($this->attributeClass as $attribute) {
-    //         if ($attribute->getAttributeClassString() !== TargetData::class) {
-    //             continue;
-    //         }
-    //
-    //         if (strcasecmp($attribute->getName(), $name) === 0) {
-    //             return $attribute;
-    //         }
-    //     }
-    //
-    //     return null;
-    // }
-    //
-    // public function findPropertyDto(ApproachEnum $approachEnum, string $name): ?PropertyDto
-    // {
-    //     $propertyDtos = match ($approachEnum) {
-    //         ApproachEnum::CONSTRUCTOR => $this->propertiesConst,
-    //         ApproachEnum::PROPERTY => $this->propertiesClass,
-    //         ApproachEnum::SETTER => $this->methodSetters,
-    //     };
-    //
-    //     $propertyDto = $this->findAttributeTargetPropertyDto($name);
-    //     if ($propertyDto instanceof PropertyDto) {
-    //         return $propertyDto;
-    //     }
-    //
-    //     foreach ($propertyDtos as $propertyDto) {
-    //         $propertyName = $propertyDto->getName();
-    //         if (
-    //             $approachEnum === ApproachEnum::SETTER
-    //             && str_starts_with($propertyName, 'set')
-    //         ) {
-    //             $propertyName = substr($propertyName, 3);
-    //         }
-    //
-    //         if (strcasecmp($propertyName, $name) === 0) {
-    //             return $propertyDto;
-    //         }
-    //     }
-    //
-    //     return null;
-    // }
+    /**
+     * @return AttributeDto[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributesClass;
+    }
+
+    /**
+     * @return ElementDtoInterface[]
+     */
+    public function availableData(): array
+    {
+        $data = [];
+        foreach ($this->propertiesClass as $propertyClass) {
+            if ($propertyClass->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
+                continue;
+            }
+
+            $data[$propertyClass->getName()] = $propertyClass;
+        }
+
+        foreach ($this->methodGetters as $methodGetter) {
+            if ($methodGetter->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
+                continue;
+            }
+
+            $data[$methodGetter->getName()] = $methodGetter;
+
+            foreach ($methodGetter->getAttributes() as $attribute) {
+                if ($attribute->getClassString() !== SourceData::class) {
+                    continue;
+                }
+
+                if (! is_string($attribute->getArguments()['target'])) {
+                    continue;
+                }
+
+                $data[$attribute->getArguments()['target']] = $methodGetter;
+            }
+        }
+
+        return $data;
+    }
+
+    public function findElementDto(ApproachEnum $approachEnum, string $name): ?ElementDtoInterface
+    {
+        $elementDto = match ($approachEnum) {
+            ApproachEnum::CONSTRUCTOR => $this->propertiesConst,
+            ApproachEnum::PROPERTY => $this->propertiesClass,
+            ApproachEnum::SETTER => $this->methodSetters,
+        };
+
+        foreach ($elementDto as $propertyDto) {
+            $propertyName = $propertyDto->getName();
+
+            foreach ($propertyDto->getAttributes() as $attribute) {
+                if (
+                    $attribute->getClassString() === TargetData::class
+                    && $attribute->getArguments()['alias'] === $name
+                ) {
+                    return $propertyDto;
+                }
+            }
+
+            if (
+                $approachEnum === ApproachEnum::SETTER
+                && strcasecmp(substr($propertyName, 3), $name) === 0
+            ) {
+                return $propertyDto;
+            }
+
+            if (strcasecmp($propertyName, $name) === 0) {
+                return $propertyDto;
+            }
+        }
+
+        return null;
+    }
 }

@@ -167,7 +167,7 @@ class ReflectionElementResolver
     /**
      * @return string[]
      */
-    public static function types(null|ReflectionType $type): array
+    public function types(null|ReflectionType $type): array
     {
         $types = [];
 
@@ -201,7 +201,7 @@ class ReflectionElementResolver
         ?AnnotationDto $annotationDto
     ): ElementDto {
         $name = $reflectionParameter->getName();
-        $types = self::types($reflectionParameter->getType());
+        $types = $this->types($reflectionParameter->getType());
 
         $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
 
@@ -232,6 +232,7 @@ class ReflectionElementResolver
             $accessibleEnum,
             $isDefaultValueAvailable,
             $defaultValue,
+            $types,
         );
     }
 }
