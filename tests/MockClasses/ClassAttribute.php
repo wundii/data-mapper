@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MockClasses;
 
 use Attribute;
-use Wundii\DataMapper\Interface\AttributeInterface;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class ClassAttribute implements AttributeInterface
+class ClassAttribute
 {
     public function __construct(
         private ?string $name = null,

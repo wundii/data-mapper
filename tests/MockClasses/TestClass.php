@@ -6,9 +6,7 @@ namespace MockClasses;
 
 use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Attribute\TargetData;
-use Wundii\DataMapper\Attribute\TestData;
 
-#[TestData('asd')]
 class TestClass
 {
     public function __construct(
