@@ -217,7 +217,7 @@ class ReflectionElementResolver
         $accessibleEnum = self::accessible($reflectionMethod);
 
         $isDefaultValueAvailable = $reflectionParameter instanceof ReflectionProperty
-            ? $reflectionParameter->isDefault()
+            ? $reflectionParameter->hasDefaultValue()
             : $reflectionParameter->isDefaultValueAvailable();
 
         $defaultValue = $isDefaultValueAvailable

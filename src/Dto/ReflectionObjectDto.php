@@ -83,7 +83,36 @@ final readonly class ReflectionObjectDto
      */
     public function getAttributes(): array
     {
-        return $this->attributesClass;
+        $attributes = $this->attributesClass;
+
+        foreach ($this->getProperties() as $propertyDto) {
+            $attributes = array_merge($attributes, $propertyDto->getAttributes());
+        }
+
+        foreach ($this->getMethods() as $methodDto) {
+            $attributes = array_merge($attributes, $methodDto->getAttributes());
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * @return PropertyDto[]
+     */
+    public function getProperties(): array
+    {
+        $properties = $this->propertiesClass;
+        return array_merge($properties, $this->propertiesConst);
+    }
+
+    /**
+     * @return MethodDto[]
+     */
+    public function getMethods(): array
+    {
+        $methods = $this->methodGetters;
+        $methods = array_merge($methods, $this->methodSetters);
+        return array_merge($methods, $this->methodOthers);
     }
 
     /**
@@ -92,12 +121,24 @@ final readonly class ReflectionObjectDto
     public function availableData(): array
     {
         $data = [];
-        foreach ($this->propertiesClass as $propertyClass) {
-            if ($propertyClass->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
+        foreach ($this->getProperties() as $propertyDto) {
+            if ($propertyDto->getAccessibleEnum() !== AccessibleEnum::PUBLIC) {
                 continue;
             }
 
-            $data[$propertyClass->getName()] = $propertyClass;
+            $data[$propertyDto->getName()] = $propertyDto;
+
+            foreach ($propertyDto->getAttributes() as $attribute) {
+                if ($attribute->getClassString() !== SourceData::class) {
+                    continue;
+                }
+
+                if (! is_string($attribute->getArguments()['target'])) {
+                    continue;
+                }
+
+                $data[$attribute->getArguments()['target']] = $propertyDto;
+            }
         }
 
         foreach ($this->methodGetters as $methodGetter) {
@@ -127,7 +168,7 @@ final readonly class ReflectionObjectDto
     {
         $elementDto = match ($approachEnum) {
             ApproachEnum::CONSTRUCTOR => $this->propertiesConst,
-            ApproachEnum::PROPERTY => $this->propertiesClass,
+            ApproachEnum::PROPERTY => $this->getProperties(),
             ApproachEnum::SETTER => $this->methodSetters,
         };
 
