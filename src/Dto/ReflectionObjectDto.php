@@ -83,7 +83,25 @@ final readonly class ReflectionObjectDto
      */
     public function getAttributes(): array
     {
-        return $this->attributesClass;
+        $attributes = $this->attributesClass;
+
+        foreach ($this->propertiesClass as $propertyClass) {
+            $attributes = array_merge($attributes, $propertyClass->getAttributes());
+        }
+
+        foreach ($this->methodGetters as $methodGetter) {
+            $attributes = array_merge($attributes, $methodGetter->getAttributes());
+        }
+
+        foreach ($this->methodSetters as $methodSetter) {
+            $attributes = array_merge($attributes, $methodSetter->getAttributes());
+        }
+
+        foreach ($this->methodOthers as $methodOther) {
+            $attributes = array_merge($attributes, $methodOther->getAttributes());
+        }
+
+        return $attributes;
     }
 
     /**
