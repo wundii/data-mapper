@@ -7,7 +7,6 @@ namespace Wundii\DataMapper\SourceData;
 use Exception;
 use ReflectionException;
 use SimpleXMLElement;
-use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\Type\ArrayDto;
 use Wundii\DataMapper\Dto\Type\BoolDto;
 use Wundii\DataMapper\Dto\Type\FloatDto;
@@ -20,6 +19,7 @@ use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Interface\ElementDtoInterface;
 use Wundii\DataMapper\Interface\ObjectDtoInterface;
 use Wundii\DataMapper\Resolver\ObjectDtoResolver;
 
@@ -57,6 +57,7 @@ final class XmlSourceData extends AbstractSourceData
             $data = match ($dataType) {
                 DataTypeEnum::INTEGER => new IntDto($value, $name),
                 DataTypeEnum::FLOAT => new FloatDto($value, $name),
+                /** @phpstan-ignore-next-line argument.type */
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $type, $name),
                 DataTypeEnum::STRING => new StringDto($value, $name),
                 default => throw DataMapperException::Error('Element array invalid element data type for the target ' . $name),
@@ -73,18 +74,19 @@ final class XmlSourceData extends AbstractSourceData
     }
 
     /**
+     * @param class-string<T>|T|null $objectOrClass
      * @throws DataMapperException|ReflectionException
      */
     public function elementObject(
         DataConfigInterface $dataConfig,
         SimpleXMLElement $xmlElement,
-        null|string|object $object,
+        null|string|object $objectOrClass,
         null|string $destination = null,
     ): ?ObjectDtoInterface {
         $dataList = [];
 
-        if (is_string($object)) {
-            $object = $dataConfig->mapClassName($object);
+        if (is_string($objectOrClass)) {
+            $objectOrClass = $dataConfig->mapClassName($objectOrClass);
         }
 
         if ($xmlElement->count() === 0) {
@@ -95,23 +97,24 @@ final class XmlSourceData extends AbstractSourceData
             $value = (string) $xmlElement;
             $dataList[] = new StringDto($value, $destination);
 
-            return new ObjectDto($object ?: '', $dataList, $destination, true);
+            return new ObjectDto($objectOrClass ?: '', $dataList, $destination, true);
         }
 
-        $objectPropertyDto = $this->resolveObjectPropertyDto($object ?: '');
+        /** @phpstan-ignore-next-line */
+        $reflectionObjectDto = $this->resolveObjectDto($objectOrClass ?: '');
 
         foreach ($xmlElement->children() as $child) {
-            $propertyDto = $objectPropertyDto->findPropertyDto($dataConfig->getApproach(), $child->getName());
-            if (! $propertyDto instanceof PropertyDto) {
+            $elementDto = $reflectionObjectDto->findElementDto($dataConfig->getApproach(), $child->getName());
+            if (! $elementDto instanceof ElementDtoInterface) {
                 continue;
             }
 
             $value = (string) $child;
-            $name = $propertyDto->getName();
-            $dataType = $propertyDto->getDataType();
-            $targetType = $propertyDto->getTargetType();
+            $name = $elementDto->getName();
+            $dataType = $elementDto->getDataType();
+            $targetType = $elementDto->getTargetType();
 
-            if ($propertyDto->isNullable() && $value === '') {
+            if ($elementDto->isNullable() && $value === '') {
                 $dataType = DataTypeEnum::NULL;
             }
 
@@ -121,6 +124,7 @@ final class XmlSourceData extends AbstractSourceData
                 DataTypeEnum::FLOAT => new FloatDto($value, $name),
                 DataTypeEnum::BOOLEAN => new BoolDto($value, $name),
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, $child, $targetType, $name),
+                /** @phpstan-ignore-next-line */
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $child, $targetType, $name),
                 DataTypeEnum::STRING => new StringDto($value, $name),
                 default => throw DataMapperException::Error('Element object invalid element data type for the target ' . $name),
@@ -133,7 +137,7 @@ final class XmlSourceData extends AbstractSourceData
             $dataList[] = $data;
         }
 
-        return new ObjectDto($object ?: '', $dataList, $destination);
+        return new ObjectDto($objectOrClass ?: '', $dataList, $destination);
     }
 
     /**
@@ -175,7 +179,7 @@ final class XmlSourceData extends AbstractSourceData
         }
 
         $object = $this->resolveObject($objectDtoResolver, $xmlElement);
-        if ($object instanceof $this->object) {
+        if ($object instanceof $this->objectOrClass) {
             /** @var T $object */
             return $object;
         }
@@ -183,21 +187,21 @@ final class XmlSourceData extends AbstractSourceData
         $objects = [];
         foreach ($xmlElement->children() ?? [] as $child) {
             $object = $this->resolveObject($objectDtoResolver, $child);
-            if ($object instanceof $this->object) {
+            if ($object instanceof $this->objectOrClass) {
                 $objects[] = $object;
             }
         }
 
         if ($this->forceInstance && $objects === []) {
-            $object = $objectDtoResolver->createInstance($this->dataConfig, new ObjectDto($this->object, []));
-            if ($object instanceof $this->object) {
+            $object = $objectDtoResolver->createInstance($this->dataConfig, new ObjectDto($this->objectOrClass, []));
+            if ($object instanceof $this->objectOrClass) {
                 /** @var T $object */
                 return $object;
             }
         }
 
         if ($objects === []) {
-            $classString = is_string($this->object) ? $this->object : get_class($this->object);
+            $classString = is_string($this->objectOrClass) ? $this->objectOrClass : get_class($this->objectOrClass);
 
             throw DataMapperException::Error('Invalid object from XmlResolver, could not create an instance of ' . $classString);
         }
@@ -214,7 +218,7 @@ final class XmlSourceData extends AbstractSourceData
         ObjectDtoResolver $objectDtoResolver,
         SimpleXMLElement $xmlElement,
     ): ?object {
-        $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->object);
+        $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->objectOrClass);
         if (! $elementObject instanceof ObjectDtoInterface) {
             return null;
         }

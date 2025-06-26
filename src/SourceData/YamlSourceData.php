@@ -40,7 +40,7 @@ final class YamlSourceData extends AbstractSourceData
         $arraySourceData = new ArraySourceData(
             $this->dataConfig,
             $yamlArray,
-            $this->object,
+            $this->objectOrClass,
             $this->rootElementTree,
             $this->forceInstance,
         );

@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Dto;
 
+use Wundii\DataMapper\Attribute\SourceData;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
+use Wundii\DataMapper\Interface\ElementDtoInterface;
 
-final readonly class PropertyDto
+final readonly class PropertyDto implements ElementDtoInterface
 {
+    /**
+     * @param AttributeDto[] $attributes
+     */
     public function __construct(
+        private AccessibleEnum $accessibleEnum,
         private string $name,
         private string|DataTypeEnum $dataType,
         private ?string $targetType,
-        private bool $oneType,
         private bool $nullable,
-        private AccessibleEnum $accessibleEnum,
         private bool $isDefaultValueAvailable = false,
         private mixed $defaultValue = null,
         private mixed $value = null,
-        private ?string $attributeClassString = null,
+        private ?AnnotationDto $annotationDto = null,
+        private array $attributes = [],
     ) {
-    }
-
-    public function getAttributeClassString(): ?string
-    {
-        return $this->attributeClassString;
     }
 
     public function getDataType(): string|DataTypeEnum
@@ -38,11 +38,6 @@ final readonly class PropertyDto
         return $this->targetType;
     }
 
-    public function isOneType(): bool
-    {
-        return $this->oneType;
-    }
-
     public function isNullable(): bool
     {
         return $this->nullable;
@@ -51,6 +46,25 @@ final readonly class PropertyDto
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getterName(): string
+    {
+        $sourceName = $this->name;
+
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->getClassString() !== SourceData::class) {
+                continue;
+            }
+
+            if (! is_string($attribute->getArguments()['target'])) {
+                continue;
+            }
+
+            $sourceName = $attribute->getArguments()['target'];
+        }
+
+        return $sourceName;
     }
 
     public function getAccessibleEnum(): AccessibleEnum
@@ -87,5 +101,18 @@ final readonly class PropertyDto
         }
 
         return '';
+    }
+
+    public function getAnnotationDto(): ?AnnotationDto
+    {
+        return $this->annotationDto;
+    }
+
+    /**
+     * @return AttributeDto[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 }

@@ -40,7 +40,7 @@ final class NeonSourceData extends AbstractSourceData
         $arraySourceData = new ArraySourceData(
             $this->dataConfig,
             $neonArray,
-            $this->object,
+            $this->objectOrClass,
             $this->rootElementTree,
             $this->forceInstance,
         );

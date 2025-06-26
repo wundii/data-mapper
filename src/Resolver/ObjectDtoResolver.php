@@ -18,7 +18,7 @@ use Wundii\DataMapper\Interface\ObjectDtoInterface;
 use Wundii\DataMapper\Interface\TypeDtoInterface;
 use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class ObjectDtoResolver
+final class ObjectDtoResolver
 {
     /**
      * @param mixed[] $parameter
@@ -156,8 +156,8 @@ final readonly class ObjectDtoResolver
                     continue;
                 }
 
-                $reflection = new ReflectionClass(get_class($newInstance));
-                $property = $reflection->getProperty($instanceParameter->getName());
+                $reflectionClass = new ReflectionClass(get_class($newInstance));
+                $property = $reflectionClass->getProperty($instanceParameter->getName());
                 if (! $property->isPublic()) {
                     $property->setAccessible(true);
                 }

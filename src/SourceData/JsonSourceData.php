@@ -49,7 +49,7 @@ final class JsonSourceData extends AbstractSourceData
         $arraySourceData = new ArraySourceData(
             $this->dataConfig,
             $jsonArray,
-            $this->object,
+            $this->objectOrClass,
             $this->rootElementTree,
             $this->forceInstance,
         );

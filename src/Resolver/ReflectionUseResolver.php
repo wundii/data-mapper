@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\Resolver;
 
 use ReflectionClass;
-use ReflectionException;
 use Wundii\DataMapper\Dto\UseStatementDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 
-final readonly class ReflectionTokenResolver
+/**
+ * @template T of object
+ * @extends AbstractReflectionResolver<T>
+ */
+class ReflectionUseResolver extends AbstractReflectionResolver
 {
     public function basename(string $classString): string
     {
@@ -18,7 +21,6 @@ final readonly class ReflectionTokenResolver
     }
 
     /**
-     * @template T of object
      * @param ReflectionClass<T> $reflectionClass
      * @throws DataMapperException
      */
@@ -101,25 +103,35 @@ final readonly class ReflectionTokenResolver
     }
 
     /**
-     * @throws DataMapperException|ReflectionException
+     * @param class-string<T>|T $objectOrClass
+     * @throws DataMapperException
      */
-    public function resolve(string|object $object): UseStatementsDto
+    public function resolve(object|string $objectOrClass): ?UseStatementsDto
     {
-        if (! is_object($object) && ! class_exists($object) && ! interface_exists($object)) {
-            throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $object));
+        if (! is_object($objectOrClass) && ! class_exists($objectOrClass) && ! interface_exists($objectOrClass)) {
+            throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
         }
 
-        $reflectionClass = new ReflectionClass($object);
+        $reflectionClass = $this->reflectionClassCache($objectOrClass);
 
         if ($reflectionClass->isInternal()) {
-            return new UseStatementsDto(null, []);
+            return null;
         }
 
         if ($reflectionClass->getFileName() === false) {
-            $classString = is_object($object) ? $object::class : $object;
+            $classString = is_object($objectOrClass) ? $objectOrClass::class : $objectOrClass;
             throw DataMapperException::Error('Could not get file name from ' . $classString);
         }
 
         return $this->parseToken($reflectionClass);
+    }
+
+    /**
+     * @param class-string<T>|T $objectOrClass
+     * @throws DataMapperException
+     */
+    public static function resolveObject(object|string $objectOrClass): ?UseStatementsDto
+    {
+        return (new self())->resolve($objectOrClass);
     }
 }

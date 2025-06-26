@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\Resolver;
 
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 use Wundii\DataMapper\Dto\AnnotationDto;
-use Wundii\DataMapper\Dto\PropertyDto;
+use Wundii\DataMapper\Dto\ElementDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 
-final readonly class PropertyDtoResolver
+class ReflectionElementResolver
 {
     /**
      * @param string[] $types
@@ -18,15 +25,15 @@ final readonly class PropertyDtoResolver
     public function getTargetTypes(
         string $name,
         array $types,
-        AnnotationDto $annotationDto,
+        ?AnnotationDto $annotationDto,
     ): array {
         if (str_starts_with($name, 'set')) {
             $name = substr($name, 3);
         }
 
-        $types = array_merge($types, $annotationDto->getVariables());
+        $types = array_merge($types, $annotationDto?->getVariables() ?? []);
 
-        foreach ($annotationDto->getParameterDto() as $parameterDto) {
+        foreach ($annotationDto?->getParameterDto() ?? [] as $parameterDto) {
             if (strcasecmp($parameterDto->getParameter(), $name) === 0) {
                 $types = array_merge($types, $parameterDto->getTypes());
                 break;
@@ -39,7 +46,7 @@ final readonly class PropertyDtoResolver
     /**
      * @param string[] $types
      */
-    public function getTargetType(array $types, string|object $object): ?string
+    public function getTargetType(array $types, object|string $objectOrClass): ?string
     {
         foreach ($types as $type) {
             if (class_exists($type) || interface_exists($type)) {
@@ -59,11 +66,11 @@ final readonly class PropertyDtoResolver
             }
 
             if (strtolower($type) === 'self') {
-                if (is_object($object)) {
-                    return get_class($object);
+                if (is_object($objectOrClass)) {
+                    return get_class($objectOrClass);
                 }
 
-                return $object;
+                return $objectOrClass;
             }
         }
 
@@ -144,39 +151,88 @@ final readonly class PropertyDtoResolver
         return count($tmp) === 1;
     }
 
+    public static function accessible(ReflectionProperty|ReflectionMethod $reflection): AccessibleEnum
+    {
+        if ($reflection->isPublic()) {
+            return AccessibleEnum::PUBLIC;
+        }
+
+        if ($reflection->isProtected()) {
+            return AccessibleEnum::PROTECTED;
+        }
+
+        return AccessibleEnum::PRIVATE;
+    }
+
     /**
-     * @param string[] $types
+     * @return string[]
+     */
+    public function types(null|ReflectionType $type): array
+    {
+        $types = [];
+
+        if ($type instanceof ReflectionNamedType) {
+            $types[] = $type->getName();
+            if ($type->allowsNull() && $type->getName() !== 'null') {
+                $types[] = 'null';
+            }
+        }
+
+        if ($type instanceof ReflectionUnionType) {
+            foreach ($type->getTypes() as $unionType) {
+                if (! $unionType instanceof ReflectionNamedType) {
+                    continue;
+                }
+
+                $types[] = $unionType->getName();
+            }
+        }
+
+        return $types;
+    }
+
+    /**
+     * @throws ReflectionException
      */
     public function resolve(
-        string $name,
-        array $types,
-        AnnotationDto $annotationDto,
-        string|object $object,
-        AccessibleEnum $accessibleEnum,
-        bool $isDefaultValueAvailable = false,
-        mixed $defaultValue = null,
-        mixed $value = null,
-        ?string $attributeClassString = null,
-    ): PropertyDto {
+        object|string $objectOrClass,
+        ReflectionProperty|ReflectionMethod $reflectionMethod,
+        ReflectionProperty|ReflectionParameter $reflectionParameter,
+        ?AnnotationDto $annotationDto
+    ): ElementDto {
+        $name = $reflectionParameter->getName();
+        $types = $this->types($reflectionParameter->getType());
+
         $targetTypes = $this->getTargetTypes($name, $types, $annotationDto);
 
         $oneType = $this->isOneType($targetTypes);
         $nullable = $this->isNullable($targetTypes);
 
         $dataType = $this->getDataType($oneType, $targetTypes);
-        $targetType = $this->getTargetType($targetTypes, $object);
+        $targetType = $this->getTargetType($targetTypes, $objectOrClass);
 
-        return new PropertyDto(
+        /**
+         * Constructor properties are not accessible, this was updated with the survey of class properties
+         */
+        $accessibleEnum = self::accessible($reflectionMethod);
+
+        $isDefaultValueAvailable = $reflectionParameter instanceof ReflectionProperty
+            ? $reflectionParameter->isDefault()
+            : $reflectionParameter->isDefaultValueAvailable();
+
+        $defaultValue = $isDefaultValueAvailable
+            ? $reflectionParameter->getDefaultValue()
+            : null;
+
+        return new ElementDto(
             $name,
             $dataType,
             $targetType,
-            $oneType,
             $nullable,
             $accessibleEnum,
             $isDefaultValueAvailable,
             $defaultValue,
-            $value,
-            $attributeClassString,
+            $types,
         );
     }
 }
