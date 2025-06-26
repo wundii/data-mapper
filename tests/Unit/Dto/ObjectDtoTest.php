@@ -133,6 +133,7 @@ class ObjectDtoTest extends TestCase
             'nameGetter' => new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'nameGetter', DataTypeEnum::STRING, null, true),
             'itemGetter' => new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'itemGetter', 'MockClasses\ItemConstructor', null, false),
             'dataGetter' => new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'dataGetter', DataTypeEnum::ARRAY, null, false),
+            'namePropertyConst' => new PropertyDto(AccessibleEnum::PUBLIC, 'namePropertyConst', DataTypeEnum::STRING, 'target1', true),
         ];
         $this->assertEquals($expectedAvailableData, $object->availableData());
 

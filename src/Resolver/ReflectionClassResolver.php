@@ -8,6 +8,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionUnionType;
 use Wundii\DataMapper\Dto\AnnotationDto;
@@ -17,10 +18,10 @@ use Wundii\DataMapper\Dto\MethodDto;
 use Wundii\DataMapper\Dto\ParameterDto;
 use Wundii\DataMapper\Dto\PropertyDto;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
+use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\AttributeOriginEnum;
 use Wundii\DataMapper\Enum\MethodTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
-use Wundii\DataMapper\Interface\AttributeInterface;
 
 /**
  * @template T of object
@@ -78,7 +79,7 @@ class ReflectionClassResolver extends AbstractReflectionResolver
             $propertiesConst += $this->resolvePropertiesConst(
                 $reflectionMethod,
                 $objectOrClass,
-                $propertiesClass,
+                $takeValue,
             );
         }
 
@@ -93,24 +94,19 @@ class ReflectionClassResolver extends AbstractReflectionResolver
     }
 
     /**
-     * @param ReflectionClass<T>|ReflectionMethod|ReflectionProperty $reflection
+     * @param ReflectionClass<T>|ReflectionMethod|ReflectionProperty|ReflectionParameter $reflection
      * @return AttributeDto[]
      */
     private function resolveAttributes(
-        ReflectionClass|ReflectionMethod|ReflectionProperty $reflection,
+        ReflectionClass|ReflectionMethod|ReflectionProperty|ReflectionParameter $reflection,
         AttributeOriginEnum $attributeOriginEnum,
     ): array {
         $attributes = [];
 
         foreach ($reflection->getAttributes() as $attribute) {
-            $instance = $attribute->newInstance();
-            if (! $instance instanceof AttributeInterface) {
-                continue;
-            }
-
             $arguments = [];
             /** @phpstan-ignore-next-line */
-            $classProperties = $this->reflectionClassPropertiesCache($instance::class);
+            $classProperties = $this->reflectionClassPropertiesCache($attribute->getName());
 
             foreach ($attribute->getArguments() as $property => $argument) {
                 if (is_int($property)) {
@@ -152,6 +148,11 @@ class ReflectionClassResolver extends AbstractReflectionResolver
         }
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            if ($reflectionProperty->isPromoted()) {
+                // Skip promoted properties, as they are already handled in the constructor
+                continue;
+            }
+
             $annotation = $this->reflectionAnnotationResolver->resolve($reflectionProperty->getDocComment());
             if (! $annotation instanceof AnnotationDto && $constructorAnnotation instanceof AnnotationDto) {
                 $annotation = $constructorAnnotation;
@@ -268,14 +269,13 @@ class ReflectionClassResolver extends AbstractReflectionResolver
 
     /**
      * @param class-string<T>|T $objectOrClass
-     * @param PropertyDto[] $propertiesClass
      * @return PropertyDto[]
      * @throws ReflectionException
      */
     private function resolvePropertiesConst(
         ReflectionMethod $reflectionMethod,
         object|string $objectOrClass,
-        array $propertiesClass,
+        bool $takeValue,
     ): array {
         if (strcasecmp($reflectionMethod->getName(), '__construct') !== 0) {
             return [];
@@ -284,18 +284,27 @@ class ReflectionClassResolver extends AbstractReflectionResolver
         $properties = [];
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            if (array_key_exists($reflectionParameter->getName(), $propertiesClass)) {
-                $properties[$reflectionParameter->getName()] = $propertiesClass[$reflectionParameter->getName()];
-                continue;
-            }
-
             $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
+            $attributes = $this->resolveAttributes($reflectionParameter, AttributeOriginEnum::TARGET_PROPERTY);
             $elementDto = $this->reflectionElementsCache(
                 $objectOrClass,
                 $reflectionMethod,
                 $reflectionParameter,
                 $annotation,
             );
+
+            $value = null;
+            if (
+                $takeValue
+                && $elementDto->getAccessibleEnum() === AccessibleEnum::PUBLIC
+                && is_object($objectOrClass)
+            ) {
+                $reflectionClass = $reflectionParameter->getDeclaringClass();
+                if ($reflectionClass instanceof ReflectionClass) {
+                    $reflectionProperty = $reflectionClass->getProperty($reflectionParameter->getName());
+                    $value = $reflectionProperty->getValue($objectOrClass);
+                }
+            }
 
             $properties[$reflectionParameter->getName()] = new PropertyDto(
                 $elementDto->getAccessibleEnum(),
@@ -305,8 +314,9 @@ class ReflectionClassResolver extends AbstractReflectionResolver
                 $elementDto->isNullable(),
                 $elementDto->isDefaultValueAvailable(),
                 $elementDto->getDefaultValue(),
-                null,
+                $value,
                 $annotation,
+                $attributes,
             );
         }
 
