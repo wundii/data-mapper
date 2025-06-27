@@ -48,7 +48,7 @@ class ObjectDtoTest extends TestCase
                     false,
                     isDefaultValueAvailable: true,
                     defaultValue: 'default',
-                    annotationDto: new AnnotationDto([new ParameterDto('target', ['string'])], [
+                    annotationDto: new AnnotationDto([new ParameterDto('target', ['string'], true, 'leer')], [
                         'target' => 'itemAttributeSource',
                     ]),
                     attributes: [
@@ -123,7 +123,7 @@ class ObjectDtoTest extends TestCase
                 false,
                 isDefaultValueAvailable: true,
                 defaultValue: 'default',
-                annotationDto: new AnnotationDto([new ParameterDto('target', ['string'])], [
+                annotationDto: new AnnotationDto([new ParameterDto('target', ['string'], true, 'leer')], [
                     'target' => 'itemAttributeSource',
                 ]),
                 attributes: [
@@ -154,7 +154,7 @@ class ObjectDtoTest extends TestCase
                 false,
                 isDefaultValueAvailable: true,
                 defaultValue: 'default',
-                annotationDto: new AnnotationDto([new ParameterDto('target', ['string'])], [
+                annotationDto: new AnnotationDto([new ParameterDto('target', ['string'], true, 'leer')], [
                     'target' => 'itemAttributeSource',
                 ]),
                 attributes: [
@@ -178,6 +178,8 @@ class ObjectDtoTest extends TestCase
         $this->assertTrue($lastProperty->isDefaultValueAvailable());
         $this->assertSame('default', $lastProperty->getDefaultValue());
         $this->assertInstanceOf(AnnotationDto::class, $lastProperty->getAnnotationDto());
+        $this->assertSame(true, $lastProperty->getAnnotationDto()->getParameterDto()[0]->isDefaultValueAvailable());
+        $this->assertSame('leer', $lastProperty->getAnnotationDto()->getParameterDto()[0]->getDefaultValue());
     }
 
     public function testAttributesClass(): void
