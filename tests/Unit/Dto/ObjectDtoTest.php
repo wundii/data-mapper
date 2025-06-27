@@ -69,6 +69,7 @@ class ObjectDtoTest extends TestCase
                     null,
                     false,
                     returnTypes: ['string'],
+                    annotationDto: new AnnotationDto(),
                     parameters: [
                         new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
                     ]
@@ -228,8 +229,10 @@ class ObjectDtoTest extends TestCase
         $firstAttribute = $object->getAttributes()[$first];
         $lastAttribute = $object->getAttributes()[$last];
 
+        $this->assertInstanceOf(AttributeDto::class, $firstAttribute);
         $this->assertSame(AttributeOriginEnum::TARGET_CLASS, $firstAttribute->getAttributeOriginEnum());
         $this->assertSame('MockClasses\ItemConstructor1', $firstAttribute->getOriginName());
+        $this->assertInstanceOf(AttributeDto::class, $lastAttribute);
         $this->assertSame(AttributeOriginEnum::TARGET_METHOD, $lastAttribute->getAttributeOriginEnum());
         $this->assertSame('MockClasses\ItemConstructor', $lastAttribute->getOriginName());
     }
@@ -261,6 +264,7 @@ class ObjectDtoTest extends TestCase
                 null,
                 false,
                 returnTypes: ['string'],
+                annotationDto: new AnnotationDto(),
                 parameters: [
                     new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
                 ]
@@ -274,12 +278,16 @@ class ObjectDtoTest extends TestCase
         $firstMethod = $object->getMethodGetters()[$first];
         $lastMethod = $object->getMethodGetters()[$last];
 
+        $this->assertInstanceOf(MethodDto::class, $firstMethod);
         $this->assertSame('nameGetter', $firstMethod->getterName());
         $this->assertCount(0, $firstMethod->getReturnTypes());
+        $this->assertNull($firstMethod->getAnnotationDto());
         $this->assertCount(0, $firstMethod->getParameters());
 
+        $this->assertInstanceOf(MethodDto::class, $lastMethod);
         $this->assertSame('itemGetter', $lastMethod->getterName());
         $this->assertCount(1, $lastMethod->getReturnTypes());
+        $this->assertInstanceOf(AnnotationDto::class, $lastMethod->getAnnotationDto());
         $this->assertCount(1, $lastMethod->getParameters());
     }
 
@@ -314,6 +322,7 @@ class ObjectDtoTest extends TestCase
                 null,
                 false,
                 returnTypes: ['string'],
+                annotationDto: new AnnotationDto(),
                 parameters: [
                     new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
                 ]
@@ -347,6 +356,7 @@ class ObjectDtoTest extends TestCase
                 null,
                 false,
                 returnTypes: ['string'],
+                annotationDto: new AnnotationDto(),
                 parameters: [
                     new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
                 ]
