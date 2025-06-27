@@ -196,6 +196,7 @@ class ReflectionClassResolver extends AbstractReflectionResolver
         object|string $objectOrClass,
         bool $takeValue,
     ): MethodDto {
+        $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
         $returnType = $reflectionMethod->getReturnType() ?? null;
         $returnType = match (true) {
             $returnType instanceof ReflectionNamedType => $returnType->getName(),
@@ -203,8 +204,10 @@ class ReflectionClassResolver extends AbstractReflectionResolver
             default => null,
         };
 
+        $returnType = is_string($returnType) ? strtolower($returnType) : $returnType;
+
         $methodTypEnum = match (true) {
-            $returnType === 'void' => MethodTypeEnum::SETTER,
+            $returnType === 'void', $returnType === 'self', $returnType === $classString => MethodTypeEnum::SETTER,
             is_string($returnType) && $returnType !== 'void' => MethodTypeEnum::GETTER,
             default => MethodTypeEnum::OTHER,
         };
