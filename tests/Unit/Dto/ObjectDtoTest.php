@@ -61,7 +61,18 @@ class ObjectDtoTest extends TestCase
             [
                 new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'nameGetter', DataTypeEnum::STRING, null, true),
                 new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'dataGetter', DataTypeEnum::ARRAY, null, false),
-                new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'itemGetter', 'MockClasses\ItemConstructor', null, false),
+                new MethodDto(
+                    MethodTypeEnum::GETTER,
+                    AccessibleEnum::PUBLIC,
+                    'itemGetter',
+                    'MockClasses\ItemConstructor',
+                    null,
+                    false,
+                    returnTypes: ['string'],
+                    parameters: [
+                        new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
+                    ]
+                ),
             ],
             [
                 new MethodDto(MethodTypeEnum::OTHER, AccessibleEnum::PUBLIC, 'nameConstructor', DataTypeEnum::STRING, null, true),
@@ -242,9 +253,34 @@ class ObjectDtoTest extends TestCase
         $expectedGetters = [
             new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'nameGetter', DataTypeEnum::STRING, null, true),
             new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'dataGetter', DataTypeEnum::ARRAY, null, false),
-            new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'itemGetter', 'MockClasses\ItemConstructor', null, false),
+            new MethodDto(
+                MethodTypeEnum::GETTER,
+                AccessibleEnum::PUBLIC,
+                'itemGetter',
+                'MockClasses\ItemConstructor',
+                null,
+                false,
+                returnTypes: ['string'],
+                parameters: [
+                    new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
+                ]
+            ),
         ];
         $this->assertEquals($expectedGetters, $object->getMethodGetters());
+
+        $first = array_key_first($object->getMethodGetters());
+        $last = array_key_last($object->getMethodGetters());
+
+        $firstMethod = $object->getMethodGetters()[$first];
+        $lastMethod = $object->getMethodGetters()[$last];
+
+        $this->assertSame('nameGetter', $firstMethod->getterName());
+        $this->assertCount(0, $firstMethod->getReturnTypes());
+        $this->assertCount(0, $firstMethod->getParameters());
+
+        $this->assertSame('itemGetter', $lastMethod->getterName());
+        $this->assertCount(1, $lastMethod->getReturnTypes());
+        $this->assertCount(1, $lastMethod->getParameters());
     }
 
     public function testMethodSetters(): void
@@ -270,7 +306,18 @@ class ObjectDtoTest extends TestCase
         $expectedMethods = [
             new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'nameGetter', DataTypeEnum::STRING, null, true),
             new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'dataGetter', DataTypeEnum::ARRAY, null, false),
-            new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'itemGetter', 'MockClasses\ItemConstructor', null, false),
+            new MethodDto(
+                MethodTypeEnum::GETTER,
+                AccessibleEnum::PUBLIC,
+                'itemGetter',
+                'MockClasses\ItemConstructor',
+                null,
+                false,
+                returnTypes: ['string'],
+                parameters: [
+                    new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
+                ]
+            ),
             new MethodDto(MethodTypeEnum::SETTER, AccessibleEnum::PUBLIC, 'nameSetter', DataTypeEnum::STRING, null, true),
             new MethodDto(MethodTypeEnum::SETTER, AccessibleEnum::PUBLIC, 'dataSetter', DataTypeEnum::ARRAY, null, false),
             new MethodDto(MethodTypeEnum::SETTER, AccessibleEnum::PUBLIC, 'itemSetter', 'MockClasses\ItemConstructor', null, false, attributes: [
@@ -292,7 +339,18 @@ class ObjectDtoTest extends TestCase
         $expectedAvailableData = [
             'namePropertyClass' => new PropertyDto(AccessibleEnum::PUBLIC, 'namePropertyClass', DataTypeEnum::STRING, 'target1', true),
             'nameGetter' => new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'nameGetter', DataTypeEnum::STRING, null, true),
-            'itemGetter' => new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'itemGetter', 'MockClasses\ItemConstructor', null, false),
+            'itemGetter' => new MethodDto(
+                MethodTypeEnum::GETTER,
+                AccessibleEnum::PUBLIC,
+                'itemGetter',
+                'MockClasses\ItemConstructor',
+                null,
+                false,
+                returnTypes: ['string'],
+                parameters: [
+                    new ParameterDto('item', ['MockClasses\ItemConstructor'], true, 'defaultValue'),
+                ]
+            ),
             'dataGetter' => new MethodDto(MethodTypeEnum::GETTER, AccessibleEnum::PUBLIC, 'dataGetter', DataTypeEnum::ARRAY, null, false),
             'namePropertyConst' => new PropertyDto(AccessibleEnum::PUBLIC, 'namePropertyConst', DataTypeEnum::STRING, 'target1', true),
         ];

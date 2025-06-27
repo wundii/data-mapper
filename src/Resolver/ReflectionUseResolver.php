@@ -125,13 +125,4 @@ class ReflectionUseResolver extends AbstractReflectionResolver
 
         return $this->parseToken($reflectionClass);
     }
-
-    /**
-     * @param class-string<T>|T $objectOrClass
-     * @throws DataMapperException
-     */
-    public static function resolveObject(object|string $objectOrClass): ?UseStatementsDto
-    {
-        return (new self())->resolve($objectOrClass);
-    }
 }
