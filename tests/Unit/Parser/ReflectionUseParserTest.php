@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Unit\Resolver;
+namespace Unit\Parser;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Wundii\DataMapper\Dto\UseStatementDto;
 use Wundii\DataMapper\Dto\UseStatementsDto;
-use Wundii\DataMapper\Resolver\ReflectionUseResolver;
+use Wundii\DataMapper\Parser\ReflectionUseParser;
 
-class ReflectionUseResolverTest extends TestCase
+class ReflectionUseParserTest extends TestCase
 {
     public function testBasename(): void
     {
-        $reflectionTokenResolver = new ReflectionUseResolver();
+        $reflectionTokenResolver = new ReflectionUseParser();
 
         $basename = $reflectionTokenResolver->basename('MockClasses\RootConstructor');
 
@@ -37,7 +37,7 @@ class ReflectionUseResolverTest extends TestCase
         $reflectionClass->method('getFileName')->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
         $reflectionClass->method('getNamespaceName')->willReturn('');
 
-        $reflectionTokenResolver = new ReflectionUseResolver();
+        $reflectionTokenResolver = new ReflectionUseParser();
 
         $expected = new UseStatementsDto(
             null,
@@ -54,7 +54,7 @@ class ReflectionUseResolverTest extends TestCase
         $reflectionClass->method('getFileName')->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
         $reflectionClass->method('getNamespaceName')->willReturn('MockClasses');
 
-        $reflectionTokenResolver = new ReflectionUseResolver();
+        $reflectionTokenResolver = new ReflectionUseParser();
 
         $expected = new UseStatementsDto(
             'MockClasses',
@@ -80,7 +80,7 @@ class ReflectionUseResolverTest extends TestCase
         $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
         $reflectionClass->method('getFileName')->willReturn('invalid-file-name');
 
-        $reflectionTokenResolver = new ReflectionUseResolver();
+        $reflectionTokenResolver = new ReflectionUseParser();
         $reflectionTokenResolver->parseToken($reflectionClass);
     }
 
@@ -89,8 +89,8 @@ class ReflectionUseResolverTest extends TestCase
      */
     public function testResolveInternalFunction(): void
     {
-        $reflectionTokenResolver = new ReflectionUseResolver();
-        $useStatementsReflection = $reflectionTokenResolver->resolve('DateTime');
+        $reflectionTokenResolver = new ReflectionUseParser();
+        $useStatementsReflection = $reflectionTokenResolver->parse('DateTime');
 
         $this->assertNull($useStatementsReflection);
     }

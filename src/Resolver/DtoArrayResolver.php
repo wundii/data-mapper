@@ -12,7 +12,7 @@ use Wundii\DataMapper\Interface\ObjectDtoInterface;
 use Wundii\DataMapper\Interface\TypeDtoInterface;
 use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class ArrayDtoResolver
+final readonly class DtoArrayResolver
 {
     /**
      * @throws DataMapperException|ReflectionException
@@ -21,13 +21,13 @@ final readonly class ArrayDtoResolver
         DataConfigInterface $dataConfig,
         TypeDtoInterface $typeDto,
     ): mixed {
-        $objectDtoResolver = new ObjectDtoResolver();
-        $valueDtoResolver = new ValueDtoResolver();
+        $dtoObjectResolver = new DtoObjectResolver();
+        $dtoValueResolver = new DtoValueResolver();
 
         return match (true) {
             $typeDto instanceof ArrayDtoInterface => $this->resolve($dataConfig, $typeDto),
-            $typeDto instanceof ObjectDtoInterface => $objectDtoResolver->resolve($dataConfig, $typeDto),
-            $typeDto instanceof ValueDtoInterface => $valueDtoResolver->resolve($typeDto),
+            $typeDto instanceof ObjectDtoInterface => $dtoObjectResolver->resolve($dataConfig, $typeDto),
+            $typeDto instanceof ValueDtoInterface => $dtoValueResolver->resolve($typeDto),
             default => throw DataMapperException::Error('TypeDtoInterface not implemented: ' . $typeDto::class),
         };
     }

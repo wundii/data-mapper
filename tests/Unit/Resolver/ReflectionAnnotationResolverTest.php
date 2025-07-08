@@ -23,9 +23,9 @@ class ReflectionAnnotationResolverTest extends TestCase
             'bool',
         ];
 
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
 
-        $this->assertSame($types, $reflectionAnnotationResolver->completeClassStrings($types));
+        $this->assertSame($types, $ReflectionAnnotationParser->completeClassStrings($types));
     }
 
     public function testCompleteClassStrings(): void
@@ -59,16 +59,16 @@ class ReflectionAnnotationResolverTest extends TestCase
             'bool',
         ];
 
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsReflection);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver($useStatementsReflection);
 
-        $this->assertSame($expected, $reflectionAnnotationResolver->completeClassStrings($types));
+        $this->assertSame($expected, $ReflectionAnnotationParser->completeClassStrings($types));
     }
 
     public function testParseAnnotationEmpty(): void
     {
         $annotation = '';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $this->assertNull($annotationReflection);
     }
@@ -76,8 +76,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationWrongStartWith(): void
     {
         $annotation = '@param string $name';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $this->assertNull($annotationReflection);
     }
@@ -85,8 +85,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamBool(): void
     {
         $annotation = '/** @param bool $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -102,8 +102,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamInt(): void
     {
         $annotation = '/** @param int $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -119,8 +119,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamFloat(): void
     {
         $annotation = '/** @param float $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -136,8 +136,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamString(): void
     {
         $annotation = '/** @param string $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -153,8 +153,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamArray(): void
     {
         $annotation = '/** @param array $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -170,8 +170,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamObject(): void
     {
         $annotation = '/** @param ItemConstructor $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -184,8 +184,8 @@ class ReflectionAnnotationResolverTest extends TestCase
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @param ItemConstructor[] $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -206,8 +206,8 @@ class ReflectionAnnotationResolverTest extends TestCase
                 ),
             ]
         );
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsReflection);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver($useStatementsReflection);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -223,8 +223,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamStringWithNull(): void
     {
         $annotation = '/** @param ?string $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -237,8 +237,8 @@ class ReflectionAnnotationResolverTest extends TestCase
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @param null|string $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -254,8 +254,8 @@ class ReflectionAnnotationResolverTest extends TestCase
     public function testParseAnnotationParamMultiTypes(): void
     {
         $annotation = '/** @param null|int|string $name */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -278,8 +278,8 @@ class ReflectionAnnotationResolverTest extends TestCase
  */
 TEXT;
 
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [
@@ -297,8 +297,8 @@ TEXT;
     public function testParseAnnotationVarBool(): void
     {
         $annotation = '/** @var bool */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -312,8 +312,8 @@ TEXT;
     public function testParseAnnotationVarInt(): void
     {
         $annotation = '/** @var int */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -327,8 +327,8 @@ TEXT;
     public function testParseAnnotationVarFloat(): void
     {
         $annotation = '/** @var float */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -342,8 +342,8 @@ TEXT;
     public function testParseAnnotationVarString(): void
     {
         $annotation = '/** @var string */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -357,8 +357,8 @@ TEXT;
     public function testParseAnnotationVarArray(): void
     {
         $annotation = '/** @var array */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -372,8 +372,8 @@ TEXT;
     public function testParseAnnotationVarObject(): void
     {
         $annotation = '/** @var MockClasses\ItemConstructor */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -384,8 +384,8 @@ TEXT;
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @var ItemConstructor[] */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -404,8 +404,8 @@ TEXT;
                 ),
             ]
         );
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsReflection);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver($useStatementsReflection);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -419,8 +419,8 @@ TEXT;
     public function testParseAnnotationVarStringWithNull(): void
     {
         $annotation = '/** @var ?string */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -431,8 +431,8 @@ TEXT;
         $this->assertEquals($expected, $annotationReflection);
 
         $annotation = '/** @var null|string */';
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],
@@ -451,8 +451,8 @@ TEXT;
  * @var null|int|string
  */
 TEXT;
-        $reflectionAnnotationResolver = new ReflectionAnnotationResolver(null);
-        $annotationReflection = $reflectionAnnotationResolver->resolve($annotation);
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
 
         $expected = new AnnotationDto(
             [],

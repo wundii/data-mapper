@@ -21,8 +21,8 @@ use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDtoInterface;
 use Wundii\DataMapper\Interface\ObjectDtoInterface;
-use Wundii\DataMapper\Resolver\ObjectDtoResolver;
-use Wundii\DataMapper\Resolver\ReflectionClassResolver;
+use Wundii\DataMapper\Parser\ReflectionClassParser;
+use Wundii\DataMapper\Resolver\DtoObjectResolver;
 
 /**
  * @template T of object
@@ -63,7 +63,7 @@ final class ObjectSourceData extends AbstractSourceData
                     throw DataMapperException::Error(sprintf('Element array invalid object type for %s', $name));
                 }
 
-                $objectPropertyDto = (new ReflectionClassResolver())->resolve($object, true);
+                $objectPropertyDto = (new ReflectionClassParser())->parse($object, true);
             }
 
             $data = match ($dataType) {
@@ -132,7 +132,7 @@ final class ObjectSourceData extends AbstractSourceData
                     throw DataMapperException::Error(sprintf('Element array invalid object type for %s', $name));
                 }
 
-                $childObjectDto = (new ReflectionClassResolver())->resolve($objectDtoValue, true);
+                $childObjectDto = (new ReflectionClassParser())->parse($objectDtoValue, true);
             }
 
             $data = match ($dataType) {
@@ -158,7 +158,7 @@ final class ObjectSourceData extends AbstractSourceData
      */
     public function resolve(): object|array
     {
-        $objectDtoResolver = new ObjectDtoResolver();
+        $dtoObjectResolver = new DtoObjectResolver();
         $sourceTypeEnum = self::SOURCE_TYPE;
 
         $classString = is_object($this->objectOrClass) ? get_class($this->objectOrClass) : $this->objectOrClass;
@@ -174,8 +174,8 @@ final class ObjectSourceData extends AbstractSourceData
                 return $object;
             }
 
-            $objectPropertyDto = (new ReflectionClassResolver())->resolve($this->source, true);
-            $object = $this->resolveObject($objectDtoResolver, $objectPropertyDto);
+            $objectPropertyDto = (new ReflectionClassParser())->parse($this->source, true);
+            $object = $this->resolveObject($dtoObjectResolver, $objectPropertyDto);
             if ($object instanceof $classString) {
                 /** @var T $object */
                 return $object;
@@ -191,8 +191,8 @@ final class ObjectSourceData extends AbstractSourceData
 
                 $object = $this->toArray($child);
                 if ($object === null) {
-                    $objectPropertyDto = (new ReflectionClassResolver())->resolve($child, true);
-                    $object = $this->resolveObject($objectDtoResolver, $objectPropertyDto);
+                    $objectPropertyDto = (new ReflectionClassParser())->parse($child, true);
+                    $object = $this->resolveObject($dtoObjectResolver, $objectPropertyDto);
                 }
 
                 if ($object instanceof $classString) {
@@ -202,7 +202,7 @@ final class ObjectSourceData extends AbstractSourceData
         }
 
         if ($this->forceInstance && $objects === []) {
-            $object = $objectDtoResolver->createInstance($this->dataConfig, new ObjectDto($classString, []));
+            $object = $dtoObjectResolver->createInstance($this->dataConfig, new ObjectDto($classString, []));
             if ($object instanceof $classString) {
                 /** @var T $object */
                 return $object;
@@ -271,11 +271,11 @@ final class ObjectSourceData extends AbstractSourceData
      * @throws DataMapperException|ReflectionException
      */
     private function resolveObject(
-        ObjectDtoResolver $objectDtoResolver,
+        DtoObjectResolver $dtoObjectResolver,
         ReflectionObjectDto $reflectionObjectDto,
     ): ?object {
         $objectDto = $this->objectDto($this->dataConfig, $reflectionObjectDto, $this->objectOrClass);
-        $object = $objectDtoResolver->resolve($this->dataConfig, $objectDto);
+        $object = $dtoObjectResolver->resolve($this->dataConfig, $objectDto);
 
         if (! is_object($object)) {
             return null;

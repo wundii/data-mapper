@@ -18,7 +18,7 @@ use Wundii\DataMapper\Dto\Type\IntDto;
 use Wundii\DataMapper\Dto\Type\ObjectDto;
 use Wundii\DataMapper\Dto\Type\StringDto;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Resolver\ArrayDtoResolver;
+use Wundii\DataMapper\Resolver\DtoArrayResolver;
 
 class ArrayDtoResolverTest extends TestCase
 {
@@ -33,7 +33,7 @@ class ArrayDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new TypeDto();
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $arrayDtoResolver->matchValue($dataConfig, $typeDto);
     }
 
@@ -45,14 +45,14 @@ class ArrayDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new BoolDto(true, 'destination');
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertTrue($result);
 
         $typeDto = new BoolDto(false, 'destination');
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertFalse($result);
@@ -66,7 +66,7 @@ class ArrayDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new IntDto(11, 'destination');
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(11, $result);
@@ -80,7 +80,7 @@ class ArrayDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new FloatDto(22.2, 'destination');
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(22.2, $result);
@@ -94,7 +94,7 @@ class ArrayDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new StringDto('Value', 'destination');
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame('Value', $result);
@@ -111,7 +111,7 @@ class ArrayDtoResolverTest extends TestCase
             new BoolDto(false, 'destination2'),
         ], 'destination');
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(['value1', false], $result);
@@ -134,7 +134,7 @@ class ArrayDtoResolverTest extends TestCase
             'destination',
         );
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertEquals(new ItemConstructor(4.4, false), $result);
@@ -155,7 +155,7 @@ class ArrayDtoResolverTest extends TestCase
             'destination',
         );
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $expected = new RootProperties();
@@ -180,7 +180,7 @@ class ArrayDtoResolverTest extends TestCase
             'destination',
         );
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->matchValue($dataConfig, $typeDto);
 
         $expected = new RootSetters();
@@ -198,7 +198,7 @@ class ArrayDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new ArrayDto([]);
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->resolve($dataConfig, $typeDto);
 
         $this->assertEquals([], $result);
@@ -231,7 +231,7 @@ class ArrayDtoResolverTest extends TestCase
             ),
         ]);
 
-        $arrayDtoResolver = new ArrayDtoResolver();
+        $arrayDtoResolver = new DtoArrayResolver();
         $result = $arrayDtoResolver->resolve($dataConfig, $typeDto);
 
         $expected = [

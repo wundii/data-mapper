@@ -136,12 +136,12 @@ class ReflectionElementResolverTest extends TestCase
      */
     public function testTypesEmpty(): void
     {
-        $reflectionElementResolver = new ReflectionElementResolver();
+        $ReflectionElementParser = new ReflectionElementResolver();
 
         $reflector = $this->createMock(ReflectionIntersectionType::class);
 
-        $this->assertSame([], $reflectionElementResolver->types(null));
-        $this->assertSame([], $reflectionElementResolver->types($reflector));
+        $this->assertSame([], $ReflectionElementParser->types(null));
+        $this->assertSame([], $ReflectionElementParser->types($reflector));
     }
 
     /**
@@ -149,25 +149,25 @@ class ReflectionElementResolverTest extends TestCase
      */
     public function testTypesReflectionNamedType(): void
     {
-        $reflectionElementResolver = new ReflectionElementResolver();
+        $ReflectionElementParser = new ReflectionElementResolver();
 
         $reflector = $this->createMock(ReflectionNamedType::class);
         $reflector->method('getName')->willReturn('string');
         $reflector->method('allowsNull')->willReturn(false);
 
-        $this->assertSame(['string'], $reflectionElementResolver->types($reflector));
+        $this->assertSame(['string'], $ReflectionElementParser->types($reflector));
 
         $reflector = $this->createMock(ReflectionNamedType::class);
         $reflector->method('getName')->willReturn('string');
         $reflector->method('allowsNull')->willReturn(true);
 
-        $this->assertSame(['string', 'null'], $reflectionElementResolver->types($reflector));
+        $this->assertSame(['string', 'null'], $ReflectionElementParser->types($reflector));
 
         $reflector = $this->createMock(ReflectionNamedType::class);
         $reflector->method('getName')->willReturn('null');
         $reflector->method('allowsNull')->willReturn(true);
 
-        $this->assertSame(['null'], $reflectionElementResolver->types($reflector));
+        $this->assertSame(['null'], $ReflectionElementParser->types($reflector));
     }
 
     /**
@@ -190,12 +190,12 @@ class ReflectionElementResolverTest extends TestCase
             $reflector03,
         ];
 
-        $reflectionElementResolver = new ReflectionElementResolver();
+        $ReflectionElementParser = new ReflectionElementResolver();
 
         $reflector = $this->createMock(ReflectionUnionType::class);
         $reflector->method('getTypes')->willReturn($types);
 
-        $this->assertSame(['float', 'string', 'null'], $reflectionElementResolver->types($reflector));
+        $this->assertSame(['float', 'string', 'null'], $ReflectionElementParser->types($reflector));
     }
 
     /**

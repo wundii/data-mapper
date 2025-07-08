@@ -21,7 +21,7 @@ use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDtoInterface;
 use Wundii\DataMapper\Interface\ObjectDtoInterface;
-use Wundii\DataMapper\Resolver\ObjectDtoResolver;
+use Wundii\DataMapper\Resolver\DtoObjectResolver;
 
 /**
  * @template T of object
@@ -146,7 +146,7 @@ final class XmlSourceData extends AbstractSourceData
      */
     public function resolve(): object|array
     {
-        $objectDtoResolver = new ObjectDtoResolver();
+        $dtoObjectResolver = new DtoObjectResolver();
         $sourceType = self::SOURCE_TYPE;
 
         if (! is_string($this->source) && ! $this->source instanceof SimpleXMLElement) {
@@ -178,7 +178,7 @@ final class XmlSourceData extends AbstractSourceData
             }
         }
 
-        $object = $this->resolveObject($objectDtoResolver, $xmlElement);
+        $object = $this->resolveObject($dtoObjectResolver, $xmlElement);
         if ($object instanceof $this->objectOrClass) {
             /** @var T $object */
             return $object;
@@ -186,14 +186,14 @@ final class XmlSourceData extends AbstractSourceData
 
         $objects = [];
         foreach ($xmlElement->children() ?? [] as $child) {
-            $object = $this->resolveObject($objectDtoResolver, $child);
+            $object = $this->resolveObject($dtoObjectResolver, $child);
             if ($object instanceof $this->objectOrClass) {
                 $objects[] = $object;
             }
         }
 
         if ($this->forceInstance && $objects === []) {
-            $object = $objectDtoResolver->createInstance($this->dataConfig, new ObjectDto($this->objectOrClass, []));
+            $object = $dtoObjectResolver->createInstance($this->dataConfig, new ObjectDto($this->objectOrClass, []));
             if ($object instanceof $this->objectOrClass) {
                 /** @var T $object */
                 return $object;
@@ -215,7 +215,7 @@ final class XmlSourceData extends AbstractSourceData
      * @throws DataMapperException|ReflectionException
      */
     private function resolveObject(
-        ObjectDtoResolver $objectDtoResolver,
+        DtoObjectResolver $dtoObjectResolver,
         SimpleXMLElement $xmlElement,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $xmlElement, $this->objectOrClass);
@@ -223,7 +223,7 @@ final class XmlSourceData extends AbstractSourceData
             return null;
         }
 
-        $object = $objectDtoResolver->resolve($this->dataConfig, $elementObject);
+        $object = $dtoObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {
             return null;

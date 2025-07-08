@@ -9,7 +9,7 @@ use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\SourceDataInterface;
-use Wundii\DataMapper\Resolver\ReflectionClassResolver;
+use Wundii\DataMapper\Parser\ReflectionClassParser;
 
 /**
  * @template T of object
@@ -46,7 +46,7 @@ abstract class AbstractSourceData implements SourceDataInterface
             return self::$objectPropertyDtos[$objectOrClass];
         }
 
-        $reflectionObjectDto = (new ReflectionClassResolver())->resolve($objectOrClass);
+        $reflectionObjectDto = (new ReflectionClassParser())->parse($objectOrClass);
 
         if (is_object($objectOrClass)) {
             return $reflectionObjectDto;

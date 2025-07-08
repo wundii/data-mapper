@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Resolver;
+namespace Wundii\DataMapper\Parser;
 
 use ReflectionClass;
 use ReflectionException;
@@ -12,11 +12,12 @@ use ReflectionProperty;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ElementDto;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Resolver\ReflectionElementResolver;
 
 /**
  * @template T of object
  */
-abstract class AbstractReflectionResolver
+abstract class AbstractReflectionParser
 {
     protected ReflectionElementResolver $reflectionElementResolver;
 

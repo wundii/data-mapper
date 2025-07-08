@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Resolver;
+namespace Wundii\DataMapper\Parser;
 
 use ReflectionClass;
 use ReflectionException;
@@ -22,12 +22,14 @@ use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\AttributeOriginEnum;
 use Wundii\DataMapper\Enum\MethodTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
+use Wundii\DataMapper\Resolver\ReflectionAnnotationResolver;
+use Wundii\DataMapper\Resolver\ReflectionElementResolver;
 
 /**
  * @template T of object
- * @extends AbstractReflectionResolver<T>
+ * @extends AbstractReflectionParser<T>
  */
-class ReflectionClassResolver extends AbstractReflectionResolver
+class ReflectionClassParser extends AbstractReflectionParser
 {
     private ReflectionAnnotationResolver $reflectionAnnotationResolver;
 
@@ -36,7 +38,7 @@ class ReflectionClassResolver extends AbstractReflectionResolver
      * @throws ReflectionException
      * @throws DataMapperException
      */
-    public function resolve(object|string $objectOrClass, bool $takeValue = false): ReflectionObjectDto
+    public function parse(object|string $objectOrClass, bool $takeValue = false): ReflectionObjectDto
     {
         if (! is_object($objectOrClass) && interface_exists($objectOrClass)) {
             throw DataMapperException::InvalidArgument(sprintf('%s: interfaces are not allowed', $objectOrClass));
@@ -46,7 +48,7 @@ class ReflectionClassResolver extends AbstractReflectionResolver
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
         }
 
-        $useStatementsDto = (new ReflectionUseResolver())->resolve($objectOrClass);
+        $useStatementsDto = (new ReflectionUseParser())->parse($objectOrClass);
         $this->reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsDto);
 
         $reflectionClass = $this->reflectionClassCache($objectOrClass);

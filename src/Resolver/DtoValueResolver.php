@@ -6,7 +6,7 @@ namespace Wundii\DataMapper\Resolver;
 
 use Wundii\DataMapper\Interface\ValueDtoInterface;
 
-final readonly class ValueDtoResolver
+final readonly class DtoValueResolver
 {
     public function resolve(ValueDtoInterface $valueDto): mixed
     {

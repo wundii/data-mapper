@@ -20,7 +20,7 @@ use Wundii\DataMapper\Dto\Type\IntDto;
 use Wundii\DataMapper\Dto\Type\ObjectDto;
 use Wundii\DataMapper\Dto\Type\StringDto;
 use Wundii\DataMapper\Enum\ApproachEnum;
-use Wundii\DataMapper\Resolver\ObjectDtoResolver;
+use Wundii\DataMapper\Resolver\DtoObjectResolver;
 
 class ObjectDtoResolverTest extends TestCase
 {
@@ -38,7 +38,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $return = $objectDtoResolver->createInstance($dataConfig, $typeDto, [5.67, true]);
 
         $expected = new ItemConstructor(5.67, true);
@@ -59,7 +59,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $return = $objectDtoResolver->createInstance($dataConfig, $typeDto);
         $this->assertInstanceOf(RootProperties::class, $return);
     }
@@ -76,7 +76,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $return = $objectDtoResolver->createInstance($dataConfig, $typeDto);
         $this->assertInstanceOf(RootSetters::class, $return);
     }
@@ -99,7 +99,7 @@ class ObjectDtoResolverTest extends TestCase
             true
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $objectDtoResolver->createInstance($dataConfig, $typeDto, ['two']);
     }
 
@@ -120,7 +120,7 @@ class ObjectDtoResolverTest extends TestCase
 
         $expected = TestStringEnum::TWO;
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $return = $objectDtoResolver->createInstance($dataConfig, $typeDto, ['two']);
         $this->assertInstanceOf(TestStringEnum::class, $return);
         $this->assertEquals($expected, $return);
@@ -137,7 +137,7 @@ class ObjectDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new TypeDto();
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $objectDtoResolver->matchValue($dataConfig, $typeDto);
     }
 
@@ -149,14 +149,14 @@ class ObjectDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new BoolDto(true, 'destination');
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertTrue($result);
 
         $typeDto = new BoolDto(false, 'destination');
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertFalse($result);
@@ -170,7 +170,7 @@ class ObjectDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new IntDto(11, 'destination');
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(11, $result);
@@ -184,7 +184,7 @@ class ObjectDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new FloatDto(22.2, 'destination');
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(22.2, $result);
@@ -198,7 +198,7 @@ class ObjectDtoResolverTest extends TestCase
         $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
         $typeDto = new StringDto('Value', 'destination');
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame('Value', $result);
@@ -215,7 +215,7 @@ class ObjectDtoResolverTest extends TestCase
             new BoolDto(false, 'destination2'),
         ], 'destination');
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertSame(['value1', false], $result);
@@ -238,7 +238,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $this->assertEquals(new ItemConstructor(4.4, false), $result);
@@ -259,7 +259,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $expected = new RootProperties();
@@ -284,7 +284,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->matchValue($dataConfig, $typeDto);
 
         $expected = new RootSetters();
@@ -314,7 +314,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $objectDtoResolver->resolve($dataConfig, $typeDto);
     }
 
@@ -335,7 +335,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->resolve($dataConfig, $typeDto);
 
         $this->assertEquals(new ItemConstructor(4.4, false), $result);
@@ -359,7 +359,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $objectDtoResolver->resolve($dataConfig, $typeDto);
     }
 
@@ -378,7 +378,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->resolve($dataConfig, $typeDto);
 
         $expected = new RootProperties();
@@ -406,7 +406,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->resolve($dataConfig, $typeDto);
 
         $expected = new RootProperties();
@@ -434,7 +434,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $objectDtoResolver->resolve($dataConfig, $typeDto);
     }
 
@@ -453,7 +453,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->resolve($dataConfig, $typeDto);
 
         $expected = new RootSetters();
@@ -481,7 +481,7 @@ class ObjectDtoResolverTest extends TestCase
             'destination',
         );
 
-        $objectDtoResolver = new ObjectDtoResolver();
+        $objectDtoResolver = new DtoObjectResolver();
         $result = $objectDtoResolver->resolve($dataConfig, $typeDto);
 
         $expected = new RootSetters();

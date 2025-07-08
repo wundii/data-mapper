@@ -19,7 +19,7 @@ use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDtoInterface;
 use Wundii\DataMapper\Interface\ObjectDtoInterface;
-use Wundii\DataMapper\Resolver\ObjectDtoResolver;
+use Wundii\DataMapper\Resolver\DtoObjectResolver;
 
 /**
  * @template T of object
@@ -156,7 +156,7 @@ final class ArraySourceData extends AbstractSourceData
      */
     public function resolve(?SourceTypeEnum $sourceTypeEnum = null): object|array
     {
-        $objectDtoResolver = new ObjectDtoResolver();
+        $dtoObjectResolver = new DtoObjectResolver();
         $sourceTypeEnum = $sourceTypeEnum ?? self::SOURCE_TYPE;
 
         $array = $this->source;
@@ -181,7 +181,7 @@ final class ArraySourceData extends AbstractSourceData
         }
 
         /** @phpstan-ignore argument.type */
-        $object = $this->resolveObject($objectDtoResolver, $array);
+        $object = $this->resolveObject($dtoObjectResolver, $array);
         if ($object instanceof $this->objectOrClass) {
             /** @var T $object */
             return $object;
@@ -194,7 +194,7 @@ final class ArraySourceData extends AbstractSourceData
             }
 
             /** @phpstan-ignore argument.type */
-            $object = $this->resolveObject($objectDtoResolver, $child);
+            $object = $this->resolveObject($dtoObjectResolver, $child);
 
             if ($object instanceof $this->objectOrClass) {
                 $objects[$key] = $object;
@@ -202,7 +202,7 @@ final class ArraySourceData extends AbstractSourceData
         }
 
         if ($this->forceInstance && $objects === []) {
-            $object = $objectDtoResolver->createInstance($this->dataConfig, new ObjectDto($this->objectOrClass, []));
+            $object = $dtoObjectResolver->createInstance($this->dataConfig, new ObjectDto($this->objectOrClass, []));
             if ($object instanceof $this->objectOrClass) {
                 /** @var T $object */
                 return $object;
@@ -225,7 +225,7 @@ final class ArraySourceData extends AbstractSourceData
      * @throws DataMapperException|ReflectionException
      */
     private function resolveObject(
-        ObjectDtoResolver $objectDtoResolver,
+        DtoObjectResolver $dtoObjectResolver,
         array|string|int|null $array,
     ): ?object {
         $elementObject = $this->elementObject($this->dataConfig, $array, $this->objectOrClass);
@@ -233,7 +233,7 @@ final class ArraySourceData extends AbstractSourceData
             return null;
         }
 
-        $object = $objectDtoResolver->resolve($this->dataConfig, $elementObject);
+        $object = $dtoObjectResolver->resolve($this->dataConfig, $elementObject);
 
         if (! is_object($object)) {
             return null;

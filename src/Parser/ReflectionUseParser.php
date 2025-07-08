@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Wundii\DataMapper\Resolver;
+namespace Wundii\DataMapper\Parser;
 
 use ReflectionClass;
 use Wundii\DataMapper\Dto\UseStatementDto;
@@ -11,9 +11,9 @@ use Wundii\DataMapper\Exception\DataMapperException;
 
 /**
  * @template T of object
- * @extends AbstractReflectionResolver<T>
+ * @extends AbstractReflectionParser<T>
  */
-class ReflectionUseResolver extends AbstractReflectionResolver
+class ReflectionUseParser extends AbstractReflectionParser
 {
     public function basename(string $classString): string
     {
@@ -106,7 +106,7 @@ class ReflectionUseResolver extends AbstractReflectionResolver
      * @param class-string<T>|T $objectOrClass
      * @throws DataMapperException
      */
-    public function resolve(object|string $objectOrClass): ?UseStatementsDto
+    public function parse(object|string $objectOrClass): ?UseStatementsDto
     {
         if (! is_object($objectOrClass) && ! class_exists($objectOrClass) && ! interface_exists($objectOrClass)) {
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
