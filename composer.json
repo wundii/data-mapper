@@ -1,5 +1,6 @@
 {
   "name": "wundii/data-mapper",
+  "type": "library",
   "description": "Modern and fast object mapper for PHP 8.2+. Strict types. Converts JSON, XML, YAML, NEON, arrays, and objects to PHP objects.",
   "keywords": ["datamapper","mapper","yaml","xml","object","neon","json","array", "deserialization", "deserialize"],
   "license": "MIT",
@@ -56,33 +57,15 @@
       "@ecs-dry",
       "@unittest"
     ],
-    "rector-dry": [
-      "php vendor/bin/rector process --dry-run --ansi"
-    ],
-    "rector-apply": [
-      "php vendor/bin/rector process --ansi"
-    ],
-    "ecs-dry": [
-      "php vendor/bin/ecs check"
-    ],
-    "ecs-apply": [
-      "php vendor/bin/ecs check --fix"
-    ],
-    "phpstan": [
-      "php vendor/bin/phpstan analyse"
-    ],
-    "unittest": [
-      "php vendor/bin/phpunit --configuration phpunit.xml"
-    ],
-    "cache-clear": [
-      "rm -R ./cache/* -f"
-    ],
-    "phplint": [
-      "php vendor/bin/phplint"
-    ],
-    "coverage": [
-      "php vendor/bin/phpunit --coverage-clover coverage.xml"
-    ]
+    "cache-clear": "rm -R ./cache/* -f",
+    "coverage": "php vendor/bin/phpunit --coverage-clover coverage.xml",
+    "ecs-apply": "php vendor/bin/ecs check --fix",
+    "ecs-dry": "php vendor/bin/ecs check",
+    "phplint": "php vendor/bin/phplint",
+    "phpstan": "php vendor/bin/phpstan analyse",
+    "rector-apply": "php vendor/bin/rector process --ansi",
+    "rector-dry": "php vendor/bin/rector process --dry-run --ansi",
+    "unittest": "php vendor/bin/phpunit --configuration phpunit.xml"
   },
   "minimum-stability": "stable",
   "prefer-stable": true
