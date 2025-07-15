@@ -16,7 +16,7 @@
 [![codecov](https://img.shields.io/codecov/c/github/wundii/data-mapper/main?token=TNC2MM0MWS&style=for-the-badge)](https://codecov.io/github/wundii/data-mapper)
 [![Downloads](https://img.shields.io/packagist/dt/wundii/data-mapper.svg?style=for-the-badge)](https://packagist.org/packages/wundii/data-mapper)
 
-This library is an extremely fast and strictly typed object mapper built for modern PHP (8.2+). It seamlessly transforms data from formats like JSON, NEON, XML, YAML, arrays, and standard objects into well-structured PHP objects.
+This library is an extremely fast and strictly typed object mapper built for modern PHP (8.2+). It seamlessly transforms data from formats like CSV, JSON, NEON, XML, YAML, arrays, and standard objects into well-structured PHP objects.
 
 Ideal for developers who need reliable and efficient data mapping without sacrificing code quality or modern best practices.
 
@@ -47,6 +47,7 @@ Ideal for developers who need reliable and efficient data mapping without sacrif
 ## Supported Formats
 optional formats are marked with an asterisk `*`
 - `array`
+- `csv`
 - `json`
 - `neon`*
 - `object`
@@ -83,6 +84,7 @@ use Wundii\DataMapper\DataMapper;
 $dataMapper = new DataMapper();
 
 $testClass = $dataMapper->array($array, TestClass::class);
+$testClass = $dataMapper->csv($csvFileOrContent, TestClass::class);
 $testClass = $dataMapper->json($json, TestClass::class);
 $testClass = $dataMapper->neon($neon, TestClass::class);
 $testClass = $dataMapper->xml($xml, TestClass::class);
@@ -104,6 +106,7 @@ $dataConfig = new DataConfig(
 $dataMapper = new DataMapper($dataConfig);
 
 $testClass = $dataMapper->array($array, TestClass::class);
+$testClass = $dataMapper->csv($csvFileOrContent, TestClass::class);
 $testClass = $dataMapper->json($json, TestClass::class);
 $testClass = $dataMapper->neon($neon, TestClass::class);
 $testClass = $dataMapper->xml($xml, TestClass::class);

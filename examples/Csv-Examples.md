@@ -2,65 +2,9 @@
 
 ## Source Data
 ```CSV
-brand,model,year,price
-Toyota,Corolla,2021,20000.00
-Honda,Civic,2020,18000.00
-```
-
-```JSON
-[
-  {
-    "brand": "Toyota",
-    "model": "Corolla",
-    "year": 2021,
-    "price": 20000.00
-  },
-  {
-    "brand": "Toyota",
-    "model": "Corolla",
-    "year": 2022,
-    "price": 22000.00
-  }
-]
-```
-
-```NEON
-- string: Toyota
-  model: Corolla
-  year: 2021
-  price: 20000.00
-- string: Toyota
-  model: Corolla
-  year: 2022
-  price: 22000.00
-```
-
-```XML
-<root>
-    <car>
-        <brand>Toyota</brand>
-        <model>Yaris</model>
-        <year>2021</year>
-        <price>20000.00</price>
-    </car>
-    <car>
-        <brand>Toyota</brand>
-        <model>Yaris</model>
-        <year>2022</year>
-        <price>22000.00</price>
-    </car>
-</root>
-```
-
-```YAML
-- string: Toyota
-  model: Corolla
-  year: 2021
-  price: 20000.00
-- string: Toyota
-  model: Corolla
-  year: 2022
-  price: 22000.00
+"brand","model","year","price"
+"Toyota","Corolla",2021,20000.00
+"Honda","Civic",2020,18000.00
 ```
 
 ## Approaches
@@ -113,12 +57,15 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
-$listOfCars = $dataMapper->array($array, Car::class);
-$listOfCars = $dataMapper->csv($csvFileOrContent, Car::class);
-$listOfCars = $dataMapper->json($json, Car::class);
-$listOfCars = $dataMapper->neon($neon, Car::class);
-$listOfCars = $dataMapper->xml($xml, Car::class);
-$listOfCars = $dataMapper->yaml($yaml, Car::class);
+$listOfCars = $dataMapper->csv(
+    $csvFileOrContent, 
+    Car::class, 
+    separator: ',', 
+    enclosure: '"', 
+    escape: '\\', 
+    headerLine: 1, 
+    firstLine: 2,
+);
 ```
 
 ### Property
@@ -146,12 +93,15 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
-$listOfCars = $dataMapper->array($array, Car::class);
-$listOfCars = $dataMapper->csv($csvFileOrContent, Car::class);
-$listOfCars = $dataMapper->json($json, Car::class);
-$listOfCars = $dataMapper->neon($neon, Car::class);
-$listOfCars = $dataMapper->xml($xml, Car::class);
-$listOfCars = $dataMapper->yaml($yaml, Car::class);
+$listOfCars = $dataMapper->csv(
+    $csvFileOrContent, 
+    Car::class, 
+    separator: ',', 
+    enclosure: '"', 
+    escape: '\\', 
+    headerLine: 1, 
+    firstLine: 2,
+);
 ```
 
 ### Setter
@@ -199,10 +149,13 @@ $dataConfig = new DataConfig(
 );
 
 $dataMapper = new DataMapper($dataConfig);
-$listOfCars = $dataMapper->array($array, Car::class);
-$listOfCars = $dataMapper->csv($csvFileOrContent, Car::class);
-$listOfCars = $dataMapper->json($json, Car::class);
-$listOfCars = $dataMapper->neon($neon, Car::class);
-$listOfCars = $dataMapper->xml($xml, Car::class);
-$listOfCars = $dataMapper->yaml($yaml, Car::class);
+$listOfCars = $dataMapper->csv(
+    $csvFileOrContent, 
+    Car::class, 
+    separator: ',', 
+    enclosure: '"', 
+    escape: '\\', 
+    headerLine: 1, 
+    firstLine: 2,
+);
 ```
