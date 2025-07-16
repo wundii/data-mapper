@@ -55,7 +55,7 @@ final class CsvSourceData extends AbstractSourceData
             $tempPath = tempnam(sys_get_temp_dir(), 'CSV_');
 
             if (! $tempPath || ! file_put_contents($tempPath, $source)) {
-                throw DataMapperException::Error(sprintf('The file "%s" could not be written to', $source));
+                throw DataMapperException::Error(sprintf('The file "%s" could not be written', $source));
             }
 
             $source = $tempPath;
