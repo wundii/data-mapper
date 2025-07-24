@@ -36,6 +36,7 @@ final class DtoObjectResolver
         if (is_object($object)) {
             return $object;
         }
+
         if ($directValue) {
             if (enum_exists($object)) {
                 if (! method_exists($object, 'from')) {
