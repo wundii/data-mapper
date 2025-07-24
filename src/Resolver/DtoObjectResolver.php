@@ -36,7 +36,6 @@ final class DtoObjectResolver
         if (is_object($object)) {
             return $object;
         }
-
         if ($directValue) {
             if (enum_exists($object)) {
                 if (! method_exists($object, 'from')) {
@@ -152,6 +151,10 @@ final class DtoObjectResolver
             && $constructor->getNumberOfRequiredParameters() > 0
         ) {
             foreach ($constructor->getParameters() as $instanceParameter) {
+                if (! property_exists($newInstance, $instanceParameter->getName())) {
+                    continue;
+                }
+
                 if (! $instanceParameter->isDefaultValueAvailable()) {
                     continue;
                 }

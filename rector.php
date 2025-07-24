@@ -10,7 +10,7 @@ use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void
 {
-    $rectorConfig->PHPVersion(PhpVersion::PHP_81);
+    $rectorConfig->phpVersion(PhpVersion::PHP_81);
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
     $rectorConfig->cacheDirectory('./cache/rector');
     $rectorConfig->paths(
