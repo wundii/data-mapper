@@ -151,6 +151,7 @@ final class DtoObjectResolver
             && $constructor instanceof ReflectionMethod
             && $constructor->getNumberOfRequiredParameters() > 0
         ) {
+            $reflectionClass = new ReflectionClass(get_class($newInstance));
             foreach ($constructor->getParameters() as $instanceParameter) {
                 if (! property_exists($newInstance, $instanceParameter->getName())) {
                     continue;
@@ -160,7 +161,6 @@ final class DtoObjectResolver
                     continue;
                 }
 
-                $reflectionClass = new ReflectionClass(get_class($newInstance));
                 $property = $reflectionClass->getProperty($instanceParameter->getName());
                 if (! $property->isPublic()) {
                     $property->setAccessible(true);

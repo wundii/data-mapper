@@ -10,6 +10,17 @@ permissions:
   contents: read
 
 jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Fetch PHP versions
+        id: set-matrix
+        run: |
+          php .github/scripts/php_version_json_matrix.php > matrix.json
+          echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
+
   code-quality:
     name: 'PHP Code Quality'
     runs-on: ubuntu-latest
@@ -48,12 +59,12 @@ jobs:
         run: composer ecs-dry
 
   unittest:
-    needs: [ code-quality ]
+    needs: [ generate-matrix, code-quality ]
     name: 'PHP Unit and E2E Tests'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ 8.2, 8.3, 8.4 ]
+        version: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
