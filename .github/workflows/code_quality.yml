@@ -14,8 +14,8 @@ jobs:
     name: 'Generate PHP Version Matrix'
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }
-      firstVersion: ${{ steps.set-first.outputs.first_version }}}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      firstVersion: ${{ steps.set-first.outputs.first_version }}
     steps:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
