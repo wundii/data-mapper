@@ -15,6 +15,14 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
+      - name: PHP-Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 'latest'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Fetch PHP versions
         id: set-matrix
         run: |
@@ -22,6 +30,7 @@ jobs:
           echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
 
   code-quality:
+    needs: [ generate-matrix ]
     name: 'PHP Code Quality'
     runs-on: ubuntu-latest
     steps:
