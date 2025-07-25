@@ -38,4 +38,6 @@ $phpMatrixData = array_map(
     $phpMatrixArray,
 );
 
+sort($values);
+
 echo json_encode(array_values($phpMatrixData));
