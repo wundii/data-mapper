@@ -11,9 +11,11 @@ permissions:
 
 jobs:
   generate-matrix:
+    name: 'Generate PHP Version Matrix'
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }
+      firstVersion: ${{ steps.set-first.outputs.first_version }}}
     steps:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
@@ -29,6 +31,12 @@ jobs:
           php .github/scripts/php_version_json_matrix.php > matrix.json
           echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
 
+      - name: Extract first version
+        id: set-first
+        run: |
+          first=$(jq -r '.[0]' <<< '${{ steps.set-matrix.outputs.matrix }}')
+          echo "firstVersion=$first" >> $GITHUB_OUTPUT
+
   code-quality:
     needs: [ generate-matrix ]
     name: 'PHP Code Quality'
@@ -37,7 +45,7 @@ jobs:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '${{ needs.generate-matrix.outputs.firstVersion }}'
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -107,7 +115,7 @@ jobs:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '${{ needs.generate-matrix.outputs.firstVersion }}'
 
       - name: Checkout
         uses: actions/checkout@v4
