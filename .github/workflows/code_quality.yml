@@ -45,7 +45,7 @@ jobs:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '${{ needs.generate-matrix.outputs.firstVersion }}'
+          php-version: ${{ needs.generate-matrix.outputs.firstVersion }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -115,7 +115,7 @@ jobs:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '${{ needs.generate-matrix.outputs.firstVersion }}'
+          php-version: ${{ needs.generate-matrix.outputs.firstVersion }}
 
       - name: Checkout
         uses: actions/checkout@v4
