@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      firstVersion: ${{ steps.set-first.outputs.firstVersion }}
+      first: ${{ steps.set-first.outputs.first }}
     steps:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
@@ -35,8 +35,8 @@ jobs:
         id: set-first
         run: |
           matrix='${{ steps.set-matrix.outputs.matrix }}'
-          firstVersion=$(echo "$matrix" | jq -r '.[0]')
-          echo "firstVersion=$firstVersion" >> $GITHUB_OUTPUT
+          first=$(echo "$matrix" | jq -r '.[0]')
+          echo "first=$first" >> $GITHUB_OUTPUT
 
   code-quality:
     needs: [ generate-matrix ]
@@ -46,7 +46,7 @@ jobs:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ needs.generate-matrix.outputs.firstVersion }}
+          php-version: ${{ needs.generate-matrix.outputs.first }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -116,7 +116,7 @@ jobs:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ needs.generate-matrix.outputs.firstVersion }}
+          php-version: ${{ needs.generate-matrix.outputs.first }}
 
       - name: Checkout
         uses: actions/checkout@v4
