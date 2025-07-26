@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      firstVersion: ${{ steps.set-first.outputs.first_version }}
+      firstVersion: ${{ steps.set-first.outputs.firstVersion }}
     steps:
       - name: PHP-Setup
         uses: shivammathur/setup-php@v2
