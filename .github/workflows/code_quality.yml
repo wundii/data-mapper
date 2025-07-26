@@ -28,14 +28,15 @@ jobs:
       - name: Fetch PHP versions
         id: set-matrix
         run: |
-          php .github/scripts/php_version_json_matrix.php > matrix.json
+          php .github/scripts/version_matrix.php > matrix.json
           echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
 
       - name: Extract first version
         id: set-first
         run: |
-          first=$(jq -r '.[0]' <<< '${{ steps.set-matrix.outputs.matrix }}')
-          echo "firstVersion=$first" >> $GITHUB_OUTPUT
+          matrix='${{ steps.set-matrix.outputs.matrix }}'
+          firstVersion=$(echo "$matrix" | jq -r '.[0]')
+          echo "firstVersion=$firstVersion" >> $GITHUB_OUTPUT
 
   code-quality:
     needs: [ generate-matrix ]

@@ -26,18 +26,18 @@ if (!isset($phpWatchData['data'])) {
     throw new RuntimeException('Invalid data format received from php.watch API');
 }
 
-$phpMatrixArray = array_filter(
+$phpMatrix = array_filter(
     $phpWatchData['data'],
     function (array $item) use ($minPhpVersion): bool {
         return $item['name'] >= $minPhpVersion && $item['isNextVersion'] === false;
     },
 );
 
-$phpMatrixData = array_map(
+$phpVersions = array_map(
     static fn (array $version): string => $version['name'],
-    $phpMatrixArray,
+    $phpMatrix,
 );
 
-sort($phpMatrixData);
+sort($phpVersions);
 
-echo json_encode(array_values($phpMatrixData));
+echo json_encode(array_values($phpVersions));
