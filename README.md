@@ -29,6 +29,7 @@ Ideal for developers who need reliable and efficient data mapping without sacrif
 - Custom root element for starting with the source data
 - Auto-casting for `float` types (eu to us decimal separator)
 - Target alias via Attribute for properties and methods
+- automatic data sorting for constructor parameters
 
 ## Supported Types
 - `null`
@@ -78,7 +79,7 @@ use Wundii\DataMapper\DataMapper;
  * DataConfig default settings
  * - ApproachEnum::SETTER - will use the constructor to map the data
  * - AccessibleEnum::PUBLIC - will use only public properties/methods
- * - classMap = [] - will not map any classes 
+ * - classMap = [] - will not map any classes
  */
 
 $dataMapper = new DataMapper();
