@@ -113,11 +113,23 @@ final class DtoObjectResolver
                 $parameterValue = $parameters[$constructorParameter->getName()] ?? $constructorParameter->getDefaultValue();
                 $sortedParameters[$constructorParameter->getName()] = $parameterValue;
 
-                if (! property_exists($newInstance, $constructorParameter->getName())) {
+                $propertyName = $constructorParameter->getName();
+                $currentClass = $reflectionClass;
+
+                while (! $currentClass->hasProperty($propertyName)) {
+                    $parentClass = $currentClass->getParentClass();
+                    if (! $parentClass instanceof ReflectionClass) {
+                        continue;
+                    }
+
+                    $currentClass = $parentClass;
+                }
+
+                if (! $currentClass->hasProperty($propertyName)) {
                     continue;
                 }
 
-                $property = $reflectionClass->getProperty($constructorParameter->getName());
+                $property = $currentClass->getProperty($propertyName);
                 if (! $property->isPublic()) {
                     $property->setAccessible(true);
                 }
@@ -163,7 +175,19 @@ final class DtoObjectResolver
         ) {
             $reflectionClass = new ReflectionClass(get_class($newInstance));
             foreach ($constructor->getParameters() as $instanceParameter) {
-                if (! property_exists($newInstance, $instanceParameter->getName())) {
+                $propertyName = $instanceParameter->getName();
+                $currentClass = $reflectionClass;
+
+                while (! $currentClass->hasProperty($propertyName)) {
+                    $parentClass = $currentClass->getParentClass();
+                    if (! $parentClass instanceof ReflectionClass) {
+                        continue;
+                    }
+
+                    $currentClass = $parentClass;
+                }
+
+                if (! $currentClass->hasProperty($propertyName)) {
                     continue;
                 }
 
@@ -171,7 +195,7 @@ final class DtoObjectResolver
                     continue;
                 }
 
-                $property = $reflectionClass->getProperty($instanceParameter->getName());
+                $property = $currentClass->getProperty($propertyName);
                 if (! $property->isPublic()) {
                     $property->setAccessible(true);
                 }

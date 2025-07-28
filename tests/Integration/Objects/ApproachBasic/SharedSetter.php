@@ -10,6 +10,7 @@ class SharedSetter
 
     public function __construct(
         private string $property,
+        private ?int $amount = null,
         ?string $propertyTrait = null,
     ) {
         $this->setData($propertyTrait);
@@ -23,5 +24,15 @@ class SharedSetter
     public function setProperty(string $property): void
     {
         $this->property = $property;
+    }
+
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(?int $amount = null): void
+    {
+        $this->amount = $amount;
     }
 }

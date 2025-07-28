@@ -67,7 +67,7 @@ class JsonApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->json(file_get_contents($file), SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
@@ -82,7 +82,7 @@ class JsonApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->json(file_get_contents($file), SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
@@ -97,7 +97,7 @@ class JsonApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->json(file_get_contents($file), SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
@@ -112,7 +112,7 @@ class JsonApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->json(file_get_contents($file), SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);

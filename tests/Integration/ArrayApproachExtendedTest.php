@@ -112,7 +112,7 @@ class ArrayApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->array($array, SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
@@ -130,7 +130,7 @@ class ArrayApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->array($array, SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
@@ -148,7 +148,7 @@ class ArrayApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->array($array, SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
@@ -166,7 +166,7 @@ class ArrayApproachExtendedTest extends TestCase
         $dataMapper->setDataConfig($dataConfig);
         $return = $dataMapper->array($array, SharedSubSetter::class);
 
-        $expected = new SharedSubSetter('value', 'traitValue');
+        $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
         $this->assertEquals($expected, $return);
