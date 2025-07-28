@@ -29,7 +29,7 @@ Ideal for developers who need reliable and efficient data mapping without sacrif
 - Custom root element for starting with the source data
 - Auto-casting for `float` types (eu to us decimal separator)
 - Target alias via Attribute for properties and methods
-- automatic data sorting for constructor parameters
+- Automatic data sorting for constructor parameters
 
 ## Supported Types
 - `null`
