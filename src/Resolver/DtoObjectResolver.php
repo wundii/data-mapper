@@ -102,22 +102,22 @@ final class DtoObjectResolver
             /**
              * second level, to set the values via the properties if level one has released the $parameters
              */
-            foreach ($constructorParameters as $instanceParameter) {
+            foreach ($constructorParameters as $constructorParameter) {
                 if (
-                    ! array_key_exists($instanceParameter->getName(), $parameters)
-                    && ! $instanceParameter->isDefaultValueAvailable()
+                    ! array_key_exists($constructorParameter->getName(), $parameters)
+                    && ! $constructorParameter->isDefaultValueAvailable()
                 ) {
                     continue;
                 }
 
-                $parameterValue = $parameters[$instanceParameter->getName()] ?? $instanceParameter->getDefaultValue();
-                $sortedParameters[$instanceParameter->getName()] = $parameterValue;
+                $parameterValue = $parameters[$constructorParameter->getName()] ?? $constructorParameter->getDefaultValue();
+                $sortedParameters[$constructorParameter->getName()] = $parameterValue;
 
-                if (! property_exists($newInstance, $instanceParameter->getName())) {
+                if (! property_exists($newInstance, $constructorParameter->getName())) {
                     continue;
                 }
 
-                $property = $reflectionClass->getProperty($instanceParameter->getName());
+                $property = $reflectionClass->getProperty($constructorParameter->getName());
                 if (! $property->isPublic()) {
                     $property->setAccessible(true);
                 }
