@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
+use Integration\Objects\ApproachBasic\SharedSubSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
@@ -55,5 +56,65 @@ class YamlApproachExtendedTest extends TestCase
         $this->assertIsArray($return);
         $this->assertInstanceOf(BaseConstructor::class, $return[0]);
         $this->assertEquals([$expected01, $expected02], $return);
+    }
+
+    public function testSharedConstructorSortedData(): void
+    {
+        $file = __DIR__ . '/YamlFiles/SharedSubSorted.yaml';
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->yaml(file_get_contents($file), SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSharedConstructorUnsortedData(): void
+    {
+        $file = __DIR__ . '/YamlFiles/SharedSubUnsorted.yaml';
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->yaml(file_get_contents($file), SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSharedSetterSortedData(): void
+    {
+        $file = __DIR__ . '/YamlFiles/SharedSubSorted.yaml';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->yaml(file_get_contents($file), SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSharedSetterUnsortedData(): void
+    {
+        $file = __DIR__ . '/YamlFiles/SharedSubUnsorted.yaml';
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->yaml(file_get_contents($file), SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
     }
 }

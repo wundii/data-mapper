@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
+use Integration\Objects\ApproachBasic\SharedSetter;
+use Integration\Objects\ApproachBasic\SharedSubSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
 use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
@@ -97,5 +99,77 @@ class ArrayApproachExtendedTest extends TestCase
         $this->assertIsArray($return);
         $this->assertInstanceOf(BaseConstructor::class, $return[0]);
         $this->assertEquals([$expected01, $expected02], $return);
+    }
+
+    public function testSharedConstructorSortedData(): void
+    {
+        $array = [
+            'property' => 'value',
+            'propertyTrait' => 'traitValue',
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSharedConstructorUnsortedData(): void
+    {
+        $array = [
+            'propertyTrait' => 'traitValue',
+            'property' => 'value',
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSharedSetterSortedData(): void
+    {
+        $array = [
+            'property' => 'value',
+            'propertyTrait' => 'traitValue',
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testSharedSetterUnsortedData(): void
+    {
+        $array = [
+            'propertyTrait' => 'traitValue',
+            'property' => 'value',
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::SETTER);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, SharedSubSetter::class);
+
+        $expected = new SharedSubSetter('value', 'traitValue');
+
+        $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
     }
 }

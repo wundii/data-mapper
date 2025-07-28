@@ -184,4 +184,24 @@ class CsvTest extends TestCase
         $this->assertCount(2, $return);
         $this->assertEquals($expected, $return);
     }
+
+    public function testListOfStringsWithUnsortedColumns(): void
+    {
+        $csv = "name,AMOUNT\n" .
+            "Nostromo,1000\n" .
+            "Weyland-Yutani,1001\n";
+
+        $return = $this->dataMapper(ApproachEnum::CONSTRUCTOR)->csv(
+            $csv,
+            BaseMix::class,
+        );
+
+        $expected = [
+            new BaseMix(1000, 'Nostromo'),
+            new BaseMix(1001, 'Weyland-Yutani'),
+        ];
+
+        $this->assertCount(2, $return);
+        $this->assertEquals($expected, $return);
+    }
 }

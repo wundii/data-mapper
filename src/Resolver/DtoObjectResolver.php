@@ -101,11 +101,18 @@ final class DtoObjectResolver
             /**
              * second level, to set the values via the properties if level one has released the $parameters
              */
+            $sortedParameters = [];
             foreach ($parameters as $instanceParameter) {
+                $sortedParameters[] = $instanceParameter->getName();
+
                 if (
                     ! array_key_exists($instanceParameter->getName(), $parameter)
                     && ! $instanceParameter->isDefaultValueAvailable()
                 ) {
+                    continue;
+                }
+
+                if (! property_exists($newInstance, $instanceParameter->getName())) {
                     continue;
                 }
 
@@ -125,7 +132,23 @@ final class DtoObjectResolver
             }
 
             /**
-             * third level, to set the values via the constructor parameters
+             * third level, to sort the parameters by the constructor parameters
+             * if the parameters are not sorted, then the order of the parameters is not guaranteed
+             * this is required for the constructor approach, because the constructor parameters must be in the correct order
+             */
+            $sortedParameter = [];
+            if ($sortedParameters !== []) {
+                foreach ($sortedParameters as $property) {
+                    if (array_key_exists($property, $parameter)) {
+                        $sortedParameter[$property] = $parameter[$property];
+                    }
+                }
+
+                $parameter = $sortedParameter;
+            }
+
+            /**
+             * fourth level, to set the values via the constructor parameters
              * if more parameters are required than passed, then a standard object is returned to indicate that no object could be created
              * a exception is not thrown, because the source data could be a list of objects
              */
