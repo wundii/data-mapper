@@ -21,13 +21,13 @@ use Wundii\DataMapper\Interface\ValueDtoInterface;
 final class DtoObjectResolver
 {
     /**
-     * @param mixed[] $parameter
+     * @param mixed[] $parameters
      * @throws DataMapperException|ReflectionException
      */
     public function createInstance(
         DataConfigInterface $dataConfig,
         ObjectDtoInterface $objectDto,
-        array $parameter = [],
+        array $parameters = [],
     ): object {
         $object = $objectDto->getObject();
         $approach = $dataConfig->getApproach();
@@ -47,9 +47,9 @@ final class DtoObjectResolver
                  * $reflectionEnum = new ReflectionEnum(Enum::class);
                  * (string) $reflectionEnum->getBackingType();
                  */
-                $parameter = array_map(static fn (mixed $value): mixed => is_numeric($value) ? (int) $value : $value, array_values($parameter));
+                $parameters = array_map(static fn (mixed $value): mixed => is_numeric($value) ? (int) $value : $value, array_values($parameters));
 
-                $newInstance = $object::from(...$parameter);
+                $newInstance = $object::from(...$parameters);
 
                 if (! $newInstance instanceof $object) {
                     throw DataMapperException::Error('Enum is not an instance of ' . $object);
@@ -61,8 +61,8 @@ final class DtoObjectResolver
             $approach = ApproachEnum::CONSTRUCTOR;
         }
 
-        $parameter = match ($approach) {
-            ApproachEnum::CONSTRUCTOR => $parameter,
+        $parameters = match ($approach) {
+            ApproachEnum::CONSTRUCTOR => $parameters,
             default => [],
         };
 
@@ -80,43 +80,42 @@ final class DtoObjectResolver
         if ($approach === ApproachEnum::CONSTRUCTOR) {
             $newInstance = $reflectionClass->newInstanceWithoutConstructor();
             $propertyWasSetByName = false;
-            $parameters = [];
+            $constructorParameters = [];
+            $sortedParameters = [];
 
             if (! $constructor instanceof ReflectionMethod) {
-                return new $object(...array_values($parameter));
+                return new $object(...array_values($parameters));
             }
 
             /**
              * first level, check how many properties can I set
              */
             foreach ($constructor->getParameters() as $instanceParameter) {
-                if (! array_key_exists($instanceParameter->getName(), $parameter)) {
+                if (! array_key_exists($instanceParameter->getName(), $parameters)) {
                     continue;
                 }
 
-                $parameters = $constructor->getParameters();
+                $constructorParameters = $constructor->getParameters();
                 break;
             }
 
             /**
              * second level, to set the values via the properties if level one has released the $parameters
              */
-            $sortedParameters = [];
-            foreach ($parameters as $instanceParameter) {
-                $sortedParameters[] = $instanceParameter->getName();
-
+            foreach ($constructorParameters as $instanceParameter) {
                 if (
-                    ! array_key_exists($instanceParameter->getName(), $parameter)
+                    ! array_key_exists($instanceParameter->getName(), $parameters)
                     && ! $instanceParameter->isDefaultValueAvailable()
                 ) {
                     continue;
                 }
 
+                $parameterValue = $parameters[$instanceParameter->getName()] ?? $instanceParameter->getDefaultValue();
+                $sortedParameters[$instanceParameter->getName()] = $parameterValue;
+
                 if (! property_exists($newInstance, $instanceParameter->getName())) {
                     continue;
                 }
-
-                $setValue = $parameter[$instanceParameter->getName()] ?? $instanceParameter->getDefaultValue();
 
                 $property = $reflectionClass->getProperty($instanceParameter->getName());
                 if (! $property->isPublic()) {
@@ -124,40 +123,28 @@ final class DtoObjectResolver
                 }
 
                 $propertyWasSetByName = true;
-                $property->setValue($newInstance, $setValue);
+                $property->setValue($newInstance, $parameterValue);
             }
 
             if ($propertyWasSetByName) {
                 return $newInstance;
             }
 
-            /**
-             * third level, to sort the parameters by the constructor parameters
-             * if the parameters are not sorted, then the order of the parameters is not guaranteed
-             * this is required for the constructor approach, because the constructor parameters must be in the correct order
-             */
-            $sortedParameter = [];
             if ($sortedParameters !== []) {
-                foreach ($sortedParameters as $property) {
-                    if (array_key_exists($property, $parameter)) {
-                        $sortedParameter[$property] = $parameter[$property];
-                    }
-                }
-
-                $parameter = $sortedParameter;
+                $parameters = $sortedParameters;
             }
 
             /**
-             * fourth level, to set the values via the constructor parameters
+             * third level, to set the values via the constructor parameters
              * if more parameters are required than passed, then a standard object is returned to indicate that no object could be created
              * a exception is not thrown, because the source data could be a list of objects
              */
             $requiredParams = $constructor->getNumberOfRequiredParameters();
-            if ($requiredParams > count($parameter)) {
+            if ($requiredParams > count($parameters)) {
                 return new stdClass();
             }
 
-            return new $object(...array_values($parameter));
+            return new $object(...array_values($parameters));
         }
 
         if (
@@ -241,13 +228,13 @@ final class DtoObjectResolver
             throw DataMapperException::Error('You can not use constructor approach with an object');
         }
 
-        $parameter = [];
+        $parameters = [];
 
         foreach ($objectDto->getValue() as $typeDto) {
-            $parameter[$typeDto->getDestination()] = $this->matchValue($dataConfig, $typeDto);
+            $parameters[$typeDto->getDestination()] = $this->matchValue($dataConfig, $typeDto);
         }
 
-        return $this->createInstance($dataConfig, $objectDto, $parameter);
+        return $this->createInstance($dataConfig, $objectDto, $parameters);
     }
 
     /**
