@@ -6,5 +6,4 @@ namespace Integration\Objects\ApproachBasic;
 
 class SharedSubSetter extends SharedSetter
 {
-
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
-use Integration\Objects\ApproachBasic\SharedSetter;
 use Integration\Objects\ApproachBasic\SharedSubSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
 use PHPUnit\Framework\TestCase;
