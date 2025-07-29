@@ -48,6 +48,11 @@ class ReflectionClassParser extends AbstractReflectionParser
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
         }
 
+        $reflectionObjectDto = $this->reflectionObjectDtoCache($objectOrClass, $takeValue);
+        if ($reflectionObjectDto instanceof ReflectionObjectDto) {
+            return $reflectionObjectDto;
+        }
+
         $useStatementsDto = (new ReflectionUseParser())->parse($objectOrClass);
         $this->reflectionAnnotationResolver = new ReflectionAnnotationResolver($useStatementsDto);
 
@@ -85,7 +90,7 @@ class ReflectionClassParser extends AbstractReflectionParser
             );
         }
 
-        return new ReflectionObjectDto(
+        $reflectionObjectDto = new ReflectionObjectDto(
             $attributesClass,
             $propertiesClass,
             $propertiesConst,
@@ -93,6 +98,8 @@ class ReflectionClassParser extends AbstractReflectionParser
             $methodsOthClass,
             $methodsSetClass,
         );
+
+        return $this->setReflectionObjectDtoCache($objectOrClass, $takeValue, $reflectionObjectDto);
     }
 
     /**
