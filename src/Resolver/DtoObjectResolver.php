@@ -17,6 +17,7 @@ use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ObjectDtoInterface;
 use Wundii\DataMapper\Interface\TypeDtoInterface;
 use Wundii\DataMapper\Interface\ValueDtoInterface;
+use Wundii\DataMapper\Parser\ReflectionClassParser;
 
 final class DtoObjectResolver
 {
@@ -74,30 +75,26 @@ final class DtoObjectResolver
             throw DataMapperException::Error('Class does not exist: ' . $object);
         }
 
-        $reflectionClass = new ReflectionClass($object);
-        $constructor = $reflectionClass->getConstructor();
+        $reflectionClassParser = new ReflectionClassParser();
+        $reflectionClass = $reflectionClassParser->reflectionClassCache($object);
+        $reflectionObjectDto = $reflectionClassParser->parse($object);
+        $requiredParams = $reflectionObjectDto->getNumberOfRequiredConstructProperties();
 
         if ($approach === ApproachEnum::CONSTRUCTOR) {
             $newInstance = $reflectionClass->newInstanceWithoutConstructor();
             $propertyWasSetByName = false;
-            $constructorParameters = [];
             $sortedParameters = [];
 
-            if (! $constructor instanceof ReflectionMethod) {
+            if ($reflectionObjectDto->getPropertiesConst() === []) {
                 return new $object(...array_values($parameters));
             }
 
             /**
              * first level, check how many properties can I set
              */
-            foreach ($constructor->getParameters() as $instanceParameter) {
-                if (! array_key_exists($instanceParameter->getName(), $parameters)) {
-                    continue;
-                }
-
-                $constructorParameters = $constructor->getParameters();
-                break;
-            }
+            $constructorParameters = $requiredParams === 0 || $parameters === []
+                ? []
+                : $reflectionObjectDto->getPropertiesConst();
 
             /**
              * second level, to set the values via the properties if level one has released the $parameters
@@ -151,7 +148,6 @@ final class DtoObjectResolver
              * if more parameters are required than passed, then a standard object is returned to indicate that no object could be created
              * a exception is not thrown, because the source data could be a list of objects
              */
-            $requiredParams = $constructor->getNumberOfRequiredParameters();
             if ($requiredParams > count($parameters)) {
                 return new stdClass();
             }
@@ -159,10 +155,7 @@ final class DtoObjectResolver
             return new $object(...array_values($parameters));
         }
 
-        if (
-            $constructor instanceof ReflectionMethod
-            && $constructor->getNumberOfRequiredParameters() === 0
-        ) {
+        if ($requiredParams === 0) {
             return $reflectionClass->newInstance();
         }
 
@@ -170,12 +163,10 @@ final class DtoObjectResolver
 
         if (
             $approach === ApproachEnum::SETTER
-            && $constructor instanceof ReflectionMethod
-            && $constructor->getNumberOfRequiredParameters() > 0
+            && $requiredParams > 0
         ) {
-            $reflectionClass = new ReflectionClass(get_class($newInstance));
-            foreach ($constructor->getParameters() as $instanceParameter) {
-                $propertyName = $instanceParameter->getName();
+            foreach ($reflectionObjectDto->getPropertiesConst() as $propertyDto) {
+                $propertyName = $propertyDto->getName();
                 $currentClass = $reflectionClass;
 
                 while (! $currentClass->hasProperty($propertyName)) {
@@ -191,7 +182,7 @@ final class DtoObjectResolver
                     continue;
                 }
 
-                if (! $instanceParameter->isDefaultValueAvailable()) {
+                if (! $propertyDto->isDefaultValueAvailable()) {
                     continue;
                 }
 
@@ -201,7 +192,7 @@ final class DtoObjectResolver
                 }
 
                 if (! $property->isReadOnly()) {
-                    $property->setValue($newInstance, $instanceParameter->getDefaultValue());
+                    $property->setValue($newInstance, $propertyDto->getDefaultValue());
                 }
             }
         }

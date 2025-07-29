@@ -198,4 +198,14 @@ final readonly class ReflectionObjectDto
 
         return null;
     }
+
+    public function getNumberOfRequiredConstructProperties(): int
+    {
+        $defaultAvailable = array_filter(
+            $this->propertiesConst,
+            static fn (PropertyDto $propertyDto): bool => ! $propertyDto->isDefaultValueAvailable(),
+        );
+
+        return count($defaultAvailable);
+    }
 }
