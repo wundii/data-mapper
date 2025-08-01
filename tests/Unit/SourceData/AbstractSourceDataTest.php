@@ -8,7 +8,6 @@ use Exception;
 use MockClasses\AbstractSourceDataTest as AbstractSourceData;
 use MockClasses\RootProperties;
 use PHPUnit\Framework\TestCase;
-use Wundii\DataMapper\Cache\DataObjectCache;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\Enum\ApproachEnum;
 

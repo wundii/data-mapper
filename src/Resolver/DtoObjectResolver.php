@@ -9,7 +9,6 @@ use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
-use Wundii\DataMapper\Cache\DataObjectCache;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
@@ -80,7 +79,7 @@ final class DtoObjectResolver
         $dataObjectCache = $dataConfig->getDataObjectCache();
         $reflectionClass = new ReflectionClass($object);
         $reflectionObjectDto = $dataObjectCache->getItem($object);
-        if (!$reflectionObjectDto instanceof ReflectionObjectDto) {
+        if (! $reflectionObjectDto instanceof ReflectionObjectDto) {
             $reflectionClassParser = new ReflectionClassParser();
             $reflectionObjectDto = $reflectionClassParser->parse($object);
             $dataObjectCache->save($reflectionObjectDto);

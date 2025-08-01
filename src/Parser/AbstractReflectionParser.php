@@ -11,7 +11,6 @@ use ReflectionParameter;
 use ReflectionProperty;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\ElementDto;
-use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Resolver\ReflectionElementResolver;
 

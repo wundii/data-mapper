@@ -19,11 +19,6 @@ class RedisCacheAdapter implements CacheItemPoolInterface
     ) {
     }
 
-    private function getRedisKey(string $key): string
-    {
-        return 'datamapper:cache:' . $key;
-    }
-
     public function getItem(string $key): CacheItemInterface
     {
         $array = iterator_to_array($this->getItems([$key]));
@@ -65,20 +60,21 @@ class RedisCacheAdapter implements CacheItemPoolInterface
         foreach ($keys as $key) {
             $this->deleteItem($key);
         }
+
         return true;
     }
 
-    public function save(CacheItemInterface $item): bool
+    public function save(CacheItemInterface $cacheItem): bool
     {
-        $redisKey = $this->getRedisKey($item->getKey());
+        $redisKey = $this->getRedisKey($cacheItem->getKey());
         return $this->ttl > 0
-            ? $this->redis->setex($redisKey, $this->ttl, serialize($item))
-            : $this->redis->set($redisKey, serialize($item));
+            ? $this->redis->setex($redisKey, $this->ttl, serialize($cacheItem))
+            : $this->redis->set($redisKey, serialize($cacheItem));
     }
 
-    public function saveDeferred(CacheItemInterface $item): bool
+    public function saveDeferred(CacheItemInterface $cacheItem): bool
     {
-        $this->deferred[] = $item;
+        $this->deferred[] = $cacheItem;
         return true;
     }
 
@@ -91,5 +87,10 @@ class RedisCacheAdapter implements CacheItemPoolInterface
         $this->deferred = [];
 
         return true;
+    }
+
+    private function getRedisKey(string $key): string
+    {
+        return 'datamapper:cache:' . $key;
     }
 }

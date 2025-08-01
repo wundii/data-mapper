@@ -16,21 +16,14 @@ class FileCacheAdapter implements CacheItemPoolInterface
     public function __construct(
         private string $path = '/tmp/datamapper',
     ) {
-        if(!is_dir($this->path)) {
-            if (!mkdir($this->path, 0777, true) && !is_dir($this->path)) {
-                throw new RuntimeException("Unable to create cache directory '{$this->path}'");
-            }
+        if (! is_dir($this->path) && (! mkdir($this->path, 0777, true) && ! is_dir($this->path))) {
+            throw new RuntimeException(sprintf("Unable to create cache directory '%s'", $this->path));
         }
 
-        if (!is_readable($this->path)
-            || !is_writable($this->path)) {
-            throw new RuntimeException("Cache directory '{$this->path}' is not readable or writable");
+        if (! is_readable($this->path)
+            || ! is_writable($this->path)) {
+            throw new RuntimeException(sprintf("Cache directory '%s' is not readable or writable", $this->path));
         }
-    }
-
-    private function getFilePath(string $key): string
-    {
-        return $this->path . '/' . $key . '.cache';
     }
 
     public function getItem(string $key): CacheItemInterface
@@ -47,7 +40,7 @@ class FileCacheAdapter implements CacheItemPoolInterface
                 $path = $this->getFilePath($key);
                 $fileContent = file_get_contents($path);
                 if ($fileContent === false) {
-                    throw new RuntimeException("Unable to read file '{$path}'");
+                    throw new RuntimeException(sprintf("Unable to read file '%s'", $path));
                 }
 
                 yield unserialize($fileContent);
@@ -74,7 +67,7 @@ class FileCacheAdapter implements CacheItemPoolInterface
     public function deleteItem(string $key): bool
     {
         $file = $this->getFilePath($key);
-        return !file_exists($file) || unlink($file);
+        return ! file_exists($file) || unlink($file);
     }
 
     public function deleteItems(array $keys): bool
@@ -82,20 +75,21 @@ class FileCacheAdapter implements CacheItemPoolInterface
         foreach ($keys as $key) {
             $this->deleteItem($key);
         }
+
         return true;
     }
 
-    public function save(CacheItemInterface $item): bool
+    public function save(CacheItemInterface $cacheItem): bool
     {
         return file_put_contents(
-            $this->getFilePath($item->getKey()),
-            serialize($item),
+            $this->getFilePath($cacheItem->getKey()),
+            serialize($cacheItem),
         ) !== false;
     }
 
-    public function saveDeferred(CacheItemInterface $item): bool
+    public function saveDeferred(CacheItemInterface $cacheItem): bool
     {
-        $this->deferred[] = $item;
+        $this->deferred[] = $cacheItem;
         return true;
     }
 
@@ -108,5 +102,10 @@ class FileCacheAdapter implements CacheItemPoolInterface
         $this->deferred = [];
 
         return true;
+    }
+
+    private function getFilePath(string $key): string
+    {
+        return $this->path . '/' . $key . '.cache';
     }
 }

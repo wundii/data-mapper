@@ -14,15 +14,15 @@ class DataObjectCache
 {
     public const HASH_ALGORITHM = 'sha256';
 
-    public function __construct(
-        private ?CacheItemPoolInterface $cacheItemPool,
-    ) {
-    }
-
     /**
      * @var ReflectionObjectDto[]
      */
     private static array $cache = [];
+
+    public function __construct(
+        private ?CacheItemPoolInterface $cacheItemPool,
+    ) {
+    }
 
     public function getItem(object|string $objectOrClass): ?ReflectionObjectDto
     {
@@ -81,7 +81,7 @@ class DataObjectCache
 
     public function saveCacheItem(ReflectionObjectDto $reflectionObjectDto): void
     {
-        if (!$this->cacheItemPool instanceof CacheItemPoolInterface) {
+        if (! $this->cacheItemPool instanceof CacheItemPoolInterface) {
             return;
         }
 

@@ -16,7 +16,7 @@ class ApcuCacheAdapter implements CacheItemPoolInterface
     public function __construct(
         private int $ttl = 3600,
     ) {
-        if (!extension_loaded('apcu') || !function_exists('apcu_enabled') || !apcu_enabled()) {
+        if (! extension_loaded('apcu') || ! function_exists('apcu_enabled') || ! apcu_enabled()) {
             throw new RuntimeException('APCu extension is not enabled.');
         }
     }
@@ -51,7 +51,7 @@ class ApcuCacheAdapter implements CacheItemPoolInterface
 
     public function deleteItem(string $key): bool
     {
-        return (bool) apcu_delete($key);
+        return apcu_delete($key);
     }
 
     public function deleteItems(array $keys): bool
@@ -59,17 +59,18 @@ class ApcuCacheAdapter implements CacheItemPoolInterface
         foreach ($keys as $key) {
             $this->deleteItem($key);
         }
+
         return true;
     }
 
-    public function save(CacheItemInterface $item): bool
+    public function save(CacheItemInterface $cacheItem): bool
     {
-        return (bool) apcu_store($item->getKey(), serialize($item), $this->ttl);
+        return apcu_store($cacheItem->getKey(), serialize($cacheItem), $this->ttl);
     }
 
-    public function saveDeferred(CacheItemInterface $item): bool
+    public function saveDeferred(CacheItemInterface $cacheItem): bool
     {
-        $this->deferred[] = $item;
+        $this->deferred[] = $cacheItem;
         return true;
     }
 
