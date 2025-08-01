@@ -12,6 +12,9 @@ use Wundii\DataMapper\Interface\ElementDtoInterface;
 
 final class ReflectionObjectDto
 {
+    /**
+     * @var ElementDtoInterface[]
+     */
     private array $findElementDtoCache = [];
 
     /**
@@ -218,9 +221,8 @@ final class ReflectionObjectDto
 
     private function cacheElementDto(
         string $key,
-        ElementDtoInterface $value,
-    ): ElementDtoInterface
-    {
-        return $this->findElementDtoCache[$key] = $value;
+        ElementDtoInterface $elementDto,
+    ): ElementDtoInterface {
+        return $this->findElementDtoCache[$key] = $elementDto;
     }
 }
