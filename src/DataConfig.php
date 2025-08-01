@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper;
 
+use Psr\Cache\CacheItemPoolInterface;
 use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
@@ -11,6 +12,8 @@ use Wundii\DataMapper\Interface\DataConfigInterface;
 
 final readonly class DataConfig implements DataConfigInterface
 {
+    private DataObjectCache $dataObjectCache;
+
     /**
      * @param string[] $classMap
      */
@@ -18,6 +21,7 @@ final readonly class DataConfig implements DataConfigInterface
         private ApproachEnum $approachEnum = ApproachEnum::SETTER,
         private AccessibleEnum $accessibleEnum = AccessibleEnum::PUBLIC,
         private array $classMap = [],
+        ?CacheItemPoolInterface $cacheItemPool = null,
     ) {
         foreach ($classMap as $key => $value) {
             /** for a better error output if the input does not have the correct data type */
@@ -37,6 +41,8 @@ final readonly class DataConfig implements DataConfigInterface
                 throw DataMapperException::InvalidArgument('The value class does not exist', $value);
             }
         }
+
+        $this->dataObjectCache = new DataObjectCache($cacheItemPool);
     }
 
     public function getApproach(): ApproachEnum
@@ -60,5 +66,10 @@ final readonly class DataConfig implements DataConfigInterface
     public function mapClassName(string $objectName): string
     {
         return $this->classMap[$objectName] ?? $objectName;
+    }
+
+    public function getDataObjectCache(): DataObjectCache
+    {
+        return $this->dataObjectCache;
     }
 }

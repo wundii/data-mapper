@@ -26,6 +26,8 @@ final class ReflectionObjectDto
      * @param MethodDto[] $methodSetters
      */
     public function __construct(
+        private readonly string $classString,
+        private readonly ?string $fileHash,
         private readonly array $attributesClass,
         private readonly array $propertiesClass,
         private readonly array $propertiesConst,
@@ -33,6 +35,16 @@ final class ReflectionObjectDto
         private readonly array $methodOthers,
         private readonly array $methodSetters,
     ) {
+    }
+
+    public function getClassString(): string
+    {
+        return $this->classString;
+    }
+
+    public function getFileHash(): ?string
+    {
+        return $this->fileHash;
     }
 
     /**

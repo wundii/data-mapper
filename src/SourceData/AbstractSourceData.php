@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Wundii\DataMapper\SourceData;
 
 use ReflectionException;
+use Wundii\DataMapper\Cache\DataObjectCache;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
 use Wundii\DataMapper\Exception\DataMapperException;
 use Wundii\DataMapper\Interface\DataConfigInterface;
@@ -17,11 +18,6 @@ use Wundii\DataMapper\Parser\ReflectionClassParser;
  */
 abstract class AbstractSourceData implements SourceDataInterface
 {
-    /**
-     * @var ReflectionObjectDto[]
-     */
-    protected static array $objectPropertyDtos = [];
-
     /**
      * @param string|array<int|string, mixed>|object $source
      * @param class-string<T>|T $objectOrClass
@@ -42,18 +38,14 @@ abstract class AbstractSourceData implements SourceDataInterface
      */
     public function resolveObjectDto(object|string $objectOrClass): ReflectionObjectDto
     {
-        if (is_string($objectOrClass) && array_key_exists($objectOrClass, self::$objectPropertyDtos)) {
-            return self::$objectPropertyDtos[$objectOrClass];
+        $dataObjectCache = $this->dataConfig->getDataObjectCache();
+        $reflectionObjectDto = $dataObjectCache->getItem($objectOrClass);
+        if ($reflectionObjectDto instanceof ReflectionObjectDto) {
+            return $reflectionObjectDto;
         }
 
         $reflectionObjectDto = (new ReflectionClassParser())->parse($objectOrClass);
 
-        if (is_object($objectOrClass)) {
-            return $reflectionObjectDto;
-        }
-
-        self::$objectPropertyDtos[$objectOrClass] = $reflectionObjectDto;
-
-        return $reflectionObjectDto;
+        return $dataObjectCache->save($reflectionObjectDto);
     }
 }

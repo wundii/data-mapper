@@ -8,6 +8,7 @@ use Exception;
 use MockClasses\AbstractSourceDataTest as AbstractSourceData;
 use MockClasses\RootProperties;
 use PHPUnit\Framework\TestCase;
+use Wundii\DataMapper\Cache\DataObjectCache;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\Enum\ApproachEnum;
 
@@ -47,29 +48,6 @@ class AbstractSourceDataTest extends TestCase
 
         $abstractSourceData->resolveObjectDto('MockClasses\RootConstructor');
         $abstractSourceData->resolveObjectDto('MockClasses\ItemConstructor');
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testReflectionObjectCheckStaticProperty(): void
-    {
-        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
-        $abstractSourceData = new AbstractSourceData(
-            $dataConfig,
-            'source',
-            'object'
-        );
-
-        $reflectionObjects = $abstractSourceData->getReflectionObjects();
-        $expected = [
-            'MockClasses\RootConstructor',
-            'MockClasses\RootSetters',
-            'MockClasses\ItemConstructor',
-        ];
-
-        $this->assertCount(3, $reflectionObjects);
-        $this->assertSame($expected, array_keys($reflectionObjects));
     }
 
     /**

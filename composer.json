@@ -17,7 +17,8 @@
     "ext-reflection": "*",
     "ext-simplexml": "*",
     "ext-spl": "*",
-    "ext-xml": "*"
+    "ext-xml": "*",
+    "psr/cache": "^3.0"
   },
   "require-dev": {
     "nette/neon": "^v3.4",

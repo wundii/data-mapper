@@ -37,11 +37,6 @@ abstract class AbstractReflectionParser
      */
     private static array $reflectionClassElementCache = [];
 
-    /**
-     * @var ReflectionObjectDto[]
-     */
-    private static array $reflectionObjectDtoCache = [];
-
     public function __construct(
     ) {
         $this->reflectionElementResolver = new ReflectionElementResolver();
@@ -121,40 +116,5 @@ abstract class AbstractReflectionParser
         self::$reflectionClassElementCache[$key] = $elementDto;
 
         return $elementDto;
-    }
-
-    public function reflectionObjectDtoCache(object|string $objectOrClass, bool $takeValue): ?ReflectionObjectDto
-    {
-        if ($takeValue) {
-            return null;
-        }
-
-        $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
-
-        if ($objectOrClass instanceof ReflectionObjectDto) {
-            self::$reflectionObjectDtoCache[$classString] = $objectOrClass;
-            return $objectOrClass;
-        }
-
-        if (! array_key_exists($classString, self::$reflectionObjectDtoCache)) {
-            return null;
-        }
-
-        return self::$reflectionObjectDtoCache[$classString];
-    }
-
-    public function setReflectionObjectDtoCache(
-        object|string $objectOrClass,
-        bool $takeValue,
-        ReflectionObjectDto $reflectionObjectDto,
-    ): ReflectionObjectDto {
-        if ($takeValue) {
-            return $reflectionObjectDto;
-        }
-
-        $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
-        self::$reflectionObjectDtoCache[$classString] = $reflectionObjectDto;
-
-        return $reflectionObjectDto;
     }
 }

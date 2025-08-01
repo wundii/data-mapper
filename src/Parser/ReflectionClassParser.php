@@ -11,6 +11,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionUnionType;
+use Wundii\DataMapper\DataObjectCache;
 use Wundii\DataMapper\Dto\AnnotationDto;
 use Wundii\DataMapper\Dto\AttributeDto;
 use Wundii\DataMapper\Dto\ElementDto;
@@ -46,11 +47,6 @@ class ReflectionClassParser extends AbstractReflectionParser
 
         if (! is_object($objectOrClass) && ! class_exists($objectOrClass)) {
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
-        }
-
-        $reflectionObjectDto = $this->reflectionObjectDtoCache($objectOrClass, $takeValue);
-        if ($reflectionObjectDto instanceof ReflectionObjectDto) {
-            return $reflectionObjectDto;
         }
 
         $useStatementsDto = (new ReflectionUseParser())->parse($objectOrClass);
@@ -90,7 +86,12 @@ class ReflectionClassParser extends AbstractReflectionParser
             );
         }
 
-        $reflectionObjectDto = new ReflectionObjectDto(
+        $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
+        $fileName = $reflectionClass->getFileName();
+        $fileHash = $fileName ? hash_file(DataObjectCache::HASH_ALGORITHM, $fileName) : null;
+        return new ReflectionObjectDto(
+            $classString,
+            $fileHash,
             $attributesClass,
             $propertiesClass,
             $propertiesConst,
@@ -98,8 +99,6 @@ class ReflectionClassParser extends AbstractReflectionParser
             $methodsOthClass,
             $methodsSetClass,
         );
-
-        return $this->setReflectionObjectDtoCache($objectOrClass, $takeValue, $reflectionObjectDto);
     }
 
     /**

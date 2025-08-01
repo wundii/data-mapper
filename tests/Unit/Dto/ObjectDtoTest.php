@@ -21,12 +21,14 @@ class ObjectDtoTest extends TestCase
 {
     public function objectEmpty(): ReflectionObjectDto
     {
-        return new ReflectionObjectDto([], [], [], [], [], []);
+        return new ReflectionObjectDto('', '', [], [], [], [], [], []);
     }
 
     public function objectComplex(): ReflectionObjectDto
     {
         return new ReflectionObjectDto(
+            '',
+            '',
             [
                 new AttributeDto(AttributeOriginEnum::TARGET_CLASS, 'MockClasses\ItemConstructor1', 'MockClasses\ObjectAttribute', []),
                 new AttributeDto(AttributeOriginEnum::TARGET_CLASS, 'MockClasses\ItemConstructor2', 'MockClasses\ObjectAttribute', []),
