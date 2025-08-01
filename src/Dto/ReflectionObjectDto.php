@@ -10,8 +10,10 @@ use Wundii\DataMapper\Enum\AccessibleEnum;
 use Wundii\DataMapper\Enum\ApproachEnum;
 use Wundii\DataMapper\Interface\ElementDtoInterface;
 
-final readonly class ReflectionObjectDto
+final class ReflectionObjectDto
 {
+    private array $findElementDtoCache = [];
+
     /**
      * @param AttributeDto[] $attributesClass
      * @param PropertyDto[] $propertiesClass
@@ -21,12 +23,12 @@ final readonly class ReflectionObjectDto
      * @param MethodDto[] $methodSetters
      */
     public function __construct(
-        private array $attributesClass,
-        private array $propertiesClass,
-        private array $propertiesConst,
-        private array $methodGetters,
-        private array $methodOthers,
-        private array $methodSetters,
+        private readonly array $attributesClass,
+        private readonly array $propertiesClass,
+        private readonly array $propertiesConst,
+        private readonly array $methodGetters,
+        private readonly array $methodOthers,
+        private readonly array $methodSetters,
     ) {
     }
 
@@ -166,6 +168,11 @@ final readonly class ReflectionObjectDto
 
     public function findElementDto(ApproachEnum $approachEnum, string $name): ?ElementDtoInterface
     {
+        $cacheKey = $approachEnum->value . ':' . $name;
+        if (isset($this->findElementDtoCache[$cacheKey])) {
+            return $this->findElementDtoCache[$cacheKey];
+        }
+
         $elementDto = match ($approachEnum) {
             ApproachEnum::CONSTRUCTOR => $this->propertiesConst,
             ApproachEnum::PROPERTY => $this->getProperties(),
@@ -180,7 +187,7 @@ final readonly class ReflectionObjectDto
                     $attribute->getClassString() === TargetData::class
                     && $attribute->getArguments()['alias'] === $name
                 ) {
-                    return $propertyDto;
+                    return $this->cacheElementDto($cacheKey, $propertyDto);
                 }
             }
 
@@ -188,11 +195,11 @@ final readonly class ReflectionObjectDto
                 $approachEnum === ApproachEnum::SETTER
                 && strcasecmp(substr($propertyName, 3), $name) === 0
             ) {
-                return $propertyDto;
+                return $this->cacheElementDto($cacheKey, $propertyDto);
             }
 
             if (strcasecmp($propertyName, $name) === 0) {
-                return $propertyDto;
+                return $this->cacheElementDto($cacheKey, $propertyDto);
             }
         }
 
@@ -207,5 +214,13 @@ final readonly class ReflectionObjectDto
         );
 
         return count($defaultAvailable);
+    }
+
+    private function cacheElementDto(
+        string $key,
+        ElementDtoInterface $value,
+    ): ElementDtoInterface
+    {
+        return $this->findElementDtoCache[$key] = $value;
     }
 }
