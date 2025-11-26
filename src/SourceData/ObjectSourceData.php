@@ -17,10 +17,8 @@ use Wundii\DataMapper\Dto\Type\StringDto;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
-use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDtoInterface;
-use Wundii\DataMapper\Interface\ObjectDtoInterface;
 use Wundii\DataMapper\Parser\ReflectionClassParser;
 use Wundii\DataMapper\Resolver\DtoObjectResolver;
 
@@ -41,7 +39,7 @@ final class ObjectSourceData extends AbstractSourceData
         array $availableDataList,
         null|string $type,
         null|string $destination = null,
-    ): ArrayDtoInterface {
+    ): ArrayDto {
         $dataList = [];
         $dataType = DataTypeEnum::fromString($type);
         if (class_exists((string) $type)) {
@@ -95,7 +93,7 @@ final class ObjectSourceData extends AbstractSourceData
         ReflectionObjectDto $reflectionObjectDto,
         null|string|object $object,
         null|string $destination = null,
-    ): ObjectDtoInterface {
+    ): ObjectDto {
         $dataList = [];
 
         if (is_string($object)) {
@@ -252,6 +250,10 @@ final class ObjectSourceData extends AbstractSourceData
         $array = $elementDto->getValue();
         if (is_iterable($array)) {
             foreach ($array as $key => $value) {
+                if (! is_string($key) && ! is_int($key)) {
+                    throw DataMapperException::Error('Invalid array key type, expected string or int.');
+                }
+
                 $propertyDtos[$key] = new PropertyDto(
                     $elementDto->getAccessibleEnum(),
                     $elementDto->getName(),

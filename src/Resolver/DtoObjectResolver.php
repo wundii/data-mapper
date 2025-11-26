@@ -126,12 +126,9 @@ final class DtoObjectResolver
                     continue;
                 }
 
-                $property = $currentClass->getProperty($propertyName);
-                if (! $property->isPublic()) {
-                    $property->setAccessible(true);
-                }
-
                 $propertyWasSetByName = true;
+
+                $property = $currentClass->getProperty($propertyName);
                 $property->setValue($newInstance, $parameterValue);
             }
 
@@ -187,10 +184,6 @@ final class DtoObjectResolver
                 }
 
                 $property = $currentClass->getProperty($propertyName);
-                if (! $property->isPublic()) {
-                    $property->setAccessible(true);
-                }
-
                 if (! $property->isReadOnly()) {
                     $property->setValue($newInstance, $propertyDto->getDefaultValue());
                 }
@@ -246,6 +239,10 @@ final class DtoObjectResolver
         $parameters = [];
 
         foreach ($objectDto->getValue() as $typeDto) {
+            if ($typeDto->getDestination() === null) {
+                throw DataMapperException::Error('Destination is not declared');
+            }
+
             $parameters[$typeDto->getDestination()] = $this->matchValue($dataConfig, $typeDto);
         }
 
@@ -278,7 +275,6 @@ final class DtoObjectResolver
 
             if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
                 $reflectionProperty = new ReflectionProperty($instance, $destination);
-                $reflectionProperty->setAccessible(true);
                 $reflectionProperty->setValue($instance, $value);
                 continue;
             }
@@ -314,7 +310,6 @@ final class DtoObjectResolver
 
             if ($dataConfig->getAccessible() === AccessibleEnum::PRIVATE) {
                 $reflectionMethod = new ReflectionMethod($instance, $destination);
-                $reflectionMethod->setAccessible(true);
                 $reflectionMethod->invoke($instance, $value);
                 continue;
             }
