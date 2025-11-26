@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\CacheAdapter;
 
+use InvalidArgumentException;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Redis;
+use RuntimeException;
 use Wundii\DataMapper\Dto\CacheItemDto;
 
 class RedisCacheAdapter implements CacheItemPoolInterface
 {
+    /**
+     * @var CacheItemInterface[]
+     */
     private array $deferred = [];
 
     public function __construct(
@@ -23,15 +28,36 @@ class RedisCacheAdapter implements CacheItemPoolInterface
     {
         $array = iterator_to_array($this->getItems([$key]));
 
-        return array_shift($array);
+        $object = array_shift($array);
+
+        if (! $object instanceof CacheItemInterface) {
+            throw new InvalidArgumentException(sprintf('Cache item for key "%s" could not be retrieved.', $key));
+        }
+
+        return $object;
     }
 
+    /**
+     * @param string[] $keys
+     * @return iterable<CacheItemInterface>
+     * @throws InvalidArgumentException
+     */
     public function getItems(array $keys = []): iterable
     {
         foreach ($keys as $key) {
             if ($this->hasItem($key)) {
                 $redisKey = $this->getRedisKey($key);
-                yield unserialize($this->redis->get($redisKey));
+                $redisValue = $this->redis->get($redisKey);
+                if (! is_string($redisValue)) {
+                    throw new RuntimeException(sprintf('Cache item for key "%s" could not be retrieved from Redis.', $key));
+                }
+
+                $object = unserialize($redisValue);
+                if (! $object instanceof CacheItemInterface) {
+                    throw new RuntimeException(sprintf('Cache item for key "%s" is invalid.', $key));
+                }
+
+                yield $object;
             }
 
             yield new CacheItemDto($key);
@@ -41,7 +67,7 @@ class RedisCacheAdapter implements CacheItemPoolInterface
     public function hasItem(string $key): bool
     {
         $redisKey = $this->getRedisKey($key);
-        return $this->redis->exists($redisKey);
+        return (bool) $this->redis->exists($redisKey);
     }
 
     public function clear(): bool

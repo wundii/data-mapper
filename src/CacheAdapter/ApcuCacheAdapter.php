@@ -11,6 +11,9 @@ use Wundii\DataMapper\Dto\CacheItemDto;
 
 class ApcuCacheAdapter implements CacheItemPoolInterface
 {
+    /**
+     * @var CacheItemInterface[]
+     */
     private array $deferred = [];
 
     public function __construct(
@@ -25,14 +28,34 @@ class ApcuCacheAdapter implements CacheItemPoolInterface
     {
         $array = iterator_to_array($this->getItems([$key]));
 
-        return array_shift($array);
+        $object = array_shift($array);
+        if (! $object instanceof CacheItemInterface) {
+            throw new RuntimeException(sprintf('Cache item for key "%s" could not be retrieved.', $key));
+        }
+
+        return $object;
     }
 
+    /**
+     * @param string[] $keys
+     * @return iterable<CacheItemInterface>
+     * @throws RuntimeException
+     */
     public function getItems(array $keys = []): iterable
     {
         foreach ($keys as $key) {
             if ($this->hasItem($key)) {
-                yield unserialize(apcu_fetch($key));
+                $apcuValue = apcu_fetch($key);
+                if (! is_string($apcuValue)) {
+                    throw new RuntimeException(sprintf('Cache item for key "%s" could not be retrieved from APCu.', $key));
+                }
+
+                $object = unserialize($apcuValue);
+                if (! $object instanceof CacheItemInterface) {
+                    throw new RuntimeException(sprintf('Cache item for key "%s" is invalid.', $key));
+                }
+
+                yield $object;
             }
 
             yield new CacheItemDto($key);

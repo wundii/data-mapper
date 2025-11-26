@@ -17,7 +17,6 @@ use Wundii\DataMapper\Dto\Type\StringDto;
 use Wundii\DataMapper\Enum\DataTypeEnum;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
-use Wundii\DataMapper\Interface\ArrayDtoInterface;
 use Wundii\DataMapper\Interface\DataConfigInterface;
 use Wundii\DataMapper\Interface\ElementDtoInterface;
 use Wundii\DataMapper\Interface\ObjectDtoInterface;
@@ -39,7 +38,7 @@ final class XmlSourceData extends AbstractSourceData
         SimpleXMLElement $xmlElement,
         null|string $type,
         null|string $destination = null,
-    ): ArrayDtoInterface {
+    ): ArrayDto {
         $dataList = [];
         $dataType = DataTypeEnum::fromString($type);
         if (class_exists((string) $type)) {

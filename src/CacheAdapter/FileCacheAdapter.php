@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\CacheAdapter;
 
+use InvalidArgumentException;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use RuntimeException;
@@ -11,6 +12,9 @@ use Wundii\DataMapper\Dto\CacheItemDto;
 
 class FileCacheAdapter implements CacheItemPoolInterface
 {
+    /**
+     * @var CacheItemInterface[]
+     */
     private array $deferred = [];
 
     public function __construct(
@@ -30,9 +34,20 @@ class FileCacheAdapter implements CacheItemPoolInterface
     {
         $array = iterator_to_array($this->getItems([$key]));
 
-        return array_shift($array);
+        $object = array_shift($array);
+
+        if (! $object instanceof CacheItemInterface) {
+            throw new InvalidArgumentException(sprintf('Cache item for key "%s" could not be retrieved.', $key));
+        }
+
+        return $object;
     }
 
+    /**
+     * @param string[] $keys
+     * @return iterable<CacheItemInterface>
+     * @throws RuntimeException
+     */
     public function getItems(array $keys = []): iterable
     {
         foreach ($keys as $key) {
@@ -43,7 +58,12 @@ class FileCacheAdapter implements CacheItemPoolInterface
                     throw new RuntimeException(sprintf("Unable to read file '%s'", $path));
                 }
 
-                yield unserialize($fileContent);
+                $object = unserialize($fileContent);
+                if (! $object instanceof CacheItemInterface) {
+                    throw new RuntimeException(sprintf('Cache item for key "%s" is invalid.', $key));
+                }
+
+                yield $object;
             }
 
             yield new CacheItemDto($key);
@@ -57,7 +77,12 @@ class FileCacheAdapter implements CacheItemPoolInterface
 
     public function clear(): bool
     {
-        foreach (glob($this->path . '/*.cache') as $file) {
+        $glob = glob($this->path . '/*.cache');
+        if ($glob === false) {
+            return false;
+        }
+
+        foreach ($glob as $file) {
             unlink($file);
         }
 

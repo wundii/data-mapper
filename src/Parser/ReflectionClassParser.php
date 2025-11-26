@@ -89,6 +89,11 @@ class ReflectionClassParser extends AbstractReflectionParser
         $classString = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
         $fileName = $reflectionClass->getFileName();
         $fileHash = $fileName ? hash_file(DataObjectCache::HASH_ALGORITHM, $fileName) : null;
+
+        if ($fileHash === false) {
+            $fileHash = null;
+        }
+
         return new ReflectionObjectDto(
             $classString,
             $fileHash,

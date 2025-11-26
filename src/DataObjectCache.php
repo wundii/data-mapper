@@ -6,6 +6,7 @@ namespace Wundii\DataMapper;
 
 use Exception;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
 use Wundii\DataMapper\Dto\CacheItemDto;
 use Wundii\DataMapper\Dto\ReflectionObjectDto;
@@ -24,6 +25,10 @@ class DataObjectCache
     ) {
     }
 
+    /**
+     * @param object|class-string $objectOrClass
+     * @throws InvalidArgumentException
+     */
     public function getItem(object|string $objectOrClass): ?ReflectionObjectDto
     {
         $stringClass = is_object($objectOrClass) ? get_class($objectOrClass) : $objectOrClass;
@@ -35,6 +40,10 @@ class DataObjectCache
         return self::$cache[$stringClass];
     }
 
+    /**
+     * @param class-string $stringClass
+     * @throws InvalidArgumentException
+     */
     public function hasItem(string $stringClass): bool
     {
         $hasItem = array_key_exists($stringClass, self::$cache);
@@ -51,6 +60,9 @@ class DataObjectCache
                 }
 
                 $fileHash = hash_file(self::HASH_ALGORITHM, $fileName);
+                if ($fileHash === false) {
+                    return false;
+                }
 
                 $cacheItemDto = $this->cacheItemPool->getItem($fileHash);
 
@@ -82,6 +94,10 @@ class DataObjectCache
     public function saveCacheItem(ReflectionObjectDto $reflectionObjectDto): void
     {
         if (! $this->cacheItemPool instanceof CacheItemPoolInterface) {
+            return;
+        }
+
+        if ($reflectionObjectDto->getFileHash() === null) {
             return;
         }
 
