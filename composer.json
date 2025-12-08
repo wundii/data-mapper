@@ -26,7 +26,7 @@
     "phpunit/phpunit": "11.5.44",
     "rector/rector": "2.2.11",
     "symfony/var-dumper": "7.4.0 || 8.0.0",
-    "symplify/easy-coding-standard": "12.6.2",
+    "symplify/easy-coding-standard": "13.0.0",
     "wundii/phplint": "0.3.3"
   },
   "autoload": {
