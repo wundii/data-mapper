@@ -22,7 +22,7 @@
   "require-dev": {
     "nette/neon": "3.4.7",
     "phpstan/phpstan": "2.1.37",
-    "phpstan/phpstan-strict-rules": "2.0.7",
+    "phpstan/phpstan-strict-rules": "2.0.8",
     "phpunit/phpunit": "11.5.50",
     "rector/rector": "2.3.5",
     "symfony/var-dumper": "7.4.0 || 8.0.0",
