@@ -116,7 +116,7 @@ final class DtoObjectResolver
                 while (! $currentClass->hasProperty($propertyName)) {
                     $parentClass = $currentClass->getParentClass();
                     if (! $parentClass instanceof ReflectionClass) {
-                        continue;
+                        break;
                     }
 
                     $currentClass = $parentClass;
@@ -169,7 +169,7 @@ final class DtoObjectResolver
                 while (! $currentClass->hasProperty($propertyName)) {
                     $parentClass = $currentClass->getParentClass();
                     if (! $parentClass instanceof ReflectionClass) {
-                        continue;
+                        break;
                     }
 
                     $currentClass = $parentClass;

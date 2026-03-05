@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Integration;
 
 use Integration\Objects\ApproachBasic\BaseConstructor;
+use Integration\Objects\ApproachBasic\ConstructorWithoutProperty;
 use Integration\Objects\ApproachBasic\SharedSubSetter;
 use Integration\Objects\ApproachBasic\SubConstructor;
 use PHPUnit\Framework\TestCase;
@@ -169,6 +170,25 @@ class ArrayApproachExtendedTest extends TestCase
         $expected = new SharedSubSetter('value', null, 'traitValue');
 
         $this->assertInstanceOf(SharedSubSetter::class, $return);
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testConstructorWithoutProperty(): void
+    {
+        $array = [
+            'url' => 'http://not-used.de',
+            'amount' => 12.34,
+            'name' => 'value',
+        ];
+
+        $dataConfig = new DataConfig(ApproachEnum::CONSTRUCTOR);
+        $dataMapper = new DataMapper();
+        $dataMapper->setDataConfig($dataConfig);
+        $return = $dataMapper->array($array, ConstructorWithoutProperty::class);
+
+        $expected = new ConstructorWithoutProperty(12.34, 'value');
+
+        $this->assertInstanceOf(ConstructorWithoutProperty::class, $return);
         $this->assertEquals($expected, $return);
     }
 }
