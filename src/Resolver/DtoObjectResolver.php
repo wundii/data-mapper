@@ -113,13 +113,11 @@ final class DtoObjectResolver
                 $propertyName = $constructorParameter->getName();
                 $currentClass = $reflectionClass;
 
-                while (! $currentClass->hasProperty($propertyName)) {
+                if (! $currentClass->hasProperty($propertyName)) {
                     $parentClass = $currentClass->getParentClass();
-                    if (! $parentClass instanceof ReflectionClass) {
-                        break;
+                    if ($parentClass instanceof ReflectionClass) {
+                        $currentClass = $parentClass;
                     }
-
-                    $currentClass = $parentClass;
                 }
 
                 if (! $currentClass->hasProperty($propertyName)) {
@@ -166,13 +164,11 @@ final class DtoObjectResolver
                 $propertyName = $propertyDto->getName();
                 $currentClass = $reflectionClass;
 
-                while (! $currentClass->hasProperty($propertyName)) {
+                if (! $currentClass->hasProperty($propertyName)) {
                     $parentClass = $currentClass->getParentClass();
-                    if (! $parentClass instanceof ReflectionClass) {
-                        break;
+                    if ($parentClass instanceof ReflectionClass) {
+                        $currentClass = $parentClass;
                     }
-
-                    $currentClass = $parentClass;
                 }
 
                 if (! $currentClass->hasProperty($propertyName)) {
