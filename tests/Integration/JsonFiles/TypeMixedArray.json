@@ -1,0 +1,18 @@
+{
+    "name": "weather",
+    "data": {
+        "temp": 295.15,
+        "humidity": 65,
+        "description": "clear sky",
+        "active": true,
+        "optional": null,
+        "nested": {
+            "speed": 3.5,
+            "deg": 180
+        },
+        "tags": [
+            "sunny",
+            "warm"
+        ]
+    }
+}

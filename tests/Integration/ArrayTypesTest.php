@@ -8,6 +8,7 @@ use Integration\Objects\Types\TypeArray;
 use Integration\Objects\Types\TypeBool;
 use Integration\Objects\Types\TypeFloat;
 use Integration\Objects\Types\TypeInt;
+use Integration\Objects\Types\TypeMixedArray;
 use Integration\Objects\Types\TypeNull;
 use Integration\Objects\Types\TypeObject;
 use Integration\Objects\Types\TypeObjectArray;
@@ -277,5 +278,28 @@ class ArrayTypesTest extends TestCase
 
         $this->assertInstanceOf(TypeString::class, $return);
         $this->assertEquals($expected, $return);
+    }
+
+    public function testMixedArray(): void
+    {
+        $file = __DIR__ . '/JsonFiles/TypeMixedArray.json';
+        $array = json_decode(file_get_contents($file), true);
+
+        $return = $this->dataMapper()->array($array, TypeMixedArray::class);
+
+        $this->assertInstanceOf(TypeMixedArray::class, $return);
+        $this->assertSame('weather', $return->name);
+        $this->assertIsArray($return->data);
+        $this->assertSame(295.15, $return->data['temp']);
+        $this->assertSame(65, $return->data['humidity']);
+        $this->assertSame('clear sky', $return->data['description']);
+        $this->assertTrue($return->data['active']);
+        $this->assertNull($return->data['optional']);
+        $this->assertIsArray($return->data['nested']);
+        $this->assertSame(3.5, $return->data['nested']['speed']);
+        $this->assertSame(180, $return->data['nested']['deg']);
+        $this->assertIsArray($return->data['tags']);
+        $this->assertSame('sunny', $return->data['tags'][0]);
+        $this->assertSame('warm', $return->data['tags'][1]);
     }
 }

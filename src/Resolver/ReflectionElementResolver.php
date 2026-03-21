@@ -65,6 +65,22 @@ class ReflectionElementResolver
                 }
             }
 
+            if (str_starts_with(strtolower($type), 'array<')) {
+                $elementType = $this->extractGenericElementType($type);
+                if ($elementType === null || strtolower($elementType) === 'mixed') {
+                    return null;
+                }
+
+                if (class_exists($elementType) || interface_exists($elementType)) {
+                    return $elementType;
+                }
+
+                $dataType = DataTypeEnum::fromString($elementType);
+                if ($dataType instanceof DataTypeEnum) {
+                    return $dataType->value;
+                }
+            }
+
             if (strtolower($type) === 'self') {
                 if (is_object($objectOrClass)) {
                     return get_class($objectOrClass);
@@ -137,7 +153,7 @@ class ReflectionElementResolver
                 continue;
             }
 
-            if (str_ends_with($type, '[]')) {
+            if (str_ends_with($type, '[]') || str_starts_with(strtolower($type), 'array<')) {
                 $isArray = true;
             }
 
@@ -234,5 +250,26 @@ class ReflectionElementResolver
             $defaultValue,
             $types,
         );
+    }
+
+    /**
+     * Extracts the element type from array<T> or array<K, V> syntax.
+     * For array<K, V>, returns V (the value type).
+     */
+    private function extractGenericElementType(string $type): ?string
+    {
+        if (! preg_match('/^array<(.+)>$/i', $type, $matches)) {
+            return null;
+        }
+
+        $inner = trim($matches[1]);
+
+        // array<K, V> → return V
+        if (str_contains($inner, ',')) {
+            $parts = explode(',', $inner);
+            $inner = trim(end($parts));
+        }
+
+        return $inner !== '' ? $inner : null;
     }
 }
