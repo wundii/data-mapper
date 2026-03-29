@@ -23,7 +23,7 @@ jobs:
           php-version: 'latest'
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Fetch PHP versions
         id: set-matrix
@@ -49,11 +49,11 @@ jobs:
           php-version: ${{ needs.generate-matrix.outputs.first }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Composer cache packages
         id: composer-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -90,11 +90,11 @@ jobs:
           php-version: ${{ matrix.version }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Composer cache packages
         id: composer-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -119,7 +119,7 @@ jobs:
           php-version: ${{ needs.generate-matrix.outputs.first }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Composer install
         run: |

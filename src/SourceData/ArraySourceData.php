@@ -53,24 +53,31 @@ final class ArraySourceData extends AbstractSourceData
             $name = (string) $arrayKey;
             $value = $arrayValue;
 
+            $elementDataType = $dataType === DataTypeEnum::NULL
+                ? $this->detectDataType($value)
+                : $dataType;
+
             /** ignore phpstan rules, because $dataType has the correct data type */
-            $data = match ($dataType) {
+            $data = match ($elementDataType) {
+                DataTypeEnum::NULL => new NullDto($name),
+                /** @phpstan-ignore-next-line argument.type */
+                DataTypeEnum::BOOLEAN => new BoolDto($value, $name),
                 /** @phpstan-ignore-next-line argument.type */
                 DataTypeEnum::INTEGER => new IntDto($value, $name),
                 /** @phpstan-ignore-next-line argument.type */
                 DataTypeEnum::FLOAT => new FloatDto($value, $name),
                 /** @phpstan-ignore-next-line  argument.type */
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $value, $type, $name),
+                DataTypeEnum::ARRAY => $this->elementArray($dataConfig, (array) $value, null, $name),
                 /** @phpstan-ignore-next-line cast.string */
                 DataTypeEnum::STRING => new StringDto((string) $value, $name),
-                default => throw DataMapperException::Error('Element array invalid element data type for the target ' . $name),
             };
 
             if ($data === null) {
                 continue;
             }
 
-            $dataList[] = $data;
+            $dataList[$arrayKey] = $data;
         }
 
         return new ArrayDto($dataList, $destination);
@@ -216,6 +223,18 @@ final class ArraySourceData extends AbstractSourceData
 
         /** @var T[] $objects */
         return $objects;
+    }
+
+    private function detectDataType(mixed $value): DataTypeEnum
+    {
+        return match (true) {
+            $value === null => DataTypeEnum::NULL,
+            is_bool($value) => DataTypeEnum::BOOLEAN,
+            is_int($value) => DataTypeEnum::INTEGER,
+            is_float($value) => DataTypeEnum::FLOAT,
+            is_array($value) => DataTypeEnum::ARRAY,
+            default => DataTypeEnum::STRING,
+        };
     }
 
     /**
