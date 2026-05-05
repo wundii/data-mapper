@@ -194,7 +194,7 @@ final class ArraySourceData extends AbstractSourceData
         }
 
         $objects = [];
-        foreach ($array ?: [] as $key => $child) {
+        foreach ($array as $key => $child) {
             if ($child === null) {
                 continue;
             }
