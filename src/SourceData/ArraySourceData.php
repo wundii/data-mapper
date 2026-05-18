@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Wundii\DataMapper\SourceData;
 
+use DateTimeInterface;
+use DateTimeZone;
 use ReflectionException;
 use Wundii\DataMapper\Dto\Type\ArrayDto;
 use Wundii\DataMapper\Dto\Type\BoolDto;
@@ -111,6 +113,19 @@ final class ArraySourceData extends AbstractSourceData
             $dataList[] = new StringDto((string) $value, $destination);
 
             return new ObjectDto($objectOrClass ?: '', $dataList, $destination, true);
+        }
+
+        if (
+            is_string($objectOrClass)
+            && is_a($objectOrClass, DateTimeInterface::class, true)
+            && array_key_exists('date', $array)
+        ) {
+            $timezone = array_key_exists('timezone', $array)
+                ? new DateTimeZone((string) $array['timezone'])
+                : null;
+            $instance = new $objectOrClass((string) $array['date'], $timezone);
+        
+            return new ObjectDto($instance, [], $destination);
         }
 
         /** @phpstan-ignore-next-line  */

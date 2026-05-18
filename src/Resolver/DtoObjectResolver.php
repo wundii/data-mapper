@@ -214,6 +214,11 @@ final class DtoObjectResolver
         DataConfigInterface $dataConfig,
         ObjectDtoInterface $objectDto,
     ): ?object {
+        $object = $objectDto->getObject();
+        if (is_object($object) && $objectDto->getValue() === []) {
+            return $object;
+        }
+
         return match ($dataConfig->getApproach()) {
             ApproachEnum::CONSTRUCTOR => $this->constructor($dataConfig, $objectDto),
             ApproachEnum::PROPERTY => $this->properties($dataConfig, $objectDto),
