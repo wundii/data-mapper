@@ -121,10 +121,10 @@ final class ArraySourceData extends AbstractSourceData
             && array_key_exists('date', $array)
         ) {
             $timezone = array_key_exists('timezone', $array)
-                ? new DateTimeZone((string) $array['timezone'])
+                ? new DateTimeZone($array['timezone'])
                 : null;
-            $instance = new $objectOrClass((string) $array['date'], $timezone);
-        
+            $instance = new $objectOrClass($array['date'], $timezone);
+
             return new ObjectDto($instance, [], $destination);
         }
 
