@@ -15,9 +15,6 @@ use Wundii\DataMapper\SourceData\ObjectSourceData;
 use Wundii\DataMapper\SourceData\XmlSourceData;
 use Wundii\DataMapper\SourceData\YamlSourceData;
 
-/**
- * @template T of object
- */
 class DataMapper
 {
     public function __construct(
@@ -31,6 +28,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param mixed[] $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
@@ -47,6 +45,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
@@ -76,6 +75,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
@@ -91,6 +91,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
@@ -106,6 +107,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param array<mixed>|object $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree // only possible in conjunction with the method toArray
@@ -122,6 +124,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
@@ -137,6 +140,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
      * @param bool $forceInstance // create a new instance, if no data can be found for the object
@@ -152,6 +156,7 @@ class DataMapper
     }
 
     /**
+     * @template T of object
      * @param string|array<mixed>|object $source
      * @param class-string<T>|T $object
      * @param string[] $rootElementTree
