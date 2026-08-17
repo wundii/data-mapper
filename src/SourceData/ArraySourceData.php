@@ -62,17 +62,13 @@ final class ArraySourceData extends AbstractSourceData
             /** ignore phpstan rules, because $dataType has the correct data type */
             $data = match ($elementDataType) {
                 DataTypeEnum::NULL => new NullDto($name),
+                DataTypeEnum::BOOLEAN => new BoolDto($this->boolValue($value, $name), $name),
+                DataTypeEnum::INTEGER => new IntDto($this->intValue($value, $name), $name),
+                DataTypeEnum::FLOAT => new FloatDto($this->floatValue($value, $name), $name),
                 /** @phpstan-ignore-next-line argument.type */
-                DataTypeEnum::BOOLEAN => new BoolDto($value, $name),
-                /** @phpstan-ignore-next-line argument.type */
-                DataTypeEnum::INTEGER => new IntDto($value, $name),
-                /** @phpstan-ignore-next-line argument.type */
-                DataTypeEnum::FLOAT => new FloatDto($value, $name),
-                /** @phpstan-ignore-next-line  argument.type */
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $value, $type, $name),
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, (array) $value, null, $name),
-                /** @phpstan-ignore-next-line cast.string */
-                DataTypeEnum::STRING => new StringDto((string) $value, $name),
+                DataTypeEnum::STRING => new StringDto($this->stringValue($value, $name), $name),
             };
 
             if ($data === null) {
@@ -151,13 +147,13 @@ final class ArraySourceData extends AbstractSourceData
 
             $data = match ($dataType) {
                 DataTypeEnum::NULL => new NullDto($name),
-                DataTypeEnum::INTEGER => new IntDto($value, $name),
-                DataTypeEnum::FLOAT => new FloatDto($value, $name),
-                DataTypeEnum::BOOLEAN => new BoolDto($value, $name),
+                DataTypeEnum::INTEGER => new IntDto($this->intValue($value, $name), $name),
+                DataTypeEnum::FLOAT => new FloatDto($this->floatValue($value, $name), $name),
+                DataTypeEnum::BOOLEAN => new BoolDto($this->boolValue($value, $name), $name),
                 DataTypeEnum::ARRAY => $this->elementArray($dataConfig, (array) $arrayValue, $targetType, $name),
                 /** @phpstan-ignore-next-line argument.type */
                 DataTypeEnum::OBJECT => $this->elementObject($dataConfig, $arrayValue, $targetType, $name),
-                DataTypeEnum::STRING => new StringDto((string) $value, $name),
+                DataTypeEnum::STRING => new StringDto($this->stringValue($value, $name), $name),
                 default => throw DataMapperException::Error('Element object invalid element data type for the target ' . $name),
             };
 
@@ -238,6 +234,67 @@ final class ArraySourceData extends AbstractSourceData
 
         /** @var T[] $objects */
         return $objects;
+    }
+
+    /**
+     * @throws DataMapperException
+     */
+    private function boolValue(mixed $value, string $name): string|int|bool
+    {
+        if (! is_string($value) && ! is_int($value) && ! is_bool($value)) {
+            throw $this->invalidValue($value, DataTypeEnum::BOOLEAN, $name);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DataMapperException
+     */
+    private function intValue(mixed $value, string $name): string|int|float
+    {
+        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
+            throw $this->invalidValue($value, DataTypeEnum::INTEGER, $name);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DataMapperException
+     */
+    private function floatValue(mixed $value, string $name): string|float
+    {
+        if (! is_string($value) && ! is_float($value) && ! is_int($value)) {
+            throw $this->invalidValue($value, DataTypeEnum::FLOAT, $name);
+        }
+
+        /** int to float is a widening conversion and stays lossless */
+        return is_int($value) ? (float) $value : $value;
+    }
+
+    /**
+     * @throws DataMapperException
+     */
+    private function stringValue(mixed $value, string $name): string
+    {
+        if ($value !== null && ! is_scalar($value)) {
+            throw $this->invalidValue($value, DataTypeEnum::STRING, $name);
+        }
+
+        return (string) $value;
+    }
+
+    private function invalidValue(mixed $value, DataTypeEnum $dataTypeEnum, string $name): DataMapperException
+    {
+        return DataMapperException::Error(
+            sprintf(
+                'Expected value of type %s for the target %s, got %s',
+                strtolower($dataTypeEnum->name),
+                $name,
+                get_debug_type($value),
+            )
+        );
     }
 
     private function detectDataType(mixed $value): DataTypeEnum
