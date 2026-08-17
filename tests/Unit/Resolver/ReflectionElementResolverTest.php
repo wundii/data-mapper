@@ -152,20 +152,26 @@ class ReflectionElementResolverTest extends TestCase
         $ReflectionElementParser = new ReflectionElementResolver();
 
         $reflector = $this->createMock(ReflectionNamedType::class);
-        $reflector->method('getName')->willReturn('string');
-        $reflector->method('allowsNull')->willReturn(false);
+        $reflector->method('getName')
+            ->willReturn('string');
+        $reflector->method('allowsNull')
+            ->willReturn(false);
 
         $this->assertSame(['string'], $ReflectionElementParser->types($reflector));
 
         $reflector = $this->createMock(ReflectionNamedType::class);
-        $reflector->method('getName')->willReturn('string');
-        $reflector->method('allowsNull')->willReturn(true);
+        $reflector->method('getName')
+            ->willReturn('string');
+        $reflector->method('allowsNull')
+            ->willReturn(true);
 
         $this->assertSame(['string', 'null'], $ReflectionElementParser->types($reflector));
 
         $reflector = $this->createMock(ReflectionNamedType::class);
-        $reflector->method('getName')->willReturn('null');
-        $reflector->method('allowsNull')->willReturn(true);
+        $reflector->method('getName')
+            ->willReturn('null');
+        $reflector->method('allowsNull')
+            ->willReturn(true);
 
         $this->assertSame(['null'], $ReflectionElementParser->types($reflector));
     }
@@ -176,13 +182,16 @@ class ReflectionElementResolverTest extends TestCase
     public function testTypesReflectionUnionType(): void
     {
         $reflector01 = $this->createMock(ReflectionNamedType::class);
-        $reflector01->method('getName')->willReturn('float');
+        $reflector01->method('getName')
+            ->willReturn('float');
 
         $reflector02 = $this->createMock(ReflectionNamedType::class);
-        $reflector02->method('getName')->willReturn('string');
+        $reflector02->method('getName')
+            ->willReturn('string');
 
         $reflector03 = $this->createMock(ReflectionNamedType::class);
-        $reflector03->method('getName')->willReturn('null');
+        $reflector03->method('getName')
+            ->willReturn('null');
 
         $types = [
             $reflector01,
@@ -193,7 +202,8 @@ class ReflectionElementResolverTest extends TestCase
         $ReflectionElementParser = new ReflectionElementResolver();
 
         $reflector = $this->createMock(ReflectionUnionType::class);
-        $reflector->method('getTypes')->willReturn($types);
+        $reflector->method('getTypes')
+            ->willReturn($types);
 
         $this->assertSame(['float', 'string', 'null'], $ReflectionElementParser->types($reflector));
     }
@@ -204,7 +214,8 @@ class ReflectionElementResolverTest extends TestCase
     public function getMockMethod(string $accessible = 'isPublic'): ReflectionMethod
     {
         $mockMethod = $this->createMock(ReflectionMethod::class);
-        $mockMethod->method($accessible)->willReturn(true);
+        $mockMethod->method($accessible)
+            ->willReturn(true);
         return $mockMethod;
     }
 
@@ -220,21 +231,26 @@ class ReflectionElementResolverTest extends TestCase
 
         if (count($types) === 1) {
             $mockType = $this->createMock(ReflectionNamedType::class);
-            $mockType->method('getName')->willReturn($types[0]);
-            $mockType->method('allowsNull')->willReturn($types[0] === 'null');
+            $mockType->method('getName')
+                ->willReturn($types[0]);
+            $mockType->method('allowsNull')
+                ->willReturn($types[0] === 'null');
             return $mockType;
         }
 
         $mockTypes = [];
         foreach ($types as $type) {
             $mockType = $this->createMock(ReflectionNamedType::class);
-            $mockType->method('getName')->willReturn($type);
-            $mockType->method('allowsNull')->willReturn($type === 'null');
+            $mockType->method('getName')
+                ->willReturn($type);
+            $mockType->method('allowsNull')
+                ->willReturn($type === 'null');
             $mockTypes[] = $mockType;
         }
 
         $mockUnionType = $this->createMock(ReflectionUnionType::class);
-        $mockUnionType->method('getTypes')->willReturn($mockTypes);
+        $mockUnionType->method('getTypes')
+            ->willReturn($mockTypes);
         return $mockUnionType;
     }
 
@@ -245,9 +261,12 @@ class ReflectionElementResolverTest extends TestCase
     public function testTargetTypeNull(): void
     {
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -259,9 +278,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertNull($property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('findMeIfYouCan');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('findMeIfYouCan');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -280,9 +302,12 @@ class ReflectionElementResolverTest extends TestCase
     public function testTargetTypeExists(): void
     {
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['MockClasses\ItemConstructor']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['MockClasses\ItemConstructor']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -294,9 +319,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['DateTimeInterface']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['DateTimeInterface']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -308,9 +336,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame('DateTimeInterface', $property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['MockClasses\ItemConstructor[]']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['MockClasses\ItemConstructor[]']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -322,9 +353,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['DateTimeInterface[]']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['DateTimeInterface[]']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -336,9 +370,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame('DateTimeInterface', $property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -350,9 +387,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame('MockClasses\ItemConstructor', $property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['array', 'string[]']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['array', 'string[]']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -364,9 +404,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame('string', $property->getTargetType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['self', 'null']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['self', 'null']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             'MockClasses\ItemConstructor',
@@ -385,9 +428,12 @@ class ReflectionElementResolverTest extends TestCase
     public function testGetTypeNull(): void
     {
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType([]));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType([]));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -399,9 +445,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string', 'bool']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string', 'bool']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -413,9 +462,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::NULL, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['array', 'MockClasses\ItemConstructor']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['array', 'MockClasses\ItemConstructor']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -434,9 +486,12 @@ class ReflectionElementResolverTest extends TestCase
     public function testIsNullable(): void
     {
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -448,9 +503,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertFalse($property->isNullable());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string', 'null']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string', 'null']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -462,9 +520,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertTrue($property->isNullable());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['NULL', 'string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['NULL', 'string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -483,9 +544,12 @@ class ReflectionElementResolverTest extends TestCase
     public function testGetType(): void
     {
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -497,9 +561,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['array', 'MockClasses\ItemConstructor[]']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['array', 'MockClasses\ItemConstructor[]']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -511,9 +578,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::ARRAY, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -525,9 +595,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['null', 'string']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['null', 'string']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -539,9 +612,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::STRING, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['null', 'MockClasses\ItemConstructor']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['null', 'MockClasses\ItemConstructor']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             '',
@@ -553,9 +629,12 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame(DataTypeEnum::OBJECT, $property->getDataType());
 
         $mockParameter = $this->createMock(ReflectionParameter::class);
-        $mockParameter->method('getName')->willReturn('name');
-        $mockParameter->method('getType')->willReturn($this->getMockType(['self', 'null']));
-        $mockParameter->method('isDefaultValueAvailable')->willReturn(false);
+        $mockParameter->method('getName')
+            ->willReturn('name');
+        $mockParameter->method('getType')
+            ->willReturn($this->getMockType(['self', 'null']));
+        $mockParameter->method('isDefaultValueAvailable')
+            ->willReturn(false);
 
         $property = (new ReflectionElementResolver())->resolve(
             'MockClasses\ItemConstructor',

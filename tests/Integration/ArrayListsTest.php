@@ -29,7 +29,8 @@ class ArrayListsTest extends TestCase
             ],
         ];
 
-        $return = $this->dataMapper()->array($array, TypeString::class);
+        $return = $this->dataMapper()
+            ->array($array, TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -51,7 +52,8 @@ class ArrayListsTest extends TestCase
             ],
         ];
 
-        $return = $this->dataMapper()->array($array, TypeString::class);
+        $return = $this->dataMapper()
+            ->array($array, TypeString::class);
 
         $expected = [
             'a' => new TypeString('Nostromo'),
@@ -73,7 +75,8 @@ class ArrayListsTest extends TestCase
             ],
         ];
 
-        $return = $this->dataMapper()->array($array, TypeString::class);
+        $return = $this->dataMapper()
+            ->array($array, TypeString::class);
 
         $expected = [
             0 => new TypeString('Nostromo'),

@@ -22,7 +22,8 @@ class NeonListsTest extends TestCase
     {
         $file = __DIR__ . '/NeonFiles/ListStrings01.neon';
 
-        $return = $this->dataMapper()->neon(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->neon(file_get_contents($file), TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -37,7 +38,8 @@ class NeonListsTest extends TestCase
     {
         $file = __DIR__ . '/NeonFiles/ListStrings02.neon';
 
-        $return = $this->dataMapper()->neon(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->neon(file_get_contents($file), TypeString::class);
 
         $expected = [
             'a' => new TypeString('Nostromo'),
@@ -52,7 +54,8 @@ class NeonListsTest extends TestCase
     {
         $file = __DIR__ . '/NeonFiles/ListStrings03.neon';
 
-        $return = $this->dataMapper()->neon(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->neon(file_get_contents($file), TypeString::class);
 
         $expected = [
             0 => new TypeString('Nostromo'),

@@ -90,7 +90,7 @@ class ReflectionAnnotationResolver
             }
 
             foreach ($parameters as $param) {
-                list($parameterType, $parameter) = explode(' ', $param);
+                [$parameterType, $parameter] = explode(' ', $param);
 
                 if (str_starts_with($parameter, '$')) {
                     $parameter = substr($parameter, 1);

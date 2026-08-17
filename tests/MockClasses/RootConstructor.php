@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MockClasses;
 
-use MockClasses\Sub\SubItemConstructor as SubItemConstructor;
+use MockClasses\Sub\SubItemConstructor;
 
 #[ClassAttribute(value: 'RootProperties')]
 final readonly class RootConstructor implements RootInterface

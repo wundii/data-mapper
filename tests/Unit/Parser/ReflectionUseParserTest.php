@@ -33,9 +33,12 @@ class ReflectionUseParserTest extends TestCase
     public function testParseToken(): void
     {
         $reflectionClass = $this->createMock(ReflectionClass::class);
-        $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
-        $reflectionClass->method('getFileName')->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
-        $reflectionClass->method('getNamespaceName')->willReturn('');
+        $reflectionClass->method('getName')
+            ->willReturn('MockClasses\RootConstructor');
+        $reflectionClass->method('getFileName')
+            ->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
+        $reflectionClass->method('getNamespaceName')
+            ->willReturn('');
 
         $reflectionTokenResolver = new ReflectionUseParser();
 
@@ -50,9 +53,12 @@ class ReflectionUseParserTest extends TestCase
         $this->assertEquals($expected, $reflectionTokenResolver->parseToken($reflectionClass));
 
         $reflectionClass = $this->createMock(ReflectionClass::class);
-        $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
-        $reflectionClass->method('getFileName')->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
-        $reflectionClass->method('getNamespaceName')->willReturn('MockClasses');
+        $reflectionClass->method('getName')
+            ->willReturn('MockClasses\RootConstructor');
+        $reflectionClass->method('getFileName')
+            ->willReturn(__DIR__ . '/../../MockClasses/RootConstructor.php');
+        $reflectionClass->method('getNamespaceName')
+            ->willReturn('MockClasses');
 
         $reflectionTokenResolver = new ReflectionUseParser();
 
@@ -77,8 +83,10 @@ class ReflectionUseParserTest extends TestCase
         $this->expectExceptionMessage('File not found: invalid-file-name');
 
         $reflectionClass = $this->createMock(ReflectionClass::class);
-        $reflectionClass->method('getName')->willReturn('MockClasses\RootConstructor');
-        $reflectionClass->method('getFileName')->willReturn('invalid-file-name');
+        $reflectionClass->method('getName')
+            ->willReturn('MockClasses\RootConstructor');
+        $reflectionClass->method('getFileName')
+            ->willReturn('invalid-file-name');
 
         $reflectionTokenResolver = new ReflectionUseParser();
         $reflectionTokenResolver->parseToken($reflectionClass);

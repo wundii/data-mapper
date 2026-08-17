@@ -18,7 +18,8 @@ class ValueDtoResolverTest extends TestCase
     public function testResolve()
     {
         $typeDto = $this->createMock(ValueDtoInterface::class);
-        $typeDto->method('getValue')->willReturn('testValue');
+        $typeDto->method('getValue')
+            ->willReturn('testValue');
         $resolver = new DtoValueResolver();
 
         $this->assertSame('testValue', $resolver->resolve($typeDto));

@@ -178,7 +178,7 @@ final class ArraySourceData extends AbstractSourceData
     public function resolve(?SourceTypeEnum $sourceTypeEnum = null): object|array
     {
         $dtoObjectResolver = new DtoObjectResolver();
-        $sourceTypeEnum = $sourceTypeEnum ?? self::SOURCE_TYPE;
+        $sourceTypeEnum ??= self::SOURCE_TYPE;
 
         $array = $this->source;
 

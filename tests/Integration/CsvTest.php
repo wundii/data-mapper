@@ -25,7 +25,8 @@ class CsvTest extends TestCase
             "Nostromo\n" .
             "Weyland-Yutani\n";
 
-        $return = $this->dataMapper()->csv($csv, TypeString::class);
+        $return = $this->dataMapper()
+            ->csv($csv, TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -44,7 +45,8 @@ class CsvTest extends TestCase
         $tempPath = tempnam(sys_get_temp_dir(), 'CSV_');
         file_put_contents($tempPath, $csv);
 
-        $return = $this->dataMapper()->csv($tempPath, TypeString::class);
+        $return = $this->dataMapper()
+            ->csv($tempPath, TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -65,12 +67,13 @@ class CsvTest extends TestCase
             "Nostromo\n" .
             "Weyland-Yutani\n";
 
-        $return = $this->dataMapper()->csv(
-            $csv,
-            TypeString::class,
-            headerLine: 2,
-            firstLine: 3,
-        );
+        $return = $this->dataMapper()
+            ->csv(
+                $csv,
+                TypeString::class,
+                headerLine: 2,
+                firstLine: 3,
+            );
 
         $expected = [
             new TypeString('Nostromo'),
@@ -88,11 +91,12 @@ class CsvTest extends TestCase
             "Nostromo\n" .
             "Weyland-Yutani\n";
 
-        $return = $this->dataMapper()->csv(
-            $csv,
-            TypeString::class,
-            firstLine: 3,
-        );
+        $return = $this->dataMapper()
+            ->csv(
+                $csv,
+                TypeString::class,
+                firstLine: 3,
+            );
 
         $expected = [
             new TypeString('Nostromo'),

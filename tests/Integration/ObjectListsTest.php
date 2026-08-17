@@ -26,7 +26,8 @@ class ObjectListsTest extends TestCase
             new ToArray('Weyland-Yutani'),
         ];
 
-        $return = $this->dataMapper()->object($array, TypeString::class);
+        $return = $this->dataMapper()
+            ->object($array, TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -44,7 +45,8 @@ class ObjectListsTest extends TestCase
             'b' => new ToArray('Weyland-Yutani'),
         ];
 
-        $return = $this->dataMapper()->object($array, TypeString::class);
+        $return = $this->dataMapper()
+            ->object($array, TypeString::class);
 
         $expected = [
             'a' => new TypeString('Nostromo'),
@@ -62,7 +64,8 @@ class ObjectListsTest extends TestCase
             'a' => new ToArray('Weyland-Yutani'),
         ];
 
-        $return = $this->dataMapper()->object($array, TypeString::class);
+        $return = $this->dataMapper()
+            ->object($array, TypeString::class);
 
         $expected = [
             0 => new TypeString('Nostromo'),

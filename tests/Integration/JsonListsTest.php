@@ -22,7 +22,8 @@ class JsonListsTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/ListStrings01.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -37,7 +38,8 @@ class JsonListsTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/ListStrings02.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeString::class);
 
         $expected = [
             'a' => new TypeString('Nostromo'),
@@ -52,7 +54,8 @@ class JsonListsTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/ListStrings03.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeString::class);
 
         $expected = [
             0 => new TypeString('Nostromo'),

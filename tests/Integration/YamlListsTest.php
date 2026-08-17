@@ -22,7 +22,8 @@ class YamlListsTest extends TestCase
     {
         $file = __DIR__ . '/YamlFiles/ListStrings01.yaml';
 
-        $return = $this->dataMapper()->yaml(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->yaml(file_get_contents($file), TypeString::class);
 
         $expected = [
             new TypeString('Nostromo'),
@@ -37,7 +38,8 @@ class YamlListsTest extends TestCase
     {
         $file = __DIR__ . '/YamlFiles/ListStrings02.yaml';
 
-        $return = $this->dataMapper()->yaml(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->yaml(file_get_contents($file), TypeString::class);
 
         $expected = [
             'a' => new TypeString('Nostromo'),
@@ -52,7 +54,8 @@ class YamlListsTest extends TestCase
     {
         $file = __DIR__ . '/YamlFiles/ListStrings03.yaml';
 
-        $return = $this->dataMapper()->yaml(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->yaml(file_get_contents($file), TypeString::class);
 
         $expected = [
             0 => new TypeString('Nostromo'),

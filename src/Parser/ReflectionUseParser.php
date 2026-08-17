@@ -85,7 +85,7 @@ class ReflectionUseParser extends AbstractReflectionParser
                         $alias = null;
 
                         if (str_contains($useStatement, ' as ')) {
-                            list($classString, $alias) = explode(' as ', $useStatement);
+                            [$classString, $alias] = explode(' as ', $useStatement);
                         }
 
                         $useStatements[] = new UseStatementDto($classString, $alias ?? $this->basename($classString));

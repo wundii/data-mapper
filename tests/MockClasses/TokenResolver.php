@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MockClasses;
 
 use MockClasses\ItemConstructor as CustomItemConstructor;
-use MockClasses\Sub\SubItemConstructor as SubItemConstructor;
+use MockClasses\Sub\SubItemConstructor;
 
 final readonly class TokenResolver implements RootInterface
 {

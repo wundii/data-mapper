@@ -29,7 +29,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeNull01.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeNull::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeNull::class);
 
         $expected = new TypeNull(null);
 
@@ -39,7 +40,8 @@ class JsonTypesTest extends TestCase
 
         $file = __DIR__ . '/JsonFiles/TypeNull02.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeNull::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeNull::class);
 
         $expected = new TypeNull(null);
 
@@ -52,7 +54,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeBool01.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -64,7 +67,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeBool02.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -76,7 +80,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeBool03.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -88,7 +93,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeBool04.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeBool::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeBool::class);
 
         $expected = new TypeBool(true, false);
 
@@ -100,7 +106,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeInt01.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeInt::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeInt::class);
 
         $expected = new TypeInt(22);
 
@@ -112,7 +119,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeInt02.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeInt::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeInt::class);
 
         $expected = new TypeInt(33);
 
@@ -121,7 +129,8 @@ class JsonTypesTest extends TestCase
 
         $file = __DIR__ . '/JsonFiles/TypeInt03.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeInt::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeInt::class);
 
         $expected = new TypeInt(44);
 
@@ -133,7 +142,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeFloat01.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(12.34);
 
@@ -145,7 +155,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeFloat02.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(12.0);
 
@@ -154,7 +165,8 @@ class JsonTypesTest extends TestCase
 
         $file = __DIR__ . '/JsonFiles/TypeFloat03.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(56.78);
 
@@ -163,7 +175,8 @@ class JsonTypesTest extends TestCase
 
         $file = __DIR__ . '/JsonFiles/TypeFloat04.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(12.34);
 
@@ -172,7 +185,8 @@ class JsonTypesTest extends TestCase
 
         $file = __DIR__ . '/JsonFiles/TypeFloat05.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeFloat::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeFloat::class);
 
         $expected = new TypeFloat(1234.56);
 
@@ -184,7 +198,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeString.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeString::class);
 
         $expected = new TypeString('Nostromo');
 
@@ -196,7 +211,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeArray.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeArray::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeArray::class);
 
         $expected = new TypeArray(
             [
@@ -221,7 +237,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeObject.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeObject::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeObject::class);
 
         $expected = new TypeObject(
             new TypeString('Nostromo'),
@@ -235,7 +252,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeObjectArray.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeObjectArray::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeObjectArray::class);
 
         $expected = new TypeObjectArray(
             [
@@ -252,7 +270,8 @@ class JsonTypesTest extends TestCase
     {
         $file = __DIR__ . '/JsonFiles/TypeStringWithInt.json';
 
-        $return = $this->dataMapper()->json(file_get_contents($file), TypeString::class);
+        $return = $this->dataMapper()
+            ->json(file_get_contents($file), TypeString::class);
 
         $expected = new TypeString('12345');
 
