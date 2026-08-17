@@ -36,6 +36,11 @@ abstract class AbstractSourceData implements SourceDataInterface
     ) {
     }
 
+    public static function clearCache(): void
+    {
+        self::$objectPropertyDtos = [];
+    }
+
     /**
      * @param class-string<T>|T $objectOrClass
      * @throws DataMapperException|ReflectionException

@@ -48,6 +48,20 @@ abstract class AbstractReflectionParser
     }
 
     /**
+     * The caches are static and grow with every mapped class. Long running
+     * processes (workers, queue consumers) can reset them at process boundaries.
+     */
+    public static function clearCache(): void
+    {
+        self::$reflectionClassCache = [];
+        self::$reflectionClassPropertiesCache = [];
+        self::$reflectionClassElementCache = [];
+        self::$reflectionObjectDtoCache = [];
+
+        ReflectionUseParser::clearUseStatementsCache();
+    }
+
+    /**
      * @param class-string<T>|T $objectOrClass
      * @return ReflectionClass<T>
      */

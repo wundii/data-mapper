@@ -13,7 +13,7 @@ use Wundii\DataMapper\Interface\ElementDtoInterface;
 final class ReflectionObjectDto
 {
     /**
-     * @var ElementDtoInterface[]
+     * @var array<string, ElementDtoInterface|null>
      */
     private array $findElementDtoCache = [];
 
@@ -172,7 +172,7 @@ final class ReflectionObjectDto
     public function findElementDto(ApproachEnum $approachEnum, string $name): ?ElementDtoInterface
     {
         $cacheKey = $approachEnum->value . ':' . $name;
-        if (isset($this->findElementDtoCache[$cacheKey])) {
+        if (array_key_exists($cacheKey, $this->findElementDtoCache)) {
             return $this->findElementDtoCache[$cacheKey];
         }
 
@@ -205,6 +205,8 @@ final class ReflectionObjectDto
                 return $this->cacheElementDto($cacheKey, $propertyDto);
             }
         }
+
+        $this->findElementDtoCache[$cacheKey] = null;
 
         return null;
     }

@@ -232,6 +232,7 @@ final class DtoObjectResolver
     private function constructor(
         DataConfigInterface $dataConfig,
         ObjectDtoInterface $objectDto,
+        bool $resolveValues = true,
     ): object {
         if ($dataConfig->getApproach() === ApproachEnum::CONSTRUCTOR && is_object($objectDto->getObject())) {
             throw DataMapperException::Error('You can not use constructor approach with an object');
@@ -239,12 +240,19 @@ final class DtoObjectResolver
 
         $parameters = [];
 
-        foreach ($objectDto->getValue() as $typeDto) {
-            if ($typeDto->getDestination() === null) {
-                throw DataMapperException::Error('Destination is not declared');
-            }
+        /**
+         * createInstance() only consumes the parameters with the constructor approach.
+         * Resolving them for the property/setter approach would build the whole object
+         * tree a second time, which doubles the work per nesting level.
+         */
+        if ($resolveValues) {
+            foreach ($objectDto->getValue() as $typeDto) {
+                if ($typeDto->getDestination() === null) {
+                    throw DataMapperException::Error('Destination is not declared');
+                }
 
-            $parameters[$typeDto->getDestination()] = $this->matchValue($dataConfig, $typeDto);
+                $parameters[$typeDto->getDestination()] = $this->matchValue($dataConfig, $typeDto);
+            }
         }
 
         return $this->createInstance($dataConfig, $objectDto, $parameters);
@@ -258,7 +266,7 @@ final class DtoObjectResolver
         ObjectDtoInterface $objectDto,
     ): ?object {
         $setValues = $objectDto->directValue();
-        $instance = $this->constructor($dataConfig, $objectDto);
+        $instance = $this->constructor($dataConfig, $objectDto, $objectDto->directValue());
 
         foreach ($objectDto->getValue() as $typeDto) {
             $destination = $typeDto->getDestination();
@@ -294,7 +302,7 @@ final class DtoObjectResolver
         ObjectDtoInterface $objectDto,
     ): ?object {
         $setValues = $objectDto->directValue();
-        $instance = $this->constructor($dataConfig, $objectDto);
+        $instance = $this->constructor($dataConfig, $objectDto, $objectDto->directValue());
 
         foreach ($objectDto->getValue() as $typeDto) {
             $destination = $typeDto->getDestination();

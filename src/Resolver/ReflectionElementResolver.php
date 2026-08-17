@@ -27,16 +27,24 @@ class ReflectionElementResolver
         array $types,
         ?AnnotationDto $annotationDto,
     ): array {
-        if (str_starts_with($name, 'set')) {
-            $name = substr($name, 3);
-        }
-
         $types = array_merge($types, $annotationDto?->getVariables() ?? []);
 
-        foreach ($annotationDto?->getParameterDto() ?? [] as $parameterDto) {
-            if (strcasecmp($parameterDto->getParameter(), $name) === 0) {
-                $types = array_merge($types, $parameterDto->getTypes());
-                break;
+        /**
+         * The exact name has to win, otherwise a property like $settings would be
+         * matched as "tings". Stripping the prefix is only a fallback for setter
+         * method names like setMyStrings against the doc block parameter myStrings.
+         */
+        $names = [$name];
+        if (str_starts_with($name, 'set')) {
+            $names[] = substr($name, 3);
+        }
+
+        foreach ($names as $searchName) {
+            foreach ($annotationDto?->getParameterDto() ?? [] as $parameterDto) {
+                if (strcasecmp($parameterDto->getParameter(), $searchName) === 0) {
+                    $types = array_merge($types, $parameterDto->getTypes());
+                    break 2;
+                }
             }
         }
 

@@ -15,6 +15,11 @@ use Wundii\DataMapper\Exception\DataMapperException;
  */
 class ReflectionUseParser extends AbstractReflectionParser
 {
+    /**
+     * @var array<string, UseStatementsDto|null>
+     */
+    private static array $useStatementsCache = [];
+
     public function basename(string $classString): string
     {
         return basename(str_replace('\\', '/', $classString));
@@ -43,55 +48,80 @@ class ReflectionUseParser extends AbstractReflectionParser
         }
 
         $useStatement = null;
+        $groupPrefix = '';
+
         foreach (token_get_all($fileContent) as $token) {
-            if ($token[0] === T_CLASS) {
-                break;
+            if (is_array($token)) {
+                /**
+                 * Everything relevant is declared before the type itself,
+                 * a `use` inside the body imports a trait, not a class.
+                 */
+                if (in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT, T_ENUM], true)) {
+                    break;
+                }
+
+                switch ($token[0]) {
+                    case T_USE:
+                        $useStatement = '';
+                        $groupPrefix = '';
+                        break;
+                    case T_FUNCTION:
+                    case T_CONST:
+                        $useStatement = null;
+                        break;
+                    case T_NAME_QUALIFIED:
+                    case T_STRING:
+                        if ($useStatement !== null) {
+                            $useStatement .= $token[1];
+                        }
+
+                        break;
+                    case T_AS:
+                        if ($useStatement !== null) {
+                            $useStatement .= ' as ';
+                        }
+
+                        break;
+                    case T_NS_SEPARATOR:
+                        if ($useStatement !== null) {
+                            $useStatement .= '\\';
+                        }
+
+                        break;
+                }
+
+                continue;
             }
 
-            /**
-             * cases with int value are a fix,
-             * because the defined constants are not correctly,
-             * I could not find the why
-             */
-            switch ($token[0]) {
-                case 318: // T_USE
-                case T_USE:
+            if ($useStatement === null) {
+                continue;
+            }
+
+            switch ($token) {
+                case '{':
+                    $groupPrefix = $useStatement;
                     $useStatement = '';
                     break;
-                case 265: // T_STRING
-                case T_NAME_QUALIFIED:
-                case T_STRING:
-                    if ($useStatement !== null) {
-                        $useStatement .= $token[1];
+                case ',':
+                case '}':
+                    if ($useStatement !== '') {
+                        $useStatements[] = $this->createUseStatement($groupPrefix . $useStatement);
                     }
 
-                    break;
-                case 301: // T_AS
-                case T_AS:
-                    if ($useStatement !== null) {
-                        $useStatement .= ' as ';
-                    }
+                    $useStatement = '';
 
-                    break;
-                case T_NS_SEPARATOR:
-                    if ($useStatement !== null) {
-                        $useStatement .= '\\';
+                    if ($token === '}') {
+                        $groupPrefix = '';
                     }
 
                     break;
                 case ';':
-                    if ($useStatement !== null) {
-                        $classString = $useStatement;
-                        $alias = null;
-
-                        if (str_contains($useStatement, ' as ')) {
-                            [$classString, $alias] = explode(' as ', $useStatement);
-                        }
-
-                        $useStatements[] = new UseStatementDto($classString, $alias ?? $this->basename($classString));
-                        $useStatement = null;
+                    if ($useStatement !== '') {
+                        $useStatements[] = $this->createUseStatement($groupPrefix . $useStatement);
                     }
 
+                    $useStatement = null;
+                    $groupPrefix = '';
                     break;
             }
         }
@@ -112,17 +142,39 @@ class ReflectionUseParser extends AbstractReflectionParser
             throw DataMapperException::InvalidArgument(sprintf('object %s does not exist', $objectOrClass));
         }
 
+        $classString = is_object($objectOrClass) ? $objectOrClass::class : $objectOrClass;
+
+        if (array_key_exists($classString, self::$useStatementsCache)) {
+            return self::$useStatementsCache[$classString];
+        }
+
         $reflectionClass = $this->reflectionClassCache($objectOrClass);
 
         if ($reflectionClass->isInternal()) {
-            return null;
+            return self::$useStatementsCache[$classString] = null;
         }
 
         if ($reflectionClass->getFileName() === false) {
-            $classString = is_object($objectOrClass) ? $objectOrClass::class : $objectOrClass;
             throw DataMapperException::Error('Could not get file name from ' . $classString);
         }
 
-        return $this->parseToken($reflectionClass);
+        return self::$useStatementsCache[$classString] = $this->parseToken($reflectionClass);
+    }
+
+    public static function clearUseStatementsCache(): void
+    {
+        self::$useStatementsCache = [];
+    }
+
+    private function createUseStatement(string $useStatement): UseStatementDto
+    {
+        $classString = $useStatement;
+        $alias = null;
+
+        if (str_contains($useStatement, ' as ')) {
+            [$classString, $alias] = explode(' as ', $useStatement);
+        }
+
+        return new UseStatementDto($classString, $alias ?? $this->basename($classString));
     }
 }

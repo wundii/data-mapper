@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Wundii\DataMapper\DataConfig;
 use Wundii\DataMapper\DataMapper;
 use Wundii\DataMapper\Enum\ApproachEnum;
+use Wundii\DataMapper\Exception\DataMapperException;
 
 class CsvTest extends TestCase
 {
@@ -207,5 +208,34 @@ class CsvTest extends TestCase
 
         $this->assertCount(2, $return);
         $this->assertEquals($expected, $return);
+    }
+
+    public function testEmptyContentDoesNotReportWriteError(): void
+    {
+        $this->expectException(DataMapperException::class);
+        $this->expectExceptionMessage('could not create an instance of');
+
+        $this->dataMapper(ApproachEnum::CONSTRUCTOR)->csv(
+            '',
+            BaseMix::class,
+        );
+    }
+
+    public function testTemporaryFileIsRemovedOnFailure(): void
+    {
+        $before = glob(sys_get_temp_dir() . '/CSV_*') ?: [];
+
+        try {
+            $this->dataMapper(ApproachEnum::CONSTRUCTOR)->csv(
+                '',
+                BaseMix::class,
+            );
+        } catch (DataMapperException) {
+            // expected, the empty source cannot be mapped
+        }
+
+        $after = glob(sys_get_temp_dir() . '/CSV_*') ?: [];
+
+        $this->assertSame($before, $after);
     }
 }

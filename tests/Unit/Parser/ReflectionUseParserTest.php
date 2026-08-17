@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unit\Parser;
 
 use Exception;
+use MockClasses\GroupUseStatements;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Wundii\DataMapper\Dto\UseStatementDto;
@@ -101,5 +102,63 @@ class ReflectionUseParserTest extends TestCase
         $useStatementsReflection = $reflectionTokenResolver->parse('DateTime');
 
         $this->assertNull($useStatementsReflection);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testParseTokenGroupUseStatements(): void
+    {
+        $reflectionTokenResolver = new ReflectionUseParser();
+        $useStatementsDto = $reflectionTokenResolver->parse(GroupUseStatements::class);
+
+        $this->assertInstanceOf(UseStatementsDto::class, $useStatementsDto);
+
+        $classStrings = array_map(
+            static fn (UseStatementDto $useStatementDto): string => $useStatementDto->getClass(),
+            $useStatementsDto->getUseStatements(),
+        );
+
+        $this->assertContains('Wundii\DataMapper\Dto\AnnotationDto', $classStrings);
+        $this->assertContains('Wundii\DataMapper\Dto\ParameterDto', $classStrings);
+        $this->assertContains('MockClasses\Sub\SubItemConstructor', $classStrings);
+
+        $this->assertNotContains('Wundii\DataMapper\Dto\AnnotationDtoParameterDto', $classStrings);
+        $this->assertNotContains('array_map', $classStrings);
+        $this->assertNotContains('PHP_EOL', $classStrings);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testParseTokenGroupUseStatementsAliases(): void
+    {
+        $reflectionTokenResolver = new ReflectionUseParser();
+        $useStatementsDto = $reflectionTokenResolver->parse(GroupUseStatements::class);
+
+        $this->assertInstanceOf(UseStatementsDto::class, $useStatementsDto);
+
+        $this->assertSame('Wundii\DataMapper\Dto\AnnotationDto', $useStatementsDto->findClassString('AnnotationDto'));
+        $this->assertSame('Wundii\DataMapper\Dto\ParameterDto', $useStatementsDto->findClassString('ParameterDto'));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testParseUsesCache(): void
+    {
+        $reflectionTokenResolver = new ReflectionUseParser();
+
+        $first = $reflectionTokenResolver->parse(GroupUseStatements::class);
+        $second = $reflectionTokenResolver->parse(GroupUseStatements::class);
+
+        $this->assertSame($first, $second);
+
+        ReflectionUseParser::clearUseStatementsCache();
+
+        $third = $reflectionTokenResolver->parse(GroupUseStatements::class);
+
+        $this->assertNotSame($first, $third);
+        $this->assertEquals($first, $third);
     }
 }

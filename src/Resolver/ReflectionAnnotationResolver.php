@@ -90,7 +90,19 @@ class ReflectionAnnotationResolver
             }
 
             foreach ($parameters as $param) {
-                [$parameterType, $parameter] = explode(' ', $param);
+                /**
+                 * Split on any run of whitespace, so that aligned doc blocks like
+                 * "@param string   $name" keep their parameter name, and a "@param"
+                 * without a variable name does not run into a missing index.
+                 */
+                $parts = preg_split('/\s+/', trim($param), 3) ?: [];
+
+                $parameterType = $parts[0] ?? '';
+                $parameter = $parts[1] ?? '';
+
+                if ($parameterType === '' || $parameter === '') {
+                    continue;
+                }
 
                 if (str_starts_with($parameter, '$')) {
                     $parameter = substr($parameter, 1);

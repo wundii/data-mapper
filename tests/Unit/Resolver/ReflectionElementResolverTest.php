@@ -131,8 +131,53 @@ class ReflectionElementResolverTest extends TestCase
         $this->assertSame($expected, $targetTypes);
     }
 
+    public function testTargetTypesPropertyStartingWithSet(): void
+    {
+        $annotationDto = new AnnotationDto(
+            [new ParameterDto('settings', ['MockClasses\ItemConstructor[]'])],
+            [],
+        );
+
+        $targetTypes = (new ReflectionElementResolver())->getTargetTypes(
+            'settings',
+            ['array'],
+            $annotationDto,
+        );
+
+        $expected = [
+            'array',
+            'MockClasses\ItemConstructor[]',
+        ];
+
+        $this->assertSame($expected, $targetTypes);
+    }
+
+    public function testTargetTypesExactNameWinsOverStrippedPrefix(): void
+    {
+        $annotationDto = new AnnotationDto(
+            [
+                new ParameterDto('tings', ['float']),
+                new ParameterDto('settings', ['int']),
+            ],
+            [],
+        );
+
+        $targetTypes = (new ReflectionElementResolver())->getTargetTypes(
+            'settings',
+            ['array'],
+            $annotationDto,
+        );
+
+        $expected = [
+            'array',
+            'int',
+        ];
+
+        $this->assertSame($expected, $targetTypes);
+    }
+
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
      */
     public function testTypesEmpty(): void
     {
@@ -145,7 +190,7 @@ class ReflectionElementResolverTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
      */
     public function testTypesReflectionNamedType(): void
     {
@@ -177,7 +222,7 @@ class ReflectionElementResolverTest extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
      */
     public function testTypesReflectionUnionType(): void
     {

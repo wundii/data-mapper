@@ -8,15 +8,6 @@ use ReflectionException;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Exception\DataMapperException;
 
-if (PHP_VERSION_ID < 80300) {
-    function json_validate(string $string): bool
-    {
-        json_decode($string);
-
-        return json_last_error() === JSON_ERROR_NONE;
-    }
-}
-
 /**
  * @template T of object
  * @extends AbstractSourceData<T>
@@ -37,11 +28,11 @@ final class JsonSourceData extends AbstractSourceData
             throw DataMapperException::Error(sprintf('The %s source is not a string', $sourceTypeEnum->value));
         }
 
-        if (! json_validate($this->source)) {
+        $jsonArray = json_decode($this->source, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw DataMapperException::InvalidArgument(sprintf('Invalid %s string', $sourceTypeEnum->value));
         }
 
-        $jsonArray = json_decode($this->source, true);
         if (! is_array($jsonArray)) {
             throw DataMapperException::InvalidArgument(sprintf('Invalid %s decode return', $sourceTypeEnum->value));
         }

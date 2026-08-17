@@ -20,9 +20,10 @@ final class CsvSourceData extends AbstractSourceData
 
     public function isFile(string $filename): bool
     {
+        $filename = substr($filename, 0, 500);
         $filename = preg_replace('/\r\n|\r|\n/', '', $filename);
-        $filename = substr((string) $filename, 0, 500);
-        return is_file($filename);
+
+        return is_file((string) $filename);
     }
 
     /**
@@ -54,54 +55,57 @@ final class CsvSourceData extends AbstractSourceData
             $isContent = true;
             $tempPath = tempnam(sys_get_temp_dir(), 'CSV_');
 
-            if (! $tempPath || ! file_put_contents($tempPath, $source)) {
+            if ($tempPath === false || file_put_contents($tempPath, $source) === false) {
                 throw DataMapperException::Error(sprintf('The file "%s" could not be written', $source));
             }
 
             $source = $tempPath;
         }
 
-        if (! file_exists($source)) {
-            throw DataMapperException::Error(sprintf('The file "%s" could not be read', $source));
-        }
-
-        $csv = new SplFileObject($source);
-        $csv->setFlags(SplFileObject::READ_CSV);
-        $csv->setCsvControl(
-            $this->source->getSeparator(),
-            $this->source->getEnclosure(),
-            $this->source->getEscape(),
-        );
-
-        $csv->rewind();
-        $csv->seek($this->source->getHeaderLine());
-
-        /** @var string[] $header */
-        $header = (array) $csv->current();
-        $headerCnt = count($header);
-        $csvArray = [];
-
-        for ($csv->seek($this->source->getFirstLine()); ! $csv->eof(); $csv->next()) {
-            $row = (array) $csv->current();
-
-            if (count($row) !== $headerCnt) {
-                continue;
+        try {
+            if (! file_exists($source)) {
+                throw DataMapperException::Error(sprintf('The file "%s" could not be read', $source));
             }
 
-            /**
-             * Skip empty rows at the end of the file.
-             */
-            /** @phpstan-ignore-next-line bug, Left side of && is always false. ->oef() can be false or true*/
-            if ($csv->eof() && $row === [null]) {
-                continue;
+            $csv = new SplFileObject($source);
+            $csv->setFlags(SplFileObject::READ_CSV);
+            $csv->setCsvControl(
+                $this->source->getSeparator(),
+                $this->source->getEnclosure(),
+                $this->source->getEscape(),
+            );
+
+            $csv->rewind();
+            $csv->seek($this->source->getHeaderLine());
+
+            /** @var string[] $header */
+            $header = (array) $csv->current();
+            $headerCnt = count($header);
+            $csvArray = [];
+
+            for ($csv->seek($this->source->getFirstLine()); ! $csv->eof(); $csv->next()) {
+                $row = (array) $csv->current();
+
+                if (count($row) !== $headerCnt) {
+                    continue;
+                }
+
+                /**
+                 * Skip empty rows at the end of the file.
+                 */
+                /** @phpstan-ignore-next-line bug, Left side of && is always false. ->oef() can be false or true*/
+                if ($csv->eof() && $row === [null]) {
+                    continue;
+                }
+
+                $csvArray[] = array_combine($header, $row);
+
             }
-
-            $csvArray[] = array_combine($header, $row);
-
-        }
-
-        if ($isContent) {
-            unlink($source);
+        } finally {
+            if ($isContent) {
+                unset($csv);
+                unlink($source);
+            }
         }
 
         $arraySourceData = new ArraySourceData(

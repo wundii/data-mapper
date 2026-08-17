@@ -446,8 +446,8 @@ TEXT;
     public function testParseAnnotationVarMultiTypes(): void
     {
         $annotation = <<<TEXT
-/** 
- * @var float 
+/**
+ * @var float
  * @var null|int|string
  */
 TEXT;
@@ -457,6 +457,84 @@ TEXT;
         $expected = new AnnotationDto(
             [],
             ['null', 'int', 'string']
+        );
+
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
+        $this->assertEquals($expected, $annotationReflection);
+    }
+
+    public function testParseAnnotationParamWithAlignedSpaces(): void
+    {
+        $annotation = <<<TEXT
+/**
+ * @param string   \$name
+ * @param int      \$amount
+ */
+TEXT;
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
+
+        $expected = new AnnotationDto(
+            [
+                new ParameterDto('name', ['string']),
+                new ParameterDto('amount', ['int']),
+            ],
+            []
+        );
+
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
+        $this->assertEquals($expected, $annotationReflection);
+    }
+
+    public function testParseAnnotationParamWithTabs(): void
+    {
+        $annotation = "/**\n * @param string\t\$name\n */";
+
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
+
+        $expected = new AnnotationDto(
+            [new ParameterDto('name', ['string'])],
+            []
+        );
+
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
+        $this->assertEquals($expected, $annotationReflection);
+    }
+
+    public function testParseAnnotationParamWithoutVariableName(): void
+    {
+        $annotation = <<<TEXT
+/**
+ * @param string
+ * @param int \$amount
+ */
+TEXT;
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
+
+        $expected = new AnnotationDto(
+            [new ParameterDto('amount', ['int'])],
+            []
+        );
+
+        $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);
+        $this->assertEquals($expected, $annotationReflection);
+    }
+
+    public function testParseAnnotationParamWithDescription(): void
+    {
+        $annotation = <<<TEXT
+/**
+ * @param string \$name the name of the item
+ */
+TEXT;
+        $ReflectionAnnotationParser = new ReflectionAnnotationResolver(null);
+        $annotationReflection = $ReflectionAnnotationParser->resolve($annotation);
+
+        $expected = new AnnotationDto(
+            [new ParameterDto('name', ['string'])],
+            []
         );
 
         $this->assertInstanceOf(AnnotationDto::class, $annotationReflection);

@@ -295,8 +295,9 @@ class ReflectionClassParser extends AbstractReflectionParser
 
         $properties = [];
 
+        $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
+
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $annotation = $this->reflectionAnnotationResolver->resolve($reflectionMethod->getDocComment());
             $attributes = $this->resolveAttributes($reflectionParameter, AttributeOriginEnum::TARGET_PROPERTY);
             $elementDto = $this->reflectionElementsCache(
                 $objectOrClass,

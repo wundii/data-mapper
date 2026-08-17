@@ -7,6 +7,8 @@ namespace Wundii\DataMapper;
 use Wundii\DataMapper\Dto\CsvDto;
 use Wundii\DataMapper\Enum\SourceTypeEnum;
 use Wundii\DataMapper\Interface\DataConfigInterface;
+use Wundii\DataMapper\Parser\AbstractReflectionParser;
+use Wundii\DataMapper\SourceData\AbstractSourceData;
 use Wundii\DataMapper\SourceData\ArraySourceData;
 use Wundii\DataMapper\SourceData\CsvSourceData;
 use Wundii\DataMapper\SourceData\JsonSourceData;
@@ -25,6 +27,16 @@ class DataMapper
     public function setDataConfig(DataConfigInterface $dataConfig): void
     {
         $this->dataConfig = $dataConfig;
+    }
+
+    /**
+     * Reset the static reflection caches. They grow with every mapped class and
+     * are never invalidated, which matters in long running processes only.
+     */
+    public static function clearCaches(): void
+    {
+        AbstractReflectionParser::clearCache();
+        AbstractSourceData::clearCache();
     }
 
     /**
