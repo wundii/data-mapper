@@ -24,7 +24,7 @@
     "phpstan/phpstan": "2.2.8",
     "phpstan/phpstan-strict-rules": "2.0.12",
     "phpunit/phpunit": "11.5.50",
-    "rector/rector": "2.6.2",
+    "rector/rector": "2.6.3",
     "symfony/var-dumper": "7.4.0 || 8.0.0",
     "symplify/easy-coding-standard": "13.2.17",
     "wundii/phplint": "0.3.4"
