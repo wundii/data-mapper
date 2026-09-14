@@ -29,7 +29,9 @@ if (!isset($phpWatchData['data'])) {
 $phpMatrix = array_filter(
     $phpWatchData['data'],
     function (array $item) use ($minPhpVersion): bool {
-        return $item['name'] >= $minPhpVersion && $item['isNextVersion'] === false;
+        return $item['isFutureVersion'] === false
+            && $item['isNextVersion'] === false
+            && version_compare((string) $item['name'], $minPhpVersion, '>=');
     },
 );
 
