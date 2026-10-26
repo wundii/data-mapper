@@ -113,6 +113,11 @@ class ReflectionClassParser extends AbstractReflectionParser
         $attributes = [];
 
         foreach ($reflection->getAttributes() as $attribute) {
+            // attributes of packages that are not installed (e.g. dev-only documentation attributes) are irrelevant for mapping
+            if (! class_exists($attribute->getName())) {
+                continue;
+            }
+
             $arguments = [];
             /** @phpstan-ignore-next-line */
             $classProperties = $this->reflectionClassPropertiesCache($attribute->getName());
