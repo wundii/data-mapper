@@ -20,7 +20,7 @@
     "ext-xml": "*"
   },
   "require-dev": {
-    "nette/neon": "3.4.8",
+    "nette/neon": "3.4.9",
     "phpstan/phpstan": "2.3.1",
     "phpstan/phpstan-strict-rules": "2.1.0",
     "phpunit/phpunit": "11.5.50",
