@@ -155,10 +155,15 @@ final class XmlSourceData extends AbstractSourceData
         if ($this->source instanceof SimpleXMLElement) {
             $xmlElement = $this->source;
         } else {
+            $useInternalErrors = libxml_use_internal_errors(true);
+
             try {
                 $xmlElement = new SimpleXmlElement($this->source);
             } catch (Exception $exception) {
                 throw DataMapperException::Error(sprintf('Invalid %s: %s', $sourceType->value, $exception->getMessage()), (int) $exception->getCode(), $exception);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($useInternalErrors);
             }
         }
 
