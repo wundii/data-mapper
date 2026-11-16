@@ -29,14 +29,14 @@ jobs:
         id: set-matrix
         run: |
           php .github/scripts/version_matrix.php > matrix.json
-          echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
+          echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
 
       - name: Extract first version
         id: set-first
         run: |
           matrix='${{ steps.set-matrix.outputs.matrix }}'
           first=$(echo "$matrix" | jq -r '.[0]')
-          echo "first=$first" >> $GITHUB_OUTPUT
+          echo "first=$first" >> "$GITHUB_OUTPUT"
 
   code-quality:
     needs: [ generate-matrix ]
@@ -56,9 +56,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-php-${{ needs.generate-matrix.outputs.first }}-${{ hashFiles('composer.json') }}
           restore-keys: |
-            ${{ runner.os }}-php-
+            ${{ runner.os }}-php-${{ needs.generate-matrix.outputs.first }}-
 
       - name: Composer install
         run: |
@@ -88,9 +88,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-php-${{ matrix.version }}-${{ hashFiles('composer.json') }}
           restore-keys: |
-            ${{ runner.os }}-php-
+            ${{ runner.os }}-php-${{ matrix.version }}-
 
       - name: Composer install
         run: |
@@ -100,7 +100,7 @@ jobs:
         run: composer test
 
   code_coverage:
-    needs: [ unittest ]
+    needs: [ generate-matrix, unittest ]
     name: 'PHP Code Coverage'
     runs-on: ubuntu-latest
     steps:
